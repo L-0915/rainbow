@@ -89,7 +89,12 @@ async def health():
 async def get_greeting():
     """获取问候语"""
     import datetime
-    hour = datetime.datetime.now().hour
+    import pytz
+
+    # 获取北京时间（UTC+8）
+    beijing_tz = pytz.timezone('Asia/Shanghai')
+    hour = datetime.datetime.now(beijing_tz).hour
+    print(f"🕐 北京时间小时：{hour}")
 
     if 5 <= hour < 12:
         time_str = "早上好呀"
@@ -107,8 +112,10 @@ async def get_greeting():
     ]
 
     import random
+    greeting = random.choice(greetings)
+    print(f"🌈 问候语：{greeting}")
     # 返回前端期望的格式
-    return {"code": 0, "message": "success", "data": {"greeting": random.choice(greetings)}}
+    return {"code": 0, "message": "success", "data": {"greeting": greeting}}
 
 @app.post("/api/rainbow-chat/rainbow-chat")
 async def rainbow_chat(request: ChatRequest):
