@@ -107,15 +107,16 @@ async def get_greeting():
     ]
 
     import random
-    return {"greeting": random.choice(greetings)}
+    # 返回前端期望的格式
+    return {"code": 0, "message": "success", "data": {"greeting": random.choice(greetings)}}
 
-@app.post("/api/rainbow-chat/rainbow-chat", response_model=ChatResponse)
+@app.post("/api/rainbow-chat/rainbow-chat")
 async def rainbow_chat(request: ChatRequest):
     """小彩虹聊天 - 多轮对话"""
     messages = request.messages
 
     if not messages:
-        return {"reply": "小彩虹在听你说呢～ 能再多告诉我一些吗？💕"}
+        return {"code": 0, "message": "success", "data": {"reply": "小彩虹在听你说呢～ 能再多告诉我一些吗？💕"}}
 
     # 构建完整消息
     full_messages = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -123,6 +124,7 @@ async def rainbow_chat(request: ChatRequest):
         full_messages.append({"role": msg.role, "content": msg.content})
 
     print(f"🌈 请求千问 API...")
+    print(f"📝 消息：{full_messages}")
 
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
@@ -141,16 +143,24 @@ async def rainbow_chat(request: ChatRequest):
                 }
             )
 
+            print(f"📡 响应状态码：{response.status_code}")
+
             if response.status_code == 200:
                 data = response.json()
+                print(f"📦 响应数据：{data}")
                 reply = data.get("choices", [{}])[0].get("message", {}).get("content", "")
                 if reply:
-                    return {"reply": reply}
+                    print(f"✅ AI 回复：{reply}")
+                    return {"code": 0, "message": "success", "data": {"reply": reply}}
+                else:
+                    print("⚠️ AI 回复为空")
+            else:
+                print(f"❌ API 失败：{response.status_code} - {response.text}")
     except Exception as e:
         print(f"❌ 异常：{e}")
 
     # 降级回复
-    return {"reply": "小彩虹在听你说呢～ 能再多告诉我一些吗？💕"}
+    return {"code": 0, "message": "success", "data": {"reply": "小彩虹在听你说呢～ 能再多告诉我一些吗？💕"}}
 
 # ============ 静态文件处理 ============
 # 处理静态资源请求
