@@ -20,12 +20,14 @@ load_dotenv()
 
 # ============ 配置区 - 从环境变量读取 ============
 QWEN_API_KEY = os.getenv("QWEN_API_KEY", "")
+# 默认使用正确的 API URL
 QWEN_API_URL = os.getenv("QWEN_API_URL", "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions")
 SERVER_PORT = int(os.getenv("SERVER_PORT", "7860"))
 
-# 检查 API 密钥是否配置
-if not QWEN_API_KEY:
-    print("⚠️  警告：QWEN_API_KEY 未配置，请在魔塔创空间设置环境变量")
+# 打印配置信息（用于调试）
+print(f"🔑 QWEN_API_KEY 配置：{'已配置' if QWEN_API_KEY else '⚠️ 未配置'}")
+print(f"🌐 QWEN_API_URL: {QWEN_API_URL}")
+print(f"🚪 SERVER_PORT: {SERVER_PORT}")
 
 # 系统提示词
 SYSTEM_PROMPT = """你是一只叫"小彩虹"的 AI 小伙伴，是一个知心大姐姐，陪伴小朋友聊天。
@@ -132,6 +134,8 @@ async def rainbow_chat(request: ChatRequest):
 
     print(f"🌈 请求千问 API...")
     print(f"📝 消息：{full_messages}")
+    print(f"🔑 API Key 前缀：{QWEN_API_KEY[:10] if QWEN_API_KEY else '未配置'}...")
+    print(f"🌐 API URL: {QWEN_API_URL}")
 
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
