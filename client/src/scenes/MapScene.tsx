@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore, SceneType } from '@/store/appStore';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 // 地点配置 - 横版卷轴布局
 const LOCATIONS: {
@@ -70,7 +70,7 @@ const DECORATIONS = [
   { emoji: '🍀', x: 78, y: 80, scale: 0.8 },
 ];
 
-export const MapScene = () => {
+export const MapScene = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const currentScene = useAppStore((state) => state.currentScene);
   const [targetIndex, setTargetIndex] = useState(0);
@@ -501,4 +501,5 @@ export const MapScene = () => {
       </div>
     </div>
   );
-};
+});
+MapScene.displayName = 'MapScene';

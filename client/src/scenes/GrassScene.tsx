@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
-import { useEmotionStore, EmotionType } from '@/store/emotionStore';
+import { useEmotionStore } from '@/store/emotionStore';
 import { useCharacterStore } from '@/store/characterStore';
 import { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { MessageBottle } from '@/components/bottle/MessageBottle';
@@ -121,43 +121,33 @@ export const GrassScene = memo(() => {
       {/* ========== 温暖天空背景 ========== */}
       <div className="fixed inset-0 bg-gradient-to-b from-sky-300 via-sky-200 to-green-100" />
 
-      {/* 柔和的云朵背景 */}
-      <div className="fixed inset-0 opacity-30">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
+      {/* 柔和的云朵背景 - 性能优化：改为静态，减少动画 */}
+      <div className="fixed inset-0 opacity-20 pointer-events-none">
+        {[...Array(5)].map((_, i) => (
+          <div
             key={i}
-            className="absolute rounded-full bg-white blur-2xl"
+            className="absolute rounded-full bg-white blur-3xl"
             style={{
               width: `${150 + i * 50}px`,
               height: `${80 + i * 30}px`,
-              left: `${i * 15}%`,
+              left: `${i * 20}%`,
               top: `${10 + (i % 3) * 15}%`,
-            }}
-            animate={{
-              x: [0, i % 2 === 0 ? 30 : -30, 0],
-              y: [0, -15, 0],
-            }}
-            transition={{
-              duration: 5 + i,
-              repeat: Infinity,
-              delay: i * 0.3,
             }}
           />
         ))}
       </div>
 
-      {/* 背景图片 - 草地 */}
-      <motion.div
+      {/* 背景图片 - 草地 - 性能优化：静态背景 */}
+      <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url('/草地.png')`,
+          opacity: 0.5,
         }}
-        animate={{ opacity: 0.5 }}
-        transition={{ duration: 1 }}
       />
 
-      {/* ========== 漂浮装饰元素 ========== */}
-      {FLOATING_DECORS.map((dec, i) => (
+      {/* ========== 漂浮装饰元素 - 性能优化：减少数量，简化动画 ========== */}
+      {FLOATING_DECORS.slice(0, 6).map((dec, i) => (
         <motion.div
           key={i}
           className="fixed pointer-events-none z-10"
@@ -166,14 +156,12 @@ export const GrassScene = memo(() => {
             top: `${dec.y}%`,
           }}
           animate={{
-            y: [0, -15, 0],
-            rotate: [0, 10, -10, 0],
-            x: [0, dec.x % 2 === 0 ? 25 : -25, 0],
+            y: [0, -8, 0],
           }}
           transition={{
-            duration: 3 + (i % 2),
+            duration: 4 + (i % 2),
             repeat: Infinity,
-            delay: i * 0.2,
+            delay: i * 0.3,
           }}
         >
           <span className="text-3xl md:text-5xl filter drop-shadow-lg">{dec.emoji}</span>
@@ -224,94 +212,61 @@ export const GrassScene = memo(() => {
             initial={{ scale: 0, opacity: 0, rotate: -180 }}
             animate={{ scale: 1, opacity: 1, rotate: 0 }}
             transition={{ delay: 0.3 + index * 0.15, type: 'spring', bounce: 0.7 }}
-            whileHover={{ scale: 1.15, rotate: 5 }}
-            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => handleCloudClick(cloud, index)}
           >
-            {/* 云朵整体容器 */}
-            <motion.div
-              animate={{
-                y: [0, -10, 0],
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{ duration: 2.5, repeat: Infinity, delay: index * 0.2 }}
-            >
-              {/* 发光效果 */}
-              <motion.div
-                className="absolute inset-0 rounded-full blur-2xl opacity-50"
+            {/* 云朵整体容器 - 性能优化：减少动画 */}
+            <div>
+              {/* 发光效果 - 静态 */}
+              <div
+                className="absolute inset-0 rounded-full blur-2xl opacity-40"
                 style={{ background: cloud.glow }}
-                animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.4, 0.7, 0.4],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
               />
 
               {/* 云朵主体 */}
               <div className="relative">
                 {/* 主云体 */}
-                <motion.div
+                <div
                   className="w-24 h-14 rounded-full relative shadow-lg"
                   style={{
                     background: cloud.gradient,
                     boxShadow: `0 8px 32px ${cloud.glow}, inset 0 -4px 8px rgba(255,255,255,0.3)`,
                   }}
                 >
-                  {/* 顶部小云团 - 更柔和 */}
-                  <motion.div
+                  {/* 顶部小云团 - 静态 */}
+                  <div
                     className="absolute -top-6 left-4 w-12 h-12 rounded-full"
                     style={{ background: cloud.gradient }}
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.1 }}
                   />
-                  <motion.div
+                  <div
                     className="absolute -top-5 right-5 w-10 h-10 rounded-full"
                     style={{ background: cloud.gradient }}
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.1 + 0.1 }}
                   />
-                  <motion.div
+                  <div
                     className="absolute -top-4 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full"
                     style={{ background: cloud.gradient }}
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: index * 0.1 + 0.2 }}
                   />
 
-                  {/* Emoji - 温暖笑脸 */}
-                  <motion.div
-                    className="absolute top-5 left-1/2 -translate-x-1/2 text-2xl"
-                    animate={{
-                      scale: [1, 1.3, 1],
-                      rotate: [0, 10, -10, 0],
-                    }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
+                  {/* Emoji - 温暖笑脸 - 静态 */}
+                  <div className="absolute top-5 left-1/2 -translate-x-1/2 text-2xl">
                     {cloud.emoji}
-                  </motion.div>
+                  </div>
 
                   {/* 已点击标记 - 小星星 */}
                   {revealedClouds.includes(index) && (
-                    <motion.div
-                      className="absolute -top-1 -right-1 text-lg"
-                      initial={{ scale: 0, rotate: -180 }}
-                      animate={{ scale: 1, rotate: 360 }}
-                      transition={{ type: 'spring', bounce: 0.7 }}
-                    >
+                    <div className="absolute -top-1 -right-1 text-lg">
                       ⭐
-                    </motion.div>
+                    </div>
                   )}
-                </motion.div>
+                </div>
 
-                {/* 云朵名称标签 - 不显示具体名称，只显示小标签 */}
-                <motion.div
-                  className="mt-1 bg-white/70 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-md"
-                  animate={{ y: [0, -2, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: index * 0.15 }}
-                >
+                {/* 云朵名称标签 - 静态 */}
+                <div className="mt-1 bg-white/70 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-md">
                   <span className="text-xs font-bold text-gray-600">☁️</span>
-                </motion.div>
+                </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -338,24 +293,15 @@ export const GrassScene = memo(() => {
               transition={{ type: 'spring', bounce: 0.7 }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* 顶部装饰 - 彩虹 */}
+              {/* 顶部装饰 - 彩虹 - 静态 */}
               <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-6xl">
-                <motion.span
-                  animate={{ rotate: [0, 10, -10, 0], y: [0, -5, 0] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                >
-                  🌈
-                </motion.span>
+                🌈
               </div>
 
-              {/* 云朵 emoji */}
-              <motion.div
-                className="text-8xl text-center mb-4 mt-4"
-                animate={{ y: [0, -12, 0], rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
+              {/* 云朵 emoji - 静态 */}
+              <div className="text-8xl text-center mb-4 mt-4">
                 {selectedCloud.emoji}
-              </motion.div>
+              </div>
 
               {/* 温暖消息 */}
               <motion.div
@@ -369,25 +315,12 @@ export const GrassScene = memo(() => {
                 </p>
               </motion.div>
 
-              {/* 装饰元素 */}
+              {/* 装饰元素 - 性能优化：简化动画 */}
               <div className="flex justify-center gap-3 mb-4">
-                {['💖', '✨', '🌸', '💫', '🦋'].map((emoji, i) => (
-                  <motion.div
-                    key={i}
-                    className="text-2xl"
-                    animate={{
-                      y: [0, -10, 0],
-                      scale: [0, 1, 0],
-                      rotate: [0, 180, 360],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      delay: i * 0.15,
-                    }}
-                  >
+                {['💖', '✨', '🌸'].map((emoji, i) => (
+                  <div key={i} className="text-2xl">
                     {emoji}
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 
@@ -414,261 +347,128 @@ export const GrassScene = memo(() => {
         <div className="relative mb-8">
           <AnimatePresence mode="wait">
             {characterAction === 'stand' ? (
-              <motion.div
+              <div
                 key="stand"
                 className="relative"
-                initial={{ scale: 0.8, opacity: 0, y: 50 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.8, opacity: 0, y: -50 }}
-                transition={{ type: 'spring', bounce: 0.5 }}
               >
-                {/* 底部光晕 */}
-                <motion.div
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400/50 via-emerald-400/50 to-teal-400/50 blur-2xl scale-150"
-                  animate={{
-                    scale: [1.5, 1.8, 1.5],
-                    opacity: [0.5, 0.8, 0.5],
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                {/* 底部光晕 - 静态 */}
+                <div
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-green-400/50 via-emerald-400/50 to-teal-400/50 blur-2xl scale-150 opacity-50"
                 />
 
-                {/* 卡通数字人图片 - 站立 */}
-                <motion.img
+                {/* 卡通数字人图片 - 站立 - 性能优化：减少动画 */}
+                <img
                   src={currentAvatarUrl}
                   alt="卡通数字人"
                   className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
-                  initial={{ rotate: 90 }}
-                  animate={{
-                    rotate: 0,
-                    y: [0, -10, 0],
-                  }}
-                  transition={{ duration: 0.5 }}
                 />
-
-                {/* 环绕星星和爱心 */}
-                {[...Array(6)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute text-xl md:text-2xl"
-                    style={{
-                      transform: `rotate(${i * 60}deg) translateX(60px)`,
-                    }}
-                    animate={{
-                      scale: [0, 1, 0],
-                      opacity: [0, 1, 0],
-                      rotate: [0, 180, 360],
-                    }}
-                    transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.25 }}
-                  >
-                    {['✨', '💖', '🌟', '💫', '⭐', '🦋'][i]}
-                  </motion.div>
-                ))}
-              </motion.div>
+              </div>
             ) : characterAction === 'lie' ? (
-              <motion.div
+              <div
                 key="lie"
                 className="relative"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ type: 'spring', bounce: 0.5 }}
               >
-                {/* 底部光晕 - 躺下时更柔和 */}
-                <motion.div
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-400/50 via-purple-400/50 to-blue-400/50 blur-2xl scale-150"
-                  animate={{
-                    scale: [1.5, 1.8, 1.5],
-                    opacity: [0.5, 0.8, 0.5],
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                {/* 底部光晕 - 躺下时更柔和 - 静态 */}
+                <div
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-pink-400/50 via-purple-400/50 to-blue-400/50 blur-2xl scale-150 opacity-50"
                 />
 
                 {/* 卡通数字人图片 - 躺下 (旋转 90 度，平躺) */}
-                <motion.img
+                <img
                   src={currentAvatarUrl}
                   alt="卡通数字人"
                   className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
-                  initial={{ rotate: 0 }}
-                  animate={{ rotate: 90 }}
-                  transition={{ duration: 0.5 }}
-                  style={{ transformOrigin: 'center center' }}
+                  style={{ transform: 'rotate(90deg)', transformOrigin: 'center center' }}
                 />
-
-                {/* 漂浮的爱心和星星 */}
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute text-lg md:text-xl"
-                    style={{
-                      left: `${i * 20}%`,
-                      top: '-30px',
-                    }}
-                    animate={{
-                      y: [0, -40 - i * 10],
-                      opacity: [0, 1, 0],
-                      scale: [0.5, 1, 0.5],
-                      rotate: [0, 180, 360],
-                    }}
-                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.3 }}
-                  >
-                    {['💖', '✨', '🌸', '💫', '🦋'][i]}
-                  </motion.div>
-                ))}
-              </motion.div>
+              </div>
             ) : (
-              <motion.div
+              <div
                 key="roll"
                 className="relative"
-                initial={{ scale: 0.8, opacity: 0, rotate: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ type: 'spring', bounce: 0.5 }}
               >
-                {/* 卡通数字人图片 - 打滚 */}
-                <motion.img
+                {/* 卡通数字人图片 - 打滚 - 使用 CSS 动画 */}
+                <img
                   src={currentAvatarUrl}
                   alt="卡通数字人"
-                  className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 0.6, repeat: 3 }}
+                  className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl animate-spin"
+                  style={{ animationDuration: '0.6s', animationIterationCount: 3 }}
                 />
-
-                {/* 打滚灰尘 */}
-                {[...Array(4)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute text-lg"
-                    style={{
-                      left: `${i * 25}%`,
-                      bottom: '-10px',
-                    }}
-                    animate={{
-                      y: [0, -20],
-                      opacity: [0.8, 0],
-                      scale: [1, 0.5],
-                    }}
-                    transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.15 }}
-                  >
-                    💨
-                  </motion.div>
-                ))}
-              </motion.div>
+              </div>
             )}
           </AnimatePresence>
 
-          {/* 温馨提示气泡 */}
-          <AnimatePresence>
-            {characterAction === 'lie' && (
-              <motion.div
-                className="absolute -top-20 left-1/2 -translate-x-1/2"
-                initial={{ scale: 0, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0, opacity: 0, y: 20 }}
-                transition={{ type: 'spring', bounce: 0.6 }}
+          {/* 温馨提示气泡 - 性能优化：简化动画 */}
+          {characterAction === 'lie' && (
+            <div
+              className="absolute -top-20 left-1/2 -translate-x-1/2"
+            >
+              <div
+                className="bg-white/95 backdrop-blur-xl rounded-3xl px-8 py-4 shadow-2xl border-4 border-white/60 relative"
               >
-                <motion.div
-                  className="bg-white/95 backdrop-blur-xl rounded-3xl px-8 py-4 shadow-2xl border-4 border-white/60 relative"
-                  animate={{ y: [0, -8, 0], rotate: [0, 3, -3, 0] }}
-                  transition={{ duration: 2.5, repeat: Infinity }}
-                >
-                  {/* 气泡尾巴 */}
-                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-white rotate-45 border-r-2 border-b-2 border-white/60" />
+                {/* 气泡尾巴 */}
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-white rotate-45 border-r-2 border-b-2 border-white/60" />
 
-                  <motion.p
-                    className="text-gray-700 text-lg font-black text-center whitespace-nowrap"
-                    animate={{ scale: [1, 1.02, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    🌿 躺下来，感受风的温柔～ 🍃
-                  </motion.p>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <p className="text-gray-700 text-lg font-black text-center whitespace-nowrap">
+                  🌿 躺下来，感受风的温柔～ 🍃
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 情绪提示 - 如果今天有记录情绪 */}
-        <AnimatePresence>
-          {todayEmotion && characterAction === 'stand' && (
-            <motion.div
-              className="mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              <div className="bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 shadow-xl border-4 border-white/60">
-                <p className="text-gray-700 font-bold flex items-center gap-2">
-                  <span>今天的心情：</span>
-                  <motion.span
-                    className="font-black"
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    {todayEmotion === 'happy' && '😊 开心'}
-                    {todayEmotion === 'calm' && '😌 平静'}
-                    {todayEmotion === 'angry' && '😤 生气'}
-                    {todayEmotion === 'scared' && '😨 害怕'}
-                    {todayEmotion === 'sad' && '😢 委屈'}
-                    {todayEmotion === 'excited' && '🤩 兴奋'}
-                  </motion.span>
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {todayEmotion && characterAction === 'stand' && (
+          <div className="mb-6">
+            <div className="bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 shadow-xl border-4 border-white/60">
+              <p className="text-gray-700 font-bold flex items-center gap-2">
+                <span>今天的心情：</span>
+                <span className="font-black">
+                  {todayEmotion === 'happy' && '😊 开心'}
+                  {todayEmotion === 'calm' && '😌 平静'}
+                  {todayEmotion === 'angry' && '😤 生气'}
+                  {todayEmotion === 'scared' && '😨 害怕'}
+                  {todayEmotion === 'sad' && '😢 委屈'}
+                  {todayEmotion === 'excited' && '🤩 兴奋'}
+                </span>
+              </p>
+            </div>
+          </div>
+        )}
 
-        {/* 操作按钮 */}
-        <motion.div
-          className="flex gap-4 flex-wrap justify-center"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-        >
+        {/* 操作按钮 - 性能优化：减少动画 */}
+        <div className="flex gap-4 flex-wrap justify-center">
           {characterAction === 'stand' ? (
             <>
-              <motion.button
+              <button
                 onClick={handleLieDown}
                 className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-white font-black text-lg py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-2"
-                whileHover={{ scale: 1.1, rotate: -3 }}
-                whileTap={{ scale: 0.95 }}
               >
                 <span>躺下</span>
-              </motion.button>
+              </button>
 
-              <motion.button
+              <button
                 onClick={handleRoll}
                 className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white font-black text-lg py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-2"
-                whileHover={{ scale: 1.1, rotate: 3 }}
-                whileTap={{ scale: 0.95 }}
               >
                 <span className="text-2xl">🤸</span>
                 <span>打滚</span>
-              </motion.button>
+              </button>
             </>
           ) : (
-            <motion.button
+            <button
               onClick={handleStandUp}
               className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-lg py-4 px-10 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-3"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
             >
               <span className="text-2xl">☀️</span>
               <span>站起来</span>
-            </motion.button>
+            </button>
           )}
-        </motion.div>
+        </div>
 
         {/* 小提示 */}
-        <motion.p
-          className="mt-6 text-white/80 text-sm font-bold text-center max-w-md"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
+        <p className="mt-6 text-white/80 text-sm font-bold text-center max-w-md">
           {characterAction === 'stand' ? '点击天上的云朵，收下它们的温暖祝福吧～' : '静静地躺着/打滚，感受大自然的美好～'}
-        </motion.p>
+        </p>
       </div>
 
       {/* ========== 底部草叶装饰 ========== */}

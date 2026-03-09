@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
 import { useCharacterStore } from '@/store/characterStore';
-import { useState } from 'react';
+import { useState, memo, useMemo } from 'react';
 
 // 卡通风格输入框
 const CartoonInput = ({ value, onChange, placeholder, type = 'text', icon }: {
@@ -138,7 +138,7 @@ const CodeInput = ({ value, onChange }: {
   );
 };
 
-export const LoginScene = () => {
+export const LoginScene = memo(() => {
   const login = useAppStore((state) => state.login);
   const setHasInitialized = useCharacterStore((state) => state.setHasInitialized);
   const hasInitialized = useCharacterStore((state) => state.hasInitialized);
@@ -709,4 +709,5 @@ export const LoginScene = () => {
       `}</style>
     </div>
   );
-};
+});
+LoginScene.displayName = 'LoginScene';

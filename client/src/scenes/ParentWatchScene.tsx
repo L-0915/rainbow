@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
 
 interface ParentInfo {
@@ -18,7 +18,7 @@ interface ParentWatchSceneProps {
   onBack: () => void;
 }
 
-export const ParentWatchScene = ({ onBack }: ParentWatchSceneProps) => {
+export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
   const [parentInfo, setParentInfo] = useState<ParentInfo | null>(null);
   const [watchBinding, setWatchBinding] = useState<WatchBinding | null>(null);
   const [showBindDialog, setShowBindDialog] = useState(false);
@@ -514,4 +514,5 @@ export const ParentWatchScene = ({ onBack }: ParentWatchSceneProps) => {
       </div>
     </div>
   );
-};
+});
+ParentWatchScene.displayName = 'ParentWatchScene';

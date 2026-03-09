@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useAppStore, PlaygroundGame } from '@/store/appStore';
-import { useState } from 'react';
+import { memo } from 'react';
 
 const GAMES: {
   id: PlaygroundGame;
@@ -60,7 +60,7 @@ const GAMES: {
   },
 ];
 
-export const PlaygroundScene = () => {
+export const PlaygroundScene = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const startGame = useAppStore((state) => state.startGame);
   const hasEnteredPlayground = useAppStore((state) => state.hasEnteredPlayground);
@@ -244,4 +244,5 @@ export const PlaygroundScene = () => {
       </div>
     </div>
   );
-};
+});
+PlaygroundScene.displayName = 'PlaygroundScene';

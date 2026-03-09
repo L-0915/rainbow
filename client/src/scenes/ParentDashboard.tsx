@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { ParentWatchScene } from './ParentWatchScene';
 import { useAppStore } from '@/store/appStore';
@@ -56,7 +56,7 @@ const EMOTION_TYPE_MAP: Record<string, EmotionType> = {
   excited: 'excited',
 };
 
-export const ParentDashboard = () => {
+export const ParentDashboard = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const [parentInfo, setParentInfo] = useState<ParentInfo | null>(null);
   const [watchBinding, setWatchBinding] = useState<WatchBinding | null>(null);
@@ -349,4 +349,5 @@ export const ParentDashboard = () => {
       </div>
     </div>
   );
-};
+});
+ParentDashboard.displayName = 'ParentDashboard';
