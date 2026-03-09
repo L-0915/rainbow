@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sendChatMessage, getGreeting, type ChatMessage } from '@/services/rainbowChat';
 import { Rainbow } from '@/components/rainbow/Rainbow';
@@ -8,7 +8,15 @@ interface RainbowChatDialogProps {
   onClose: () => void;
 }
 
-export const RainbowChatDialog = ({ isOpen, onClose }: RainbowChatDialogProps) => {
+// 性能优化：缓存快速回复选项
+const QUICK_REPLIES = [
+  '今天我很开心！😊',
+  '我有点难过...💙',
+  '我想和你分享一件事～',
+  '小彩虹，你今天好吗？🌈',
+];
+
+export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogProps) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -16,14 +24,14 @@ export const RainbowChatDialog = ({ isOpen, onClose }: RainbowChatDialogProps) =
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // 滚动到底部
-  const scrollToBottom = () => {
+  // 滚动到底部 - 性能优化：使用 useCallback 缓存
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   // 打开对话框时获取问候语
   useEffect(() => {
@@ -43,8 +51,11 @@ export const RainbowChatDialog = ({ isOpen, onClose }: RainbowChatDialogProps) =
     }
   }, [isOpen]);
 
-  // 发送消息
-  const handleSend = async () => {
+  // 性能优化：使用 useMemo 缓存快速回复数组
+  const quickReplies = useMemo(() => QUICK_REPLIES, []);
+
+  // 发送消息 - 性能优化：使用 useCallback 缓存
+  const handleSend = useCallback(async () => {
     if (!inputValue.trim() || isLoading) return;
 
     const userMessage: ChatMessage = {
@@ -90,28 +101,21 @@ export const RainbowChatDialog = ({ isOpen, onClose }: RainbowChatDialogProps) =
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [inputValue, isLoading, messages]);
 
-  // 键盘回车发送
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  // 键盘回车发送 - 性能优化：使用 useCallback 缓存
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
-  };
+  }, [handleSend]);
 
-  // 快速回复选项
-  const quickReplies = [
-    '今天我很开心！😊',
-    '我有点难过...💙',
-    '我想和你分享一件事～',
-    '小彩虹，你今天好吗？🌈',
-  ];
-
-  const handleQuickReply = (text: string) => {
+  // 快速回复处理 - 性能优化：使用 useCallback 缓存
+  const handleQuickReply = useCallback((text: string) => {
     setInputValue(text);
     inputRef.current?.focus();
-  };
+  }, []);
 
   if (!isOpen) return null;
 
@@ -271,4 +275,5 @@ export const RainbowChatDialog = ({ isOpen, onClose }: RainbowChatDialogProps) =
       </motion.div>
     </div>
   );
-};
+});
+RainbowChatDialog.displayName = 'RainbowChatDialog';

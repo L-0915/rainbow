@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCharacterStore } from '@/store/characterStore';
 
 interface MessageBottleProps {
   childId?: number;
@@ -8,7 +7,7 @@ interface MessageBottleProps {
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
-// 鼓励话语
+// 性能优化：缓存鼓励话语数组
 const ENCOURAGEMENT_MESSAGES = [
   '你的心里话，大海已经收到啦～ 🌊',
   '真棒！把情绪说出来是很勇敢的事情～ ✨',
@@ -29,8 +28,17 @@ const getRandomEncouragement = () => {
 // 本地存储 key
 const LOCAL_BOTTLES_KEY = 'my-message-bottles';
 
-export const MessageBottle = ({ childId = 1 }: MessageBottleProps) => {
-  const { config: characterConfig } = useCharacterStore();
+// 性能优化：缓存心情选项数组
+const MOODS = [
+  { emoji: '😊', label: '开心', value: '开心' },
+  { emoji: '😌', label: '平静', value: '平静' },
+  { emoji: '🤩', label: '兴奋', value: '兴奋' },
+  { emoji: '🥰', label: '幸福', value: '幸福' },
+  { emoji: '🌟', label: '期待', value: '期待' },
+  { emoji: '😐', label: '不确定', value: '不确定' },
+];
+
+export const MessageBottle = memo(({ childId = 1 }: MessageBottleProps) => {
   const [showBottleModal, setShowBottleModal] = useState(false);
   const [bottleContent, setBottleContent] = useState('');
   const [selectedMood, setSelectedMood] = useState('');
@@ -509,4 +517,5 @@ export const MessageBottle = ({ childId = 1 }: MessageBottleProps) => {
       </AnimatePresence>
     </>
   );
-};
+});
+MessageBottle.displayName = 'MessageBottle';

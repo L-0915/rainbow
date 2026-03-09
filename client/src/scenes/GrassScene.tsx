@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
 import { useEmotionStore, EmotionType } from '@/store/emotionStore';
 import { useCharacterStore } from '@/store/characterStore';
-import { useState } from 'react';
+import { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { MessageBottle } from '@/components/bottle/MessageBottle';
 
 type CharacterAction = 'stand' | 'lie' | 'roll';
@@ -81,7 +81,7 @@ const FLOATING_DECORS = [
   { emoji: '🌷', x: 8, y: 75, scale: 1.2 },
 ];
 
-export const GrassScene = () => {
+export const GrassScene = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const todayEmotion = useEmotionStore((state) => state.todayEmotion);
   const { config: characterConfig } = useCharacterStore();
@@ -752,4 +752,5 @@ export const GrassScene = () => {
       </div>
     </div>
   );
-};
+});
+GrassScene.displayName = 'GrassScene';
