@@ -1,19 +1,19 @@
 """
 🌈 彩虹创口贴 - 魔塔创空间入口文件
-集成 FastAPI 后端和 Gradio 前端
+包含完整的后端 API 和前端静态文件服务
 """
 
 import os
-import asyncio
-import threading
-import time
-from fastapi import FastAPI
+import sys
+from pathlib import Path
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import httpx
 from dotenv import load_dotenv
-import gradio as gr
 
 # 加载环境变量
 load_dotenv()
@@ -60,7 +60,7 @@ app = FastAPI(
     version="3.0.0"
 )
 
-# CORS 配置
+# CORS 配置 - 允许所有来源
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -81,14 +81,6 @@ class ChatResponse(BaseModel):
     reply: str
 
 # ============ API 端点 ============
-@app.get("/")
-async def root():
-    return {
-        "message": "🌈 彩虹创口贴 API 服务",
-        "version": "3.0.0",
-        "status": "running"
-    }
-
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
@@ -160,195 +152,31 @@ async def rainbow_chat(request: ChatRequest):
     # 降级回复
     return {"reply": "小彩虹在听你说呢～ 能再多告诉我一些吗？💕"}
 
+# ============ 静态文件处理 ============
+# 处理静态资源请求
+@app.get("/{path:path}")
+async def serve_static(path: str):
+    """提供前端静态文件"""
+    static_path = Path(__file__).parent / "static"
+    file_path = static_path / path
 
-# ============ Gradio 前端 ============
-chat_history = []
-
-def get_greeting_text():
-    """获取问候语"""
-    import datetime
-    hour = datetime.datetime.now().hour
-
-    if 5 <= hour < 12:
-        time_str = "早上好呀"
-    elif 12 <= hour < 14:
-        time_str = "中午好呀"
-    elif 14 <= hour < 18:
-        time_str = "下午好呀"
-    else:
-        time_str = "晚上好呀"
-
-    greetings = [
-        f"{time_str}～ 🌈 我是小彩虹，想和你聊聊天，今天有什么开心或不开心的事想和我说吗？ ✨",
-        f"{time_str}！🦋 我是你的好朋友小彩虹～ 有什么想分享的吗？我在这里听你说哦～ 💕",
-        f"嗨嗨～ {time_str}！🌟 我是小彩虹，你的知心大姐姐～ 今天过得怎么样呀？ 💖",
-    ]
-
-    import random
-    return random.choice(greetings)
-
-def chat_with_rainbow(message, history):
-    """与小彩虹聊天"""
-    global chat_history
-
-    # 添加用户消息到历史记录
-    chat_history.append({"role": "user", "content": message})
-
-    # 构建请求
-    messages = [ChatMessage(role=msg["role"], content=msg["content"]) for msg in chat_history]
-
+    # 安全检查：防止路径遍历攻击
     try:
-        # 同步调用异步函数
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        file_path.resolve().relative_to(static_path.resolve())
+    except ValueError:
+        return {"error": "Not found"}, 404
 
-        request = ChatRequest(messages=messages)
+    if file_path.exists() and file_path.is_file():
+        return FileResponse(str(file_path))
 
-        async def call_api():
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
-                    f"http://localhost:{SERVER_PORT}/api/rainbow-chat/rainbow-chat",
-                    headers={
-                        "Authorization": f"Bearer {QWEN_API_KEY}",
-                        "Content-Type": "application/json"
-                    },
-                    json={
-                        "model": "qwen-plus",
-                        "messages": [{"role": "system", "content": SYSTEM_PROMPT}] +
-                                   [{"role": m.role, "content": m.content} for m in messages],
-                        "max_tokens": 300,
-                        "temperature": 0.8,
-                        "top_p": 0.9
-                    }
-                )
-                return response.json()
+    # 如果是 SPA 路由，返回 index.html
+    index_path = static_path / "index.html"
+    if index_path.exists():
+        return FileResponse(str(index_path))
 
-        result = loop.run_until_complete(call_api())
-        loop.close()
-
-        reply = result.get("reply", "小彩虹在听你说呢～ 💕")
-
-    except Exception as e:
-        reply = f"小彩虹在听你说呢～ 💕 (网络错误：{str(e)})"
-
-    # 添加 AI 回复到历史记录
-    chat_history.append({"role": "assistant", "content": reply})
-
-    # 更新历史显示
-    history_display = []
-    for msg in chat_history:
-        if msg["role"] == "user":
-            history_display.append((msg["content"], None))
-        else:
-            if history_display and history_display[-1][1] is None:
-                history_display[-1] = (history_display[-1][0], msg["content"])
-
-    return history_display
-
-# 创建 Gradio 界面
-with gr.Blocks(title="彩虹创口贴", theme=gr.themes.Soft()) as demo:
-    gr.Markdown("""
-    # 🌈 彩虹创口贴 - 小彩虹陪你聊天
-
-    我是你的知心大姐姐小彩虹，有什么开心或不开心的事都可以和我分享哦～ 💕
-    """)
-
-    chatbot = gr.Chatbot(
-        label="小彩虹",
-        bubble_full_width=False,
-        height=400
-    )
-
-    msg = gr.Textbox(
-        label="输入消息",
-        placeholder="和小彩虹说说话吧...",
-        lines=2
-    )
-
-    clear = gr.Button("清除聊天记录")
-
-    greeting = gr.Textbox(
-        label="小彩虹的问候",
-        value=get_greeting_text(),
-        lines=2
-    )
-
-    def user_message(message, history):
-        if not message.strip():
-            return "", history
-        return "", history + [[message, None]]
-
-    def bot_response(history):
-        if not history or not history[-1][0]:
-            return history
-
-        message = history[-1][0]
-        global chat_history
-        chat_history.append({"role": "user", "content": message})
-
-        try:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-
-            async def call_api():
-                async with httpx.AsyncClient(timeout=30.0) as client:
-                    response = await client.post(
-                        QWEN_API_URL,
-                        headers={
-                            "Authorization": f"Bearer {QWEN_API_KEY}",
-                            "Content-Type": "application/json"
-                        },
-                        json={
-                            "model": "qwen-plus",
-                            "messages": [{"role": "system", "content": SYSTEM_PROMPT}] +
-                                       [{"role": "user", "content": message}],
-                            "max_tokens": 300,
-                            "temperature": 0.8,
-                            "top_p": 0.9
-                        }
-                    )
-                    return response.json()
-
-            result = loop.run_until_complete(call_api())
-            loop.close()
-
-            reply = result.get("choices", [{}])[0].get("message", {}).get("content", "")
-            if not reply:
-                reply = "小彩虹在听你说呢～ 💕"
-
-        except Exception as e:
-            reply = "小彩虹在听你说呢～ 💕"
-            print(f"错误：{e}")
-
-        chat_history.append({"role": "assistant", "content": reply})
-        history[-1] = (message, reply)
-        return history
-
-    def clear_chat(history):
-        global chat_history
-        chat_history = []
-        return [], get_greeting_text()
-
-    msg.submit(user_message, [msg, chatbot], [msg, chatbot]).then(
-        bot_response, chatbot, chatbot
-    )
-
-    clear.click(clear_chat, [chatbot], [chatbot, greeting])
+    return {"error": "Not found"}, 404
 
 # ============ 启动函数 ============
-def run_fastapi():
-    """运行 FastAPI 服务"""
+if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=SERVER_PORT)
-
-if __name__ == "__main__":
-    # 在新线程中启动 FastAPI
-    fastapi_thread = threading.Thread(target=run_fastapi, daemon=True)
-    fastapi_thread.start()
-
-    # 等待 FastAPI 启动
-    time.sleep(1)
-    print(f"🌈 FastAPI 服务已启动：http://0.0.0.0:{SERVER_PORT}")
-
-    # 启动 Gradio 前端
-    demo.launch(server_name="0.0.0.0", server_port=7861)

@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS 变量定义 - 彩虹色系 */
+:root {
+  /* 主色调 - 彩虹色系 */
+  --color-rainbow-red: #FF6B6B;
+  --color-rainbow-orange: #FFA94D;
+  --color-rainbow-yellow: #FFE066;
+  --color-rainbow-green: #69DB7C;
+  --color-rainbow-blue: #4DABF7;
+  --color-rainbow-purple: #DA77F2;
+
+  /* 情绪色彩 */
+  --emotion-happy: #FFD43B;
+  --emotion-calm: #74C0FC;
+  --emotion-angry: #FF6B6B;
+  --emotion-scared: #A5D8FF;
+  --emotion-sad: #95A5A6;
+  --emotion-excited: #FF922B;
+
+  /* 背景色 */
+  --bg-warm: #FFF9E6;
+  --bg-soft: #F8F9FA;
+  --bg-sky: #E0F4FF;
+  --bg-gradient: linear-gradient(180deg, #E0F4FF 0%, #FFF9E6 100%);
+
+  /* 圆角 - 大圆角设计，更可爱 */
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-2xl: 40px;
+
+  /* 阴影 - 柔和阴影 */
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.1);
+
+  /* 过渡 */
+  --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* 全局样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Varela Round', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-gradient);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  /* 允许垂直滚动 */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 自定义滚动条 - 隐藏但保留功能 */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* 卡通风格按钮基础样式 */
+@layer components {
+  .btn-cartoon {
+    @apply relative inline-flex items-center justify-center;
+    @apply px-6 py-3 text-lg font-bold;
+    @apply rounded-3xl;
+    @apply transition-all duration-200;
+    @apply shadow-soft hover:shadow-hover;
+    @apply active:scale-95;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-cartoon-primary {
+    @apply btn-cartoon;
+    @apply bg-rainbow-blue text-white;
+    background-image: linear-gradient(180deg, #6FC3FF 0%, #4DABF7 100%);
+  }
+
+  .btn-cartoon-secondary {
+    @apply btn-cartoon;
+    @apply bg-rainbow-purple text-white;
+    background-image: linear-gradient(180deg, #E599F7 0%, #DA77F2 100%);
+  }
+
+  .btn-cartoon-warm {
+    @apply btn-cartoon;
+    @apply bg-rainbow-orange text-white;
+    background-image: linear-gradient(180deg, #FFB961 0%, #FFA94D 100%);
+  }
+
+  /* 卡通卡片 */
+  .card-cartoon {
+    @apply relative;
+    @apply bg-white rounded-3xl;
+    @apply shadow-soft;
+    @apply border-4 border-white;
+    overflow: hidden;
+  }
+
+  /* 情绪按钮 */
+  .emotion-btn {
+    @apply w-16 h-16 md:w-20 md:h-20;
+    @apply rounded-full;
+    @apply flex items-center justify-center;
+    @apply text-3xl md:text-4xl;
+    @apply transition-all duration-200;
+    @apply shadow-soft;
+    @apply hover:scale-110 hover:shadow-hover;
+    @apply active:scale-95;
+    border: 4px solid rgba(255, 255, 255, 0.8);
+  }
+
+  /* 漂浮动画 */
+  .float-animation {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  /* 云朵样式 */
+  .cloud {
+    @apply absolute bg-white rounded-full;
+    @apply opacity-90;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  }
+}
+
+/* 关键帧动画 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+/* 工具类 */
+.animate-bounce-in {
+  animation: bounce-in 0.5s var(--transition-bounce);
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* 渐变背景 */
+.bg-gradient-warm {
+  background: linear-gradient(135deg, #FFF9E6 0%, #FFE8CC 100%);
+}
+
+.bg-gradient-sky {
+  background: linear-gradient(180deg, #E0F4FF 0%, #FFF9E6 100%);
+}
+
+.bg-gradient-rainbow {
+  background: linear-gradient(135deg,
+    #FF6B6B 0%,
+    #FFA94D 20%,
+    #FFE066 40%,
+    #69DB7C 60%,
+    #4DABF7 80%,
+    #DA77F2 100%);
+}
+
+/* 彩虹边框 */
+.rainbow-border {
+  border: 4px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(90deg, #FF6B6B, #FFA94D, #FFE066, #69DB7C, #4DABF7, #DA77F2) border-box;
+  border-radius: 24px;
+}
+
+/* 隐藏但保持可访问性 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* 可滚动容器 */
+.scroll-container {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 场景容器 - 支持滚动 */
+.scene-container {
+  min-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
