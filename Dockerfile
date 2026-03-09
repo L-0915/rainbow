@@ -27,17 +27,18 @@ FROM modelscope-registry.cn-beijing.cr.aliyuncs.com/modelscope-repo/python:3.10
 
 WORKDIR /home/user/app
 
+# 升级 pip 并安装依赖（使用官方 PyPI 源）
+COPY requirements.txt ./
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
 # 复制后端代码（从 Rainbow_Helper 根目录复制）
 COPY app.py ./
 COPY main.py ./
-COPY requirements.txt ./
 COPY app/ ./app/
 
 # 复制构建好的前端静态文件
 COPY --from=frontend-builder /build/client/dist ./static/
-
-# 安装 Python 依赖
-RUN pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 暴露端口
 EXPOSE 7860
