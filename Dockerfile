@@ -19,8 +19,11 @@ FROM modelscope-registry.cn-beijing.cr.aliyuncs.com/modelscope-repo/python:3.10
 
 WORKDIR /home/user/app
 
-# 复制后端代码
-COPY backend-new/ ./
+# 复制后端代码（从 Rainbow_Helper 根目录复制）
+COPY app.py ./
+COPY main.py ./
+COPY requirements.txt ./
+COPY app/ ./app/
 
 # 复制构建好的前端静态文件
 COPY --from=frontend-builder /build/client/dist ./static/
