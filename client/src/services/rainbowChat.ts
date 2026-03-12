@@ -25,21 +25,34 @@ export const sendChatMessage = async (
   messages: ChatMessage[]
 ): Promise<RainbowChatResponse> => {
   try {
+    // 确保消息格式正确
+    const formattedMessages = messages.map(msg => ({
+      role: msg.role,
+      content: msg.content,
+    }));
+
+    console.log('🌈 发送消息:', formattedMessages);
+
     const response = await fetch(`${API_BASE_URL}/api/rainbow-chat/rainbow-chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        messages,
+        messages: formattedMessages,
       }),
     });
 
+    console.log('📡 响应状态:', response.status);
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error('❌ 响应错误:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
     }
 
     const data = await response.json();
+    console.log('✅ 响应数据:', data);
 
     // 后端直接返回 {reply: "..."}
     return {
