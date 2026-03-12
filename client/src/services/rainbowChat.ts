@@ -41,13 +41,10 @@ export const sendChatMessage = async (
 
     const data = await response.json();
 
-    if (data.code !== 0) {
-      throw new Error(data.message || 'API 请求失败');
-    }
-
+    // 后端直接返回 {reply: "..."}
     return {
       success: true,
-      content: data.data?.reply,
+      content: data.reply,
     };
   } catch (error) {
     console.error('彩虹聊天 API 调用失败:', error);
@@ -71,8 +68,9 @@ export const getGreeting = async (): Promise<string> => {
 
     const data = await response.json();
 
-    if (data.code === 0 && data.data?.greeting) {
-      return data.data.greeting;
+    // 后端直接返回 {greeting: "..."}
+    if (data.greeting) {
+      return data.greeting;
     }
   } catch (error) {
     console.error('获取问候语失败:', error);

@@ -86,7 +86,7 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
           ...prev,
           {
             role: 'assistant',
-            content: '哎呀，小彩虹好像有点累了～ 🌈 你能再说一次吗？💕',
+            content: '你好呀，我是你的小彩虹，我会为你提供情感支持、答疑解惑等等，陪你聊天，有什么我可以帮助你的吗？任何问题都可以哦！💕',
           },
         ]);
       }
