@@ -20,9 +20,9 @@ const GAMES: {
   },
   {
     id: 'fall-catch',
-    name: '坠落与接住',
-    emoji: '🪂',
-    description: '谁会在下面接住你？',
+    name: '彩虹接接乐',
+    emoji: '🌈',
+    description: '接住满满的美好事物！',
     gradient: 'linear-gradient(135deg, #4DABF7 0%, #74C0FC 100%)',
     colors: ['#4DABF7', '#74C0FC', '#91D5F8'],
   },
@@ -86,10 +86,10 @@ export const PlaygroundScene = memo(() => {
         <div className="absolute inset-0 bg-gradient-to-br from-purple-300 via-pink-200 to-yellow-100" />
 
         {/* 顶部导航 */}
-        <div className="absolute top-4 left-4 z-50">
+        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-50">
           <motion.button
             onClick={() => navigateTo('home')}
-            className="bg-white/80 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60"
+            className="bg-white/80 backdrop-blur-xl px-3 py-2 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60 text-sm sm:text-base"
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -98,9 +98,9 @@ export const PlaygroundScene = memo(() => {
         </div>
 
         {/* 入口图片容器 */}
-        <div className="relative z-10 flex items-center justify-center min-h-screen">
+        <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-20">
           <motion.div
-            className="relative"
+            className="relative w-full max-w-md"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -109,21 +109,20 @@ export const PlaygroundScene = memo(() => {
             <motion.img
               src="/游乐场入口.png"
               alt="游乐场入口"
-              className="relative rounded-3xl shadow-2xl max-w-full max-h-[80vh] object-contain border-8 border-white/80"
-              style={{ maxHeight: '80vh' }}
+              className="relative rounded-2xl sm:rounded-3xl shadow-2xl w-full object-contain border-4 sm:border-8 border-white/80"
               whileHover={{ scale: 1.02 }}
             />
 
             {/* 进入按钮 */}
             <motion.div
-              className="absolute -bottom-24 left-1/2 -translate-x-1/2"
+              className="absolute -bottom-16 sm:-bottom-24 left-1/2 -translate-x-1/2 w-full px-4"
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
               <motion.button
                 onClick={handleEnterPlayground}
-                className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 text-white font-black text-2xl py-5 px-16 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-3"
+                className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 text-white font-black text-lg sm:text-2xl py-3 px-8 sm:py-5 sm:px-16 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-2 sm:gap-3 justify-center w-full"
                 whileHover={{ scale: 1.1, y: -5 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -159,62 +158,62 @@ export const PlaygroundScene = memo(() => {
       </div>
 
       {/* 顶部导航栏 */}
-      <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between">
+      <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-50 flex items-center justify-between gap-2">
         <motion.button
           onClick={handleBackToEntrance}
-          className="bg-white/80 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60"
+          className="bg-white/80 backdrop-blur-xl px-2 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60 text-xs sm:text-base whitespace-nowrap"
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
         >
-          ← 返回入口
+          ← 返回
         </motion.button>
 
-        <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 backdrop-blur-xl px-6 py-3 rounded-full shadow-2xl border-4 border-white/60">
-          <span className="text-xl font-black text-white drop-shadow-lg">🎡 游乐场</span>
+        <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 backdrop-blur-xl px-3 py-1.5 sm:px-6 sm:py-3 rounded-full shadow-2xl border-4 border-white/60">
+          <span className="text-base sm:text-xl font-black text-white drop-shadow-lg">🎡 游乐场</span>
         </div>
 
-        <div className="w-24" />
+        <div className="w-8 sm:w-24" />
       </div>
 
       {/* 主内容区域 */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-20">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-16 sm:py-20">
         {/* 欢迎标题 - 静态 */}
-        <div className="mb-8 text-center">
-          <div className="text-6xl md:text-8xl mb-4">🎪</div>
-          <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 drop-shadow-lg">
+        <div className="mb-6 sm:mb-8 text-center">
+          <div className="text-5xl sm:text-6xl md:text-8xl mb-2 sm:mb-4">🎪</div>
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 drop-shadow-lg px-4">
             欢迎来到游乐场！
           </h1>
-          <p className="text-lg md:text-xl font-bold text-purple-700 mt-2 bg-white/60 backdrop-blur-sm rounded-full px-6 py-2 inline-block">
+          <p className="text-base sm:text-lg md:text-xl font-bold text-purple-700 mt-2 sm:mt-3 bg-white/60 backdrop-blur-sm rounded-full px-4 sm:px-6 py-2 inline-block max-w-full">
             今天想玩什么呢？✨
           </p>
         </div>
 
         {/* 游戏卡片网格 */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-3xl">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full max-w-2xl px-2">
           {GAMES.map((game) => (
             <motion.div
               key={game.id}
-              className="cursor-pointer rounded-3xl p-4 text-center shadow-xl border-4 border-white/60 overflow-hidden relative h-44 flex flex-col items-center justify-center"
+              className="cursor-pointer rounded-2xl sm:rounded-3xl p-3 sm:p-4 text-center shadow-xl border-4 border-white/60 overflow-hidden relative h-36 sm:h-44 flex flex-col items-center justify-center"
               style={{ background: game.gradient }}
               onClick={() => handleGameSelect(game.id)}
-              whileHover={{ scale: 1.08, y: -8 }}
+              whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
             >
               {/* 光晕效果 */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
 
               {/* Emoji 图标 */}
-              <div className="text-6xl mb-2 relative z-10">
+              <div className="text-4xl sm:text-5xl md:text-6xl mb-1 sm:mb-2 relative z-10">
                 {game.emoji}
               </div>
 
               {/* 游戏名称 */}
-              <h3 className="text-white font-extrabold text-lg drop-shadow-lg relative z-10">
+              <h3 className="text-white font-extrabold text-sm sm:text-lg drop-shadow-lg relative z-10 line-clamp-2 px-1">
                 {game.name}
               </h3>
 
               {/* 游戏描述 */}
-              <p className="text-white/95 text-sm mt-1 font-bold relative z-10">
+              <p className="text-white/95 text-xs sm:text-sm mt-0.5 sm:mt-1 font-bold relative z-10 line-clamp-2">
                 {game.description}
               </p>
             </motion.div>
@@ -222,8 +221,8 @@ export const PlaygroundScene = memo(() => {
         </div>
 
         {/* 底部提示 */}
-        <div className="mt-8 text-center">
-          <p className="text-white font-black text-lg bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 rounded-full px-8 py-3 inline-block shadow-xl">
+        <div className="mt-6 sm:mt-8 text-center px-4">
+          <p className="text-white font-black text-sm sm:text-lg bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 rounded-full px-4 sm:px-8 py-2 sm:py-3 inline-block shadow-xl max-w-full">
             ✨ 点击任意游戏开始冒险吧！ ✨
           </p>
         </div>

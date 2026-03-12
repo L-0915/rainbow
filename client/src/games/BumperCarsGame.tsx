@@ -20,10 +20,10 @@ import { useAppStore } from '@/store/appStore';
 
 // 心率区间定义
 const HEART_RATE_ZONES = {
-  rest: { min: 0, max: 60, name: '静息', color: '#4DABF7', ability: '冷静' },
-  warm: { min: 60, max: 85, name: '放松', color: '#69DB7C', ability: '平衡' },
-  active: { min: 85, max: 115, name: '活跃', color: '#FFA94D', ability: '加速' },
-  peak: { min: 115, max: 200, name: '巅峰', color: '#FF6B6B', ability: '爆发' },
+  rest: { id: 'rest', min: 0, max: 60, name: '静息', color: '#4DABF7', ability: '冷静' },
+  warm: { id: 'warm', min: 60, max: 85, name: '放松', color: '#69DB7C', ability: '平衡' },
+  active: { id: 'active', min: 85, max: 115, name: '活跃', color: '#FFA94D', ability: '加速' },
+  peak: { id: 'peak', min: 115, max: 200, name: '巅峰', color: '#FF6B6B', ability: '爆发' },
 };
 
 // 能量节点类型
@@ -392,6 +392,7 @@ export const BumperCarsGame = () => {
         const hrvBonus = hrv / 100;
 
         return {
+          ...prev,
           pos: { x: newX, y: newY },
           vel: newVel,
           energy: Math.min(prev.maxEnergy, prev.energy + 0.1 * hrvBonus),
@@ -1205,10 +1206,10 @@ export const BumperCarsGame = () => {
                 >
                   {/* 形状标识 */}
                   <svg viewBox="0 0 24 24" className="w-full h-full p-1" fill="white">
-                    {node.type === 'circle' && <circle cx="12" cy="12" r="8" />}
-                    {node.type === 'square' && <rect x="6" y="6" width="12" height="12" />}
-                    {node.type === 'triangle' && <polygon points="12,4 20,18 4,18" />}
-                    {node.type === 'diamond' && <polygon points="12,4 18,12 12,20 6,12" />}
+                    {nodeType?.shape === 'circle' && <circle cx="12" cy="12" r="8" />}
+                    {nodeType?.shape === 'square' && <rect x="6" y="6" width="12" height="12" />}
+                    {nodeType?.shape === 'triangle' && <polygon points="12,4 20,18 4,18" />}
+                    {nodeType?.shape === 'diamond' && <polygon points="12,4 18,12 12,20 6,12" />}
                   </svg>
                 </div>
                 {/* 满能量 glow 效果 */}

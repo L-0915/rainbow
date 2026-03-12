@@ -1,0 +1,34 @@
+[Unit]
+Description=Rainbow Helper Backend Service - 彩虹创口贴后端服务
+Documentation=https://github.com/rainbow-helper
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/rainbow-helper
+Environment="PATH=/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin"
+Environment="PYTHONUNBUFFERED=1"
+Environment="PYTHONIOENCODING=UTF-8"
+ExecStart=/usr/bin/python3 /opt/rainbow-helper/app.py
+Restart=always
+RestartSec=10
+StartLimitBurst=5
+StartLimitInterval=60
+
+# 资源限制
+LimitNOFILE=65535
+Nice=10
+
+# 日志配置
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=rainbow-helper
+
+# 安全配置
+NoNewPrivileges=false
+PrivateTmp=false
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type SceneType = 'login' | 'map' | 'home' | 'grass' | 'playground' | 'parent-dashboard';
+export type SceneType = 'login' | 'map' | 'home' | 'grass' | 'playground' | 'parent-dashboard' | 'emotion-diary';
 
 export type PlaygroundGame =
   | 'roller-coaster'   // 心跳过山车

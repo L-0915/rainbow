@@ -182,13 +182,13 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
         ))}
 
         {/* 返回按钮 */}
-        <div className="absolute top-4 left-4 z-50">
+        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-50">
           <motion.button
             onClick={() => {
               setShowBindDialog(false);
               setIsRebind(false);
             }}
-            className="bg-white/30 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-bold text-white border-2 border-white/40"
+            className="bg-white/30 backdrop-blur-xl px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-bold text-white border-2 border-white/40 text-xs sm:text-base"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -197,25 +197,25 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
         </div>
 
         {/* 绑定表单 */}
-        <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+        <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-8">
           <motion.div
-            className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border-4 border-white/60 max-w-md w-full"
+            className="bg-white/90 backdrop-blur-xl rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-4 border-white/60 max-w-xs sm:max-w-md w-full"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >
             {/* 标题 */}
-            <div className="text-center mb-8">
+            <div className="text-center mb-4 sm:mb-8">
               <motion.div
-                className="text-6xl mb-4"
+                className="text-4xl sm:text-6xl mb-2 sm:mb-4"
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 ⌚
               </motion.div>
-              <h1 className="text-2xl font-black text-gray-700">
+              <h1 className="text-lg sm:text-2xl font-black text-gray-700">
                 {isRebind ? '更换家长手表' : '绑定家长手表'}
               </h1>
-              <p className="text-gray-500 text-sm mt-2">
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 sm:mt-2">
                 {isRebind ? '输入新的家长手表信息进行绑定' : '输入家长智能手表的 ID 进行绑定'}
               </p>
             </div>
@@ -223,41 +223,41 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
             {/* 错误提示 */}
             {error && (
               <motion.div
-                className="bg-red-100 border-2 border-red-300 rounded-2xl p-4 mb-6"
+                className="bg-red-100 border-2 border-red-300 rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
               >
-                <p className="text-red-600 text-sm font-bold">{error}</p>
+                <p className="text-red-600 text-xs sm:text-sm font-bold">{error}</p>
               </motion.div>
             )}
 
             {/* 表单 */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1 sm:mb-2">
                   家长称呼
                 </label>
                 <input
                   type="text"
                   value={parentName}
                   onChange={(e) => setParentName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-full border-2 border-gray-200 focus:border-purple-400 focus:outline-none"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-full border-2 border-gray-200 focus:border-purple-400 focus:outline-none text-sm sm:text-base"
                   placeholder="请输入您的称呼（如：妈妈）"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-xs sm:text-sm font-bold text-gray-700 mb-1 sm:mb-2">
                   家长手表 ID
                 </label>
                 <input
                   type="text"
                   value={watchId}
                   onChange={(e) => setWatchId(e.target.value)}
-                  className="w-full px-4 py-3 rounded-full border-2 border-gray-200 focus:border-purple-400 focus:outline-none"
+                  className="w-full px-3 py-2 sm:px-4 sm:py-3 rounded-full border-2 border-gray-200 focus:border-purple-400 focus:outline-none text-sm sm:text-base"
                   placeholder="请输入手表背面的 ID"
                 />
-                <p className="text-xs text-gray-500 mt-2 ml-2">
+                <p className="text-xs text-gray-500 mt-1 sm:mt-2 ml-1 sm:ml-2">
                   💡 手表 ID 通常在手表背面或设置 - 关于中查看
                 </p>
               </div>
@@ -265,7 +265,7 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
               <motion.button
                 onClick={handleBindWatch}
                 disabled={loading || !watchId.trim() || !parentName.trim()}
-                className="w-full bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-white font-black text-xl py-4 rounded-full shadow-xl disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-white font-black text-base sm:text-xl py-3 sm:py-4 rounded-full shadow-xl disabled:opacity-50"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -310,10 +310,10 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
         ))}
 
         {/* 顶部栏 */}
-        <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between">
+        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-50 flex items-center justify-between gap-2">
           <motion.button
             onClick={onBack}
-            className="bg-white/30 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-bold text-white border-2 border-white/40"
+            className="bg-white/30 backdrop-blur-xl px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-bold text-white border-2 border-white/40 text-xs sm:text-base"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -321,7 +321,7 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
           </motion.button>
           <motion.button
             onClick={handleUnbind}
-            className="bg-red-100/50 backdrop-blur-xl px-4 py-2 rounded-full shadow-xl font-bold text-red-600 border-2 border-red-300/60 text-sm"
+            className="bg-red-100/50 backdrop-blur-xl px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-xl font-bold text-red-600 border-2 border-red-300/60 text-xs sm:text-sm"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -330,63 +330,63 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
         </div>
 
         {/* 内容 */}
-        <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+        <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-8">
           <motion.div
-            className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border-4 border-white/60 max-w-md w-full"
+            className="bg-white/90 backdrop-blur-xl rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-4 border-white/60 max-w-xs sm:max-w-md w-full"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >
             {/* 成功状态 */}
-            <div className="text-center mb-8">
+            <div className="text-center mb-4 sm:mb-8">
               <motion.div
-                className="text-6xl mb-4"
+                className="text-4xl sm:text-6xl mb-2 sm:mb-4"
                 animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 ✅
               </motion.div>
-              <h1 className="text-2xl font-black text-gray-700">已绑定家长手表</h1>
-              <p className="text-gray-500 text-sm mt-2">
+              <h1 className="text-lg sm:text-2xl font-black text-gray-700">已绑定家长手表</h1>
+              <p className="text-gray-500 text-xs sm:text-sm mt-1 sm:mt-2">
                 家长可以随时查看你的情绪日记和漂流瓶了
               </p>
             </div>
 
             {/* 绑定信息 */}
-            <div className="bg-gradient-to-r from-indigo-100 to-purple-100 rounded-2xl p-6 mb-6 border-2 border-white/60">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-3xl">
+            <div className="bg-gradient-to-r from-indigo-100 to-purple-100 rounded-2xl p-3 sm:p-6 mb-3 sm:mb-6 border-2 border-white/60">
+              <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-2xl sm:text-3xl">
                   👨‍👩‍👧
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm text-gray-500 font-bold">家长</div>
-                  <div className="text-xl font-black text-gray-700">{watchBinding.parent_name || '家长'}</div>
+                  <div className="text-xs sm:text-sm text-gray-500 font-bold">家长</div>
+                  <div className="text-base sm:text-xl font-black text-gray-700">{watchBinding.parent_name || '家长'}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center text-2xl">
+              <div className="flex items-center gap-2 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/60 flex items-center justify-center text-xl sm:text-2xl">
                   ⌚
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm text-gray-500 font-bold">手表 ID</div>
-                  <div className="text-lg font-bold text-gray-700">{watchBinding.watch_id}</div>
+                  <div className="text-xs sm:text-sm text-gray-500 font-bold">手表 ID</div>
+                  <div className="text-sm sm:text-lg font-bold text-gray-700">{watchBinding.watch_id}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-4 mt-4 pt-4 border-t-2 border-white/40">
-                <div className="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center text-2xl">
+              <div className="flex items-center gap-2 sm:gap-4 mt-2 sm:mt-4 pt-2 sm:pt-4 border-t-2 border-white/40">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-pink-100 flex items-center justify-center text-xl sm:text-2xl">
                   👧
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm text-gray-500 font-bold">孩子昵称</div>
-                  <div className="text-lg font-black text-gray-700">{watchBinding.child_nickname}</div>
+                  <div className="text-xs sm:text-sm text-gray-500 font-bold">孩子昵称</div>
+                  <div className="text-sm sm:text-lg font-black text-gray-700">{watchBinding.child_nickname}</div>
                 </div>
               </div>
             </div>
 
             {/* 操作按钮 */}
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <motion.button
                 onClick={() => openBindDialog(true)}
-                className="w-full bg-gradient-to-r from-orange-400 to-amber-400 text-white font-black text-lg py-4 rounded-full shadow-xl"
+                className="w-full bg-gradient-to-r from-orange-400 to-amber-400 text-white font-black text-sm sm:text-lg py-2 sm:py-4 rounded-full shadow-xl"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -394,7 +394,7 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
               </motion.button>
               <motion.button
                 onClick={onBack}
-                className="w-full bg-white/60 text-gray-700 font-bold text-lg py-4 rounded-full shadow-xl border-2 border-white/40"
+                className="w-full bg-white/60 text-gray-700 font-bold text-sm sm:text-lg py-2 sm:py-4 rounded-full shadow-xl border-2 border-white/40"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
@@ -438,10 +438,10 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
       ))}
 
       {/* 返回按钮 */}
-      <div className="absolute top-4 left-4 z-50">
+      <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-50">
         <motion.button
           onClick={onBack}
-          className="bg-white/30 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-bold text-white border-2 border-white/40"
+          className="bg-white/30 backdrop-blur-xl px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-bold text-white border-2 border-white/40 text-xs sm:text-base"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -450,47 +450,47 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
       </div>
 
       {/* 引导内容 */}
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-8">
         <motion.div
-          className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border-4 border-white/60 max-w-md w-full"
+          className="bg-white/90 backdrop-blur-xl rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-4 border-white/60 max-w-xs sm:max-w-md w-full"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
         >
           {/* 标题 */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-4 sm:mb-8">
             <motion.div
-              className="text-6xl mb-4"
+              className="text-4xl sm:text-6xl mb-2 sm:mb-4"
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               ⌚
             </motion.div>
-            <h1 className="text-2xl font-black text-gray-700">绑定家长手表</h1>
-            <p className="text-gray-500 text-sm mt-2">
+            <h1 className="text-lg sm:text-2xl font-black text-gray-700">绑定家长手表</h1>
+            <p className="text-gray-500 text-xs sm:text-sm mt-1 sm:mt-2">
               让家长通过智能手表连接，关心你的成长
             </p>
           </div>
 
           {/* 功能说明 */}
-          <div className="space-y-4 mb-8">
-            <div className="flex items-center gap-3 bg-blue-50 rounded-2xl p-4">
-              <div className="text-3xl">📊</div>
+          <div className="space-y-2 sm:space-y-4 mb-4 sm:mb-8">
+            <div className="flex items-center gap-2 sm:gap-3 bg-blue-50 rounded-xl sm:rounded-2xl p-2 sm:p-4">
+              <div className="text-2xl sm:text-3xl">📊</div>
               <div>
-                <div className="font-bold text-gray-700">家长可以查看</div>
+                <div className="font-bold text-gray-700 text-xs sm:text-sm">家长可以查看</div>
                 <div className="text-xs text-gray-500">你的情绪日记，了解你的心情变化</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-purple-50 rounded-2xl p-4">
-              <div className="text-3xl">🍾</div>
+            <div className="flex items-center gap-2 sm:gap-3 bg-purple-50 rounded-xl sm:rounded-2xl p-2 sm:p-4">
+              <div className="text-2xl sm:text-3xl">🍾</div>
               <div>
-                <div className="font-bold text-gray-700">查看漂流瓶</div>
+                <div className="font-bold text-gray-700 text-xs sm:text-sm">查看漂流瓶</div>
                 <div className="text-xs text-gray-500">倾听你的心声和想法</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-pink-50 rounded-2xl p-4">
-              <div className="text-3xl">💕</div>
+            <div className="flex items-center gap-2 sm:gap-3 bg-pink-50 rounded-xl sm:rounded-2xl p-2 sm:p-4">
+              <div className="text-2xl sm:text-3xl">💕</div>
               <div>
-                <div className="font-bold text-gray-700">更懂你</div>
+                <div className="font-bold text-gray-700 text-xs sm:text-sm">更懂你</div>
                 <div className="text-xs text-gray-500">更好地陪伴你健康成长</div>
               </div>
             </div>
@@ -499,7 +499,7 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
           {/* 绑定按钮 */}
           <motion.button
             onClick={() => openBindDialog(false)}
-            className="w-full bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-white font-black text-xl py-4 rounded-full shadow-xl"
+            className="w-full bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-white font-black text-base sm:text-xl py-3 sm:py-4 rounded-full shadow-xl"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -507,7 +507,7 @@ export const ParentWatchScene = memo(({ onBack }: ParentWatchSceneProps) => {
           </motion.button>
 
           {/* 提示 */}
-          <p className="text-center text-xs text-gray-400 mt-4">
+          <p className="text-center text-xs text-gray-400 mt-2 sm:mt-4">
             💡 手表 ID 可在手表背面或设置中找到
           </p>
         </motion.div>

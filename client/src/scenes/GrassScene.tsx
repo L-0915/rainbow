@@ -170,14 +170,14 @@ export const GrassScene = memo(() => {
 
       {/* 顶部标题栏 - 固定在顶部 */}
       <motion.div
-        className="fixed top-4 left-4 right-4 z-50 flex items-center justify-between"
+        className="fixed top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-50 flex items-center justify-between"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
         <motion.button
           onClick={() => navigateTo('home')}
-          className="bg-white/80 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60"
+          className="bg-white/80 backdrop-blur-xl px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60 text-xs sm:text-base"
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -185,22 +185,22 @@ export const GrassScene = memo(() => {
         </motion.button>
 
         <motion.div
-          className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 backdrop-blur-xl px-6 py-3 rounded-full shadow-2xl border-4 border-white/60"
+          className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 backdrop-blur-xl px-3 py-1.5 sm:px-6 sm:py-3 rounded-full shadow-2xl border-4 border-white/60"
           animate={{
             scale: [1, 1.05, 1],
             boxShadow: ['0 0 20px rgba(100,255,100,0.5)', '0 0 40px rgba(100,255,100,0.8)', '0 0 20px rgba(100,255,100,0.5)'],
           }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <span className="text-xl font-black text-white drop-shadow-lg">🌿 情绪草地</span>
+          <span className="text-sm sm:text-xl font-black text-white drop-shadow-lg">🌿 情绪草地</span>
         </motion.div>
 
         {/* 占位，保持标题居中 */}
-        <div className="w-24" />
+        <div className="w-16 sm:w-24" />
       </motion.div>
 
       {/* ========== 天空区域 - 治愈云朵 ========== */}
-      <div className="relative z-20 h-72 md:h-80 pt-20">
+      <div className="relative z-20 h-48 sm:h-56 md:h-64 lg:h-72 pt-12 sm:pt-16 md:pt-20">
         {CLOUDS.map((cloud, index) => (
           <motion.div
             key={cloud.name}
@@ -220,7 +220,7 @@ export const GrassScene = memo(() => {
             <div>
               {/* 发光效果 - 静态 */}
               <div
-                className="absolute inset-0 rounded-full blur-2xl opacity-40"
+                className="absolute inset-0 rounded-full blur-xl sm:blur-2xl opacity-40"
                 style={{ background: cloud.glow }}
               />
 
@@ -228,7 +228,7 @@ export const GrassScene = memo(() => {
               <div className="relative">
                 {/* 主云体 */}
                 <div
-                  className="w-24 h-14 rounded-full relative shadow-lg"
+                  className="w-16 h-10 sm:w-20 sm:h-12 md:w-24 md:h-14 rounded-full relative shadow-lg"
                   style={{
                     background: cloud.gradient,
                     boxShadow: `0 8px 32px ${cloud.glow}, inset 0 -4px 8px rgba(255,255,255,0.3)`,
@@ -236,33 +236,33 @@ export const GrassScene = memo(() => {
                 >
                   {/* 顶部小云团 - 静态 */}
                   <div
-                    className="absolute -top-6 left-4 w-12 h-12 rounded-full"
+                    className="absolute -top-4 sm:-top-6 left-2 sm:left-4 w-8 sm:w-12 h-8 sm:h-12 rounded-full"
                     style={{ background: cloud.gradient }}
                   />
                   <div
-                    className="absolute -top-5 right-5 w-10 h-10 rounded-full"
+                    className="absolute -top-3 sm:-top-5 right-3 sm:right-5 w-6 sm:w-10 h-6 sm:h-10 rounded-full"
                     style={{ background: cloud.gradient }}
                   />
                   <div
-                    className="absolute -top-4 left-1/2 -translate-x-1/2 w-9 h-9 rounded-full"
+                    className="absolute -top-2 sm:-top-4 left-1/2 -translate-x-1/2 w-5 sm:w-9 h-5 sm:h-9 rounded-full"
                     style={{ background: cloud.gradient }}
                   />
 
                   {/* Emoji - 温暖笑脸 - 静态 */}
-                  <div className="absolute top-5 left-1/2 -translate-x-1/2 text-2xl">
+                  <div className="absolute top-2 sm:top-5 left-1/2 -translate-x-1/2 text-lg sm:text-2xl">
                     {cloud.emoji}
                   </div>
 
                   {/* 已点击标记 - 小星星 */}
                   {revealedClouds.includes(index) && (
-                    <div className="absolute -top-1 -right-1 text-lg">
+                    <div className="absolute -top-0 sm:-top-1 -right-0 sm:-right-1 text-sm sm:text-lg">
                       ⭐
                     </div>
                   )}
                 </div>
 
                 {/* 云朵名称标签 - 静态 */}
-                <div className="mt-1 bg-white/70 backdrop-blur-sm rounded-full px-2 py-0.5 shadow-md">
+                <div className="mt-0.5 sm:mt-1 bg-white/70 backdrop-blur-sm rounded-full px-1.5 sm:px-2 py-0.5 shadow-md">
                   <span className="text-xs font-bold text-gray-600">☁️</span>
                 </div>
               </div>
@@ -286,7 +286,7 @@ export const GrassScene = memo(() => {
 
             {/* 弹窗内容 */}
             <motion.div
-              className="relative bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl border-4 border-white/80"
+              className="relative bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 rounded-[2.5rem] p-4 sm:p-6 md:p-8 max-w-sm w-full shadow-2xl border-4 border-white/80"
               initial={{ scale: 0.5, y: 100, rotate: -10 }}
               animate={{ scale: 1, y: 0, rotate: 0 }}
               exit={{ scale: 0.5, y: 100, rotate: 10 }}
@@ -294,31 +294,31 @@ export const GrassScene = memo(() => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* 顶部装饰 - 彩虹 - 静态 */}
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-6xl">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-4xl sm:text-6xl">
                 🌈
               </div>
 
               {/* 云朵 emoji - 静态 */}
-              <div className="text-8xl text-center mb-4 mt-4">
+              <div className="text-6xl sm:text-8xl text-center mb-3 sm:mb-4 mt-4">
                 {selectedCloud.emoji}
               </div>
 
               {/* 温暖消息 */}
               <motion.div
-                className="bg-white/70 backdrop-blur-xl rounded-3xl p-6 mb-6 border-2 border-white/60"
+                className="bg-white/70 backdrop-blur-xl rounded-3xl p-4 sm:p-6 mb-4 sm:mb-6 border-2 border-white/60"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                <p className="text-gray-700 text-lg font-bold text-center leading-relaxed">
+                <p className="text-gray-700 text-base sm:text-lg font-bold text-center leading-relaxed">
                   {selectedCloud.message}
                 </p>
               </motion.div>
 
               {/* 装饰元素 - 性能优化：简化动画 */}
-              <div className="flex justify-center gap-3 mb-4">
+              <div className="flex justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
                 {['💖', '✨', '🌸'].map((emoji, i) => (
-                  <div key={i} className="text-2xl">
+                  <div key={i} className="text-xl sm:text-2xl">
                     {emoji}
                   </div>
                 ))}
@@ -327,7 +327,7 @@ export const GrassScene = memo(() => {
               {/* 确认按钮 */}
               <motion.button
                 onClick={() => setSelectedCloud(null)}
-                className="w-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-xl py-4 px-6 rounded-full shadow-xl border-4 border-white/60"
+                className="w-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-base sm:text-xl py-3 px-4 sm:py-4 sm:px-6 rounded-full shadow-xl border-4 border-white/60"
                 whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.95 }}
                 initial={{ opacity: 0, y: 20 }}
@@ -342,9 +342,9 @@ export const GrassScene = memo(() => {
       </AnimatePresence>
 
       {/* ========== 草地区域 - 角色互动 ========== */}
-      <div className="relative z-20 flex-1 min-h-[calc(100vh-20rem)] flex flex-col items-center justify-center px-4 pb-8">
+      <div className="relative z-20 flex-1 min-h-[calc(100vh-16rem)] sm:min-h-[calc(100vh-20rem)] flex flex-col items-center justify-center px-4 pb-4 sm:pb-8">
         {/* 角色区域 */}
-        <div className="relative mb-8">
+        <div className="relative mb-4 sm:mb-8">
           <AnimatePresence mode="wait">
             {characterAction === 'stand' ? (
               <div
@@ -360,7 +360,7 @@ export const GrassScene = memo(() => {
                 <img
                   src={currentAvatarUrl}
                   alt="卡通数字人"
-                  className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
+                  className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
                 />
               </div>
             ) : characterAction === 'lie' ? (
@@ -377,7 +377,7 @@ export const GrassScene = memo(() => {
                 <img
                   src={currentAvatarUrl}
                   alt="卡通数字人"
-                  className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
+                  className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
                   style={{ transform: 'rotate(90deg)', transformOrigin: 'center center' }}
                 />
               </div>
@@ -390,7 +390,7 @@ export const GrassScene = memo(() => {
                 <img
                   src={currentAvatarUrl}
                   alt="卡通数字人"
-                  className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl animate-spin"
+                  className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl animate-spin"
                   style={{ animationDuration: '0.6s', animationIterationCount: 3 }}
                 />
               </div>
@@ -400,15 +400,15 @@ export const GrassScene = memo(() => {
           {/* 温馨提示气泡 - 性能优化：简化动画 */}
           {characterAction === 'lie' && (
             <div
-              className="absolute -top-20 left-1/2 -translate-x-1/2"
+              className="absolute -top-16 sm:-top-20 left-1/2 -translate-x-1/2"
             >
               <div
-                className="bg-white/95 backdrop-blur-xl rounded-3xl px-8 py-4 shadow-2xl border-4 border-white/60 relative"
+                className="bg-white/95 backdrop-blur-xl rounded-3xl px-6 py-2 sm:px-8 sm:py-4 shadow-2xl border-4 border-white/60 relative"
               >
                 {/* 气泡尾巴 */}
                 <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-white rotate-45 border-r-2 border-b-2 border-white/60" />
 
-                <p className="text-gray-700 text-lg font-black text-center whitespace-nowrap">
+                <p className="text-gray-700 text-base sm:text-lg font-black text-center whitespace-nowrap">
                   🌿 躺下来，感受风的温柔～ 🍃
                 </p>
               </div>
@@ -418,9 +418,9 @@ export const GrassScene = memo(() => {
 
         {/* 情绪提示 - 如果今天有记录情绪 */}
         {todayEmotion && characterAction === 'stand' && (
-          <div className="mb-6">
-            <div className="bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 shadow-xl border-4 border-white/60">
-              <p className="text-gray-700 font-bold flex items-center gap-2">
+          <div className="mb-4 sm:mb-6">
+            <div className="bg-white/80 backdrop-blur-xl rounded-full px-4 py-2 sm:px-6 sm:py-3 shadow-xl border-4 border-white/60">
+              <p className="text-gray-700 font-bold flex items-center gap-2 text-sm sm:text-base">
                 <span>今天的心情：</span>
                 <span className="font-black">
                   {todayEmotion === 'happy' && '😊 开心'}
@@ -436,43 +436,43 @@ export const GrassScene = memo(() => {
         )}
 
         {/* 操作按钮 - 性能优化：减少动画 */}
-        <div className="flex gap-4 flex-wrap justify-center">
+        <div className="flex gap-2 sm:gap-4 flex-wrap justify-center">
           {characterAction === 'stand' ? (
             <>
               <button
                 onClick={handleLieDown}
-                className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-white font-black text-lg py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-2"
+                className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-white font-black text-sm sm:text-lg py-2 px-4 sm:py-4 sm:px-8 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-1 sm:gap-2"
               >
                 <span>躺下</span>
               </button>
 
               <button
                 onClick={handleRoll}
-                className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white font-black text-lg py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-2"
+                className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white font-black text-sm sm:text-lg py-2 px-4 sm:py-4 sm:px-8 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-1 sm:gap-2"
               >
-                <span className="text-2xl">🤸</span>
+                <span className="text-xl sm:text-2xl">🤸</span>
                 <span>打滚</span>
               </button>
             </>
           ) : (
             <button
               onClick={handleStandUp}
-              className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-lg py-4 px-10 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-3"
+              className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-sm sm:text-lg py-2 px-4 sm:py-4 sm:px-10 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-2 sm:gap-3"
             >
-              <span className="text-2xl">☀️</span>
+              <span className="text-xl sm:text-2xl">☀️</span>
               <span>站起来</span>
             </button>
           )}
         </div>
 
         {/* 小提示 */}
-        <p className="mt-6 text-white/80 text-sm font-bold text-center max-w-md">
+        <p className="mt-4 sm:mt-6 text-white/80 text-xs sm:text-sm font-bold text-center max-w-xs sm:max-w-md">
           {characterAction === 'stand' ? '点击天上的云朵，收下它们的温暖祝福吧～' : '静静地躺着/打滚，感受大自然的美好～'}
         </p>
       </div>
 
       {/* ========== 底部草叶装饰 ========== */}
-      <div className="fixed bottom-0 left-0 right-0 h-28 pointer-events-none z-30">
+      <div className="fixed bottom-0 left-0 right-0 h-20 sm:h-24 md:h-28 pointer-events-none z-30">
         {/* 草叶 */}
         <svg viewBox="0 0 400 100" className="w-full h-full">
           {[...Array(30)].map((_, i) => (
@@ -493,7 +493,7 @@ export const GrassScene = memo(() => {
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={`flower-${i}`}
-            className="absolute text-3xl md:text-4xl"
+            className="absolute text-2xl sm:text-3xl md:text-4xl"
             style={{
               left: `${8 + i * 12}%`,
               bottom: `${20 + (i % 2) * 20}px`,
@@ -512,7 +512,7 @@ export const GrassScene = memo(() => {
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={`mushroom-${i}`}
-            className="absolute text-2xl"
+            className="absolute text-xl sm:text-2xl"
             style={{
               left: `${15 + i * 35}%`,
               bottom: `${10 + i * 5}px`,
@@ -532,11 +532,11 @@ export const GrassScene = memo(() => {
       <MessageBottle />
 
       {/* ========== 阳光射线效果 ========== */}
-      <div className="fixed top-0 left-0 right-0 h-64 pointer-events-none z-5 overflow-hidden">
+      <div className="fixed top-0 left-0 right-0 h-48 sm:h-56 md:h-64 pointer-events-none z-5 overflow-hidden">
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={`sunray-${i}`}
-            className="absolute w-1 h-32 bg-gradient-to-b from-yellow-200/40 to-transparent"
+            className="absolute w-1 h-24 sm:h-28 md:h-32 bg-gradient-to-b from-yellow-200/40 to-transparent"
             style={{
               left: `${15 + i * 18}%`,
               top: '-20px',

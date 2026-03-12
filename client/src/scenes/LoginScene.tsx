@@ -242,19 +242,19 @@ export const LoginScene = memo(() => {
       ))}
 
       {/* 主内容 - 完全居中 */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-12">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 py-8 sm:py-12">
 
         {/* 标题区域 - 飘逸卡通化 */}
         <motion.div
-          className="text-center mb-6"
+          className="text-center mb-4 sm:mb-6"
           initial={{ y: -60, opacity: 0, rotate: -5 }}
           animate={{ y: 0, opacity: 1, rotate: 0 }}
           transition={{ type: 'spring', bounce: 0.6, delay: 0.2 }}
         >
           {/* 彩虹创口贴 - 每个字不同颜色，更卡通 */}
-          <div className="flex justify-center items-center gap-2 mb-3">
+          <div className="flex justify-center items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
             <motion.span
-              className="text-5xl md:text-7xl font-black drop-shadow-2xl"
+              className="text-3xl sm:text-5xl md:text-7xl font-black drop-shadow-2xl"
               style={{
                 textShadow: '0 4px 20px rgba(255,107,107,0.5), 0 0 40px rgba(255,255,255,0.4), 4px 4px 0 rgba(0,0,0,0.2)',
                 fontFamily: '"Comic Sans MS", "Varela Round", cursive',
@@ -265,7 +265,7 @@ export const LoginScene = memo(() => {
               🌈
             </motion.span>
             <motion.span
-              className="text-5xl md:text-7xl font-black"
+              className="text-3xl sm:text-5xl md:text-7xl font-black"
               style={{
                 background: 'linear-gradient(180deg, #FF6B6B 0%, #FF8E8E 50%, #FFA0A0 100%)',
                 WebkitBackgroundClip: 'text',
@@ -280,7 +280,7 @@ export const LoginScene = memo(() => {
               彩
             </motion.span>
             <motion.span
-              className="text-5xl md:text-7xl font-black"
+              className="text-3xl sm:text-5xl md:text-7xl font-black"
               style={{
                 background: 'linear-gradient(180deg, #FFA94D 0%, #FFB961 50%, #FFC981 100%)',
                 WebkitBackgroundClip: 'text',
@@ -295,7 +295,7 @@ export const LoginScene = memo(() => {
               虹
             </motion.span>
             <motion.span
-              className="text-5xl md:text-7xl font-black"
+              className="text-3xl sm:text-5xl md:text-7xl font-black"
               style={{
                 background: 'linear-gradient(180deg, #FFE066 0%, #FFF080 50%, #FFFF9A 100%)',
                 WebkitBackgroundClip: 'text',
@@ -310,7 +310,7 @@ export const LoginScene = memo(() => {
               创
             </motion.span>
             <motion.span
-              className="text-5xl md:text-7xl font-black"
+              className="text-3xl sm:text-5xl md:text-7xl font-black"
               style={{
                 background: 'linear-gradient(180deg, #69DB7C 0%, #8CE99A 50%, #A3EBA0 100%)',
                 WebkitBackgroundClip: 'text',
@@ -325,7 +325,7 @@ export const LoginScene = memo(() => {
               口
             </motion.span>
             <motion.span
-              className="text-5xl md:text-7xl font-black"
+              className="text-3xl sm:text-5xl md:text-7xl font-black"
               style={{
                 background: 'linear-gradient(180deg, #4DABF7 0%, #74C0FC 50%, #90D0FC 100%)',
                 WebkitBackgroundClip: 'text',
@@ -343,7 +343,7 @@ export const LoginScene = memo(() => {
 
           {/* 副标题 - 渐变粉色 */}
           <motion.p
-            className="text-2xl md:text-3xl font-bold mt-4"
+            className="text-lg sm:text-2xl md:text-3xl font-bold mt-2 sm:mt-4"
             style={{
               background: 'linear-gradient(90deg, #FFB6C1 0%, #FF69B4 50%, #FFB6C1 100%)',
               WebkitBackgroundClip: 'text',
@@ -361,7 +361,7 @@ export const LoginScene = memo(() => {
 
         {/* 数字人图片 - 使用你提供的图片 */}
         <motion.div
-          className="mb-6 relative"
+          className="mb-4 sm:mb-6 relative"
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', bounce: 0.5, delay: 0.4 }}
@@ -374,7 +374,7 @@ export const LoginScene = memo(() => {
             key={currentAvatarUrl}
             src={currentAvatarUrl}
             alt="卡通数字人"
-            className="w-40 h-40 md:w-48 md:h-48 object-contain relative z-10 drop-shadow-2xl"
+            className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 object-contain relative z-10 drop-shadow-2xl"
             animate={{ y: [0, -10, 0], rotate: [0, 3, 0, -3, 0], scale: [1, 1.05, 1] }}
             transition={{ duration: 3, repeat: Infinity }}
             onError={(e) => {
@@ -386,12 +386,12 @@ export const LoginScene = memo(() => {
           {[...Array(4)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute text-xl"
+              className="absolute text-lg sm:text-xl"
               style={{
                 top: i % 2 === 0 ? '-10px' : undefined,
                 bottom: i % 2 === 1 ? '-10px' : undefined,
-                left: i < 2 ? '-20px' : 'auto',
-                right: i >= 2 ? '-20px' : 'auto',
+                left: i < 2 ? '-15px' : 'auto',
+                right: i >= 2 ? '-15px' : 'auto',
               }}
               animate={{ scale: [0, 1, 0], opacity: [0, 1, 0], rotate: [0, 180, 360] }}
               transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
@@ -403,12 +403,12 @@ export const LoginScene = memo(() => {
 
         {/* 登录/注册切换标签 - 完全居中 */}
         <motion.div
-          className="bg-white/20 backdrop-blur-xl rounded-full p-2 mb-6 shadow-xl border-2 border-white/30"
+          className="bg-white/20 backdrop-blur-xl rounded-full p-1.5 sm:p-2 mb-4 sm:mb-6 shadow-xl border-2 border-white/30"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="flex gap-2 justify-center">
+          <div className="flex gap-1 sm:gap-2 justify-center">
             <TabButton active={isLoginMode} onClick={() => setIsLoginMode(true)}>
               🔑 登录
             </TabButton>
@@ -421,13 +421,13 @@ export const LoginScene = memo(() => {
 
         {/* 登录表单卡片 - 居中 */}
         <motion.div
-          className="bg-white/30 backdrop-blur-xl rounded-[2rem] p-8 mb-6 shadow-2xl border-3 border-white/50 w-full max-w-md"
+          className="bg-white/30 backdrop-blur-xl rounded-[2rem] p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 shadow-2xl border-3 border-white/50 w-full max-w-md"
           initial={{ scale: 0.8, opacity: 0, y: 30 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ delay: 0.6, type: 'spring', bounce: 0.4 }}
         >
           {/* 输入框 - 完全居中 */}
-          <div className="space-y-4 mb-6 flex flex-col items-center">
+          <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6 flex flex-col items-center">
             <CartoonInput
               value={username}
               onChange={setUsername}
@@ -443,10 +443,10 @@ export const LoginScene = memo(() => {
 
           {/* 忘记密码 - 居中 */}
           {isLoginMode && (
-            <div className="text-center mb-6">
+            <div className="text-center mb-4 sm:mb-6">
               <button
                 onClick={() => setShowForgotPassword(true)}
-                className="text-white/80 hover:text-white text-sm font-bold transition-colors underline underline-offset-4"
+                className="text-white/80 hover:text-white text-xs sm:text-sm font-bold transition-colors underline underline-offset-4"
               >
                 🔍 忘记密码？
               </button>
@@ -454,7 +454,7 @@ export const LoginScene = memo(() => {
           )}
 
           {/* 登录按钮 - 居中 */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-4 sm:mb-6">
             <RainbowButton onClick={handleLogin}>
               {isLoginMode ? '🌈 登 录' : '✨ 注 册'}
             </RainbowButton>
@@ -462,12 +462,12 @@ export const LoginScene = memo(() => {
 
           {/* 第三方登录 - 居中 */}
           <div className="text-center">
-            <p className="text-white/70 text-sm font-bold mb-4">━━ 其他方式登录 ━━</p>
-            <div className="flex justify-center gap-4">
+            <p className="text-white/70 text-xs sm:text-sm font-bold mb-2 sm:mb-4">━━ 其他方式登录 ━━</p>
+            <div className="flex justify-center gap-2 sm:gap-4">
               {['微信', 'QQ', 'Apple'].map((item, i) => (
                 <motion.button
                   key={item}
-                  className="w-14 h-14 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center text-2xl hover:bg-white/60 hover:scale-125 transition-all shadow-lg border-2 border-white/50"
+                  className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full bg-white/40 backdrop-blur-sm flex items-center justify-center text-xl sm:text-2xl hover:bg-white/60 hover:scale-125 transition-all shadow-lg border-2 border-white/50"
                   whileHover={{ scale: 1.2, rotate: 10 }}
                   whileTap={{ scale: 0.9 }}
                   initial={{ opacity: 0, y: 20 }}
@@ -486,7 +486,7 @@ export const LoginScene = memo(() => {
 
         {/* 底部提示 - 居中 */}
         <motion.p
-          className="text-white/50 text-xs font-medium text-center max-w-md"
+          className="text-white/50 text-xs sm:text-xs font-medium text-center max-w-xs sm:max-w-md"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
@@ -498,7 +498,7 @@ export const LoginScene = memo(() => {
         </motion.p>
 
         {/* 占位空间 */}
-        <div className="h-8" />
+        <div className="h-4 sm:h-8" />
       </div>
 
       {/* 忘记密码弹窗 */}
@@ -521,7 +521,7 @@ export const LoginScene = memo(() => {
 
             {/* 弹窗内容 */}
             <motion.div
-              className="relative bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 rounded-3xl p-8 shadow-2xl border-4 border-white/60 max-w-md w-full"
+              className="relative bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl border-4 border-white/60 max-w-xs sm:max-w-md w-full"
               initial={{ scale: 0.5, rotate: -10, y: 50 }}
               animate={{ scale: 1, rotate: 0, y: 0 }}
               exit={{ scale: 0.5, rotate: 10, y: 50 }}
@@ -533,24 +533,24 @@ export const LoginScene = memo(() => {
                   setShowForgotPassword(false);
                   setVerifyStep('method');
                 }}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/60 hover:bg-white/80 flex items-center justify-center text-xl shadow-lg transition-all"
+                className="absolute top-2 right-2 sm:top-4 sm:right-4 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/60 hover:bg-white/80 flex items-center justify-center text-lg sm:text-xl shadow-lg transition-all"
               >
                 ✕
               </button>
 
               {/* 标题 */}
-              <div className="text-center mb-6">
+              <div className="text-center mb-4 sm:mb-6">
                 <motion.div
-                  className="text-5xl mb-3"
+                  className="text-4xl sm:text-5xl mb-2 sm:mb-3"
                   animate={{ y: [0, -5, 0], rotate: [0, 10, -10, 0] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
                   🔐
                 </motion.div>
-                <h3 className="text-2xl font-black text-gray-700 mb-2">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-black text-gray-700 mb-1 sm:mb-2">
                   找回密码
                 </h3>
-                <p className="text-gray-500 text-sm">
+                <p className="text-gray-500 text-xs sm:text-sm">
                   验证身份后设置新密码
                 </p>
               </div>
@@ -558,25 +558,25 @@ export const LoginScene = memo(() => {
               {/* 步骤 1：选择验证方式 */}
               {verifyStep === 'method' && (
                 <motion.div
-                  className="space-y-4"
+                  className="space-y-3 sm:space-y-4"
                   initial={{ x: -50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: 50, opacity: 0 }}
                 >
-                  <p className="text-center text-gray-600 font-bold mb-4">选择验证方式：</p>
+                  <p className="text-center text-gray-600 font-bold mb-2 sm:mb-4 text-sm sm:text-base">选择验证方式：</p>
                   <button
                     onClick={() => setVerifyStep('phone')}
-                    className="w-full bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold py-4 px-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
+                    className="w-full bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold py-3 px-4 sm:py-4 sm:px-6 rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-2 sm:gap-3"
                   >
-                    <span className="text-3xl">📱</span>
-                    <span>手机号验证</span>
+                    <span className="text-2xl sm:text-3xl">📱</span>
+                    <span className="text-sm sm:text-base">手机号验证</span>
                   </button>
                   <button
                     onClick={() => setVerifyStep('wechat')}
-                    className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
+                    className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 px-4 sm:py-4 sm:px-6 rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-2 sm:gap-3"
                   >
-                    <span className="text-3xl">💬</span>
-                    <span>微信验证</span>
+                    <span className="text-2xl sm:text-3xl">💬</span>
+                    <span className="text-sm sm:text-base">微信验证</span>
                   </button>
                 </motion.div>
               )}
@@ -584,25 +584,25 @@ export const LoginScene = memo(() => {
               {/* 步骤 2：手机验证 */}
               {verifyStep === 'phone' && (
                 <motion.div
-                  className="space-y-4"
+                  className="space-y-3 sm:space-y-4"
                   initial={{ x: 50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -50, opacity: 0 }}
                 >
-                  <p className="text-center text-gray-600 font-bold mb-2">输入手机号：</p>
+                  <p className="text-center text-gray-600 font-bold mb-1 sm:mb-2 text-sm sm:text-base">输入手机号：</p>
                   <CartoonInput
                     value={phone}
                     onChange={setPhone}
                     placeholder="📱 请输入手机号"
                     type="tel"
                   />
-                  <div className="flex gap-3">
+                  <div className="flex gap-2 sm:gap-3">
                     <RainbowButton onClick={() => setVerifyStep('code')}>
                       下一步
                     </RainbowButton>
                     <button
                       onClick={() => setVerifyStep('method')}
-                      className="px-6 py-3 rounded-full font-bold text-gray-600 bg-white/60 hover:bg-white/80 transition-all"
+                      className="px-3 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-gray-600 bg-white/60 hover:bg-white/80 transition-all text-sm sm:text-base"
                     >
                       返回
                     </button>
@@ -613,32 +613,32 @@ export const LoginScene = memo(() => {
               {/* 步骤 3：微信验证 */}
               {verifyStep === 'wechat' && (
                 <motion.div
-                  className="space-y-4 text-center"
+                  className="space-y-3 sm:space-y-4 text-center"
                   initial={{ x: 50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: -50, opacity: 0 }}
                 >
-                  <div className="text-6xl mb-4">💬</div>
-                  <p className="text-gray-600 font-bold">
+                  <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">💬</div>
+                  <p className="text-gray-600 font-bold text-sm sm:text-base">
                     请使用微信扫描下方二维码
                   </p>
-                  <div className="bg-white rounded-2xl p-6 shadow-xl mx-auto w-fit">
-                    <div className="w-32 h-32 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-6xl">
+                  <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl mx-auto w-fit">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center text-4xl sm:text-6xl">
                       💬
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs sm:text-sm text-gray-500">
                     扫码后在微信中确认身份
                   </p>
                   <button
                     onClick={() => setVerifyStep('code')}
-                    className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-4 px-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all"
+                    className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-bold py-3 px-4 sm:py-4 sm:px-6 rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl transition-all text-sm sm:text-base"
                   >
                     ✅ 已完成验证
                   </button>
                   <button
                     onClick={() => setVerifyStep('method')}
-                    className="w-full px-4 py-2 text-gray-600 font-bold hover:text-gray-800"
+                    className="w-full px-4 py-2 text-gray-600 font-bold hover:text-gray-800 text-sm sm:text-base"
                   >
                     返回
                   </button>
@@ -648,11 +648,11 @@ export const LoginScene = memo(() => {
               {/* 步骤 4：验证码 */}
               {verifyStep === 'code' && (
                 <motion.div
-                  className="space-y-4"
+                  className="space-y-3 sm:space-y-4"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                 >
-                  <p className="text-center text-gray-600 font-bold mb-2">
+                  <p className="text-center text-gray-600 font-bold mb-1 sm:mb-2 text-sm sm:text-base">
                     {verifyStep === 'code' && phone ? (
                       <>验证码已发送至<br /><span className="text-pink-500">{phone}</span></>
                     ) : (
@@ -662,22 +662,22 @@ export const LoginScene = memo(() => {
 
                   <CodeInput value={code} onChange={setCode} />
 
-                  <div className="text-center mt-4">
+                  <div className="text-center mt-2 sm:mt-4">
                     {countdown > 0 ? (
-                      <p className="text-gray-500 text-sm">
+                      <p className="text-gray-500 text-xs sm:text-sm">
                         {countdown}秒后重新发送
                       </p>
                     ) : (
                       <button
                         onClick={handleSendCode}
-                        className="text-pink-500 font-bold text-sm hover:text-pink-600"
+                        className="text-pink-500 font-bold text-xs sm:text-sm hover:text-pink-600"
                       >
                         📩 重新发送验证码
                       </button>
                     )}
                   </div>
 
-                  <div className="flex gap-3 mt-4">
+                  <div className="flex gap-2 sm:gap-3 mt-3 sm:mt-4">
                     <RainbowButton onClick={handleVerifyCode} disabled={code.length !== 4}>
                       ✅ 验证并重置
                     </RainbowButton>
@@ -687,7 +687,7 @@ export const LoginScene = memo(() => {
                         setPhone('');
                         setCode('');
                       }}
-                      className="px-6 py-3 rounded-full font-bold text-gray-600 bg-white/60 hover:bg-white/80 transition-all"
+                      className="px-3 sm:px-6 py-2 sm:py-3 rounded-full font-bold text-gray-600 bg-white/60 hover:bg-white/80 transition-all text-sm sm:text-base"
                     >
                       返回
                     </button>

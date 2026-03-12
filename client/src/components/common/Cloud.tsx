@@ -22,15 +22,13 @@ export const Cloud = ({ size = 'md', isAnimated = true, speed = 'normal' }: Clou
   return (
     <motion.div
       className={`${sizeClasses[size]} absolute`}
+      initial={{ x: -100 }}
       animate={isAnimated ? { x: [-100, window.innerWidth + 100] } : {}}
       transition={{
         duration: durations[speed],
         repeat: Infinity,
         ease: 'linear',
         repeatType: 'loop',
-      }}
-      style={{
-        initialX: -100,
       }}
     >
       <svg viewBox="0 0 100 60" className="w-full h-full">

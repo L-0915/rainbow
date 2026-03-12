@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppStore } from '@/store/appStore';
+import { useAppStore, PlaygroundGame } from '@/store/appStore';
 import { useEmotionStore, EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
 import { useCharacterStore, AVATAR_STYLES } from '@/store/characterStore';
 import { useState, useEffect, useCallback, useMemo, memo, useRef } from 'react';
@@ -9,54 +9,123 @@ import { RainbowChatDialog } from '@/components/chat/RainbowChatDialog';
 const GPU_ACCEL = 'will-change-transform content-visibility-auto';
 const WILL_CHANGE_TRANSFORM = { willChange: 'transform' as const };
 
-// AI 回复内容
+// 情绪对应游戏配置
+const EMOTION_TO_GAME: Record<EmotionType, {
+  gameId: PlaygroundGame;
+  gameName: string;
+  gameEmoji: string;
+  buttonText: string;
+}> = {
+  happy: {
+    gameId: 'merry-go-round',
+    gameName: '慢慢转木马',
+    gameEmoji: '🎠',
+    buttonText: '去木马游戏放松一下～',
+  },
+  calm: {
+    gameId: 'shadow-house',
+    gameName: '影子小屋',
+    gameEmoji: '🏠',
+    buttonText: '去影子小屋探索一下～',
+  },
+  angry: {
+    gameId: 'bumper-cars',
+    gameName: '碰碰车',
+    gameEmoji: '🚗',
+    buttonText: '去碰碰车游戏释放一下吧～',
+  },
+  scared: {
+    gameId: 'fall-catch',
+    gameName: '坠落与接住',
+    gameEmoji: '🪂',
+    buttonText: '去接住游戏寻找支持～',
+  },
+  sad: {
+    gameId: 'paper-plane',
+    gameName: '纸飞机',
+    gameEmoji: '✈️',
+    buttonText: '去纸飞机游戏倾诉心事～',
+  },
+  excited: {
+    gameId: 'roller-coaster',
+    gameName: '过山车',
+    gameEmoji: '🎢',
+    buttonText: '去过山车游戏释放兴奋～',
+  },
+};
+
+// AI 回复内容 - 每种情绪 5 条积极鼓励的文案
 const AI_RESPONSES: Record<EmotionType, {
   title: string;
-  message: string;
+  messages: string[];
   emoji: string;
 }> = {
   happy: {
     title: '感受到你的开心',
-    message: '开心是一种美好的情绪体验～ 它让你感到轻松、愉悦，也让你身边的人感受到你的温暖。好好享受这一刻吧！',
+    messages: [
+      '开心是一种美好的情绪体验～ 它让你感到轻松、愉悦，也让你身边的人感受到你的温暖。好好享受这一刻吧！',
+      '你的笑容像阳光一样温暖！开心的时候，整个世界都在为你跳舞～ 继续保持这份美好吧！',
+      '看到你这么开心，真为你感到高兴！快乐是一种能力，你做得很棒～ 让这份喜悦一直陪伴你！',
+      '开心的你闪闪发光！记住这种感觉，它是你内心力量的源泉～ 好好珍藏这份美好吧！',
+      '快乐的情绪让你更有活力！你值得拥有所有美好的事物～ 尽情享受当下的幸福时光吧！',
+    ],
     emoji: '🎉',
   },
   calm: {
     title: '平静的心情',
-    message: '平静是一种安宁的状态～ 它让你能够静静地感受当下，观察自己的内心。这种时刻很珍贵，好好珍惜它。',
+    messages: [
+      '平静是一种安宁的状态～ 它让你能够静静地感受当下，观察自己的内心。这种时刻很珍贵，好好珍惜它。',
+      '内心的平静是一种强大的力量！它让你更清楚地看见自己～ 好好享受这份宁静吧！',
+      '平静的你很有智慧！能够静下心来感受当下，这是一种难得的能力～ 继续保持这份从容！',
+      '心如止水的你真的很棒！平静让你更有力量面对一切～ 好好珍惜这份安宁吧！',
+      '在平静中，你能听见内心的声音～ 这是一种珍贵的自我连接，好好感受它吧！',
+    ],
     emoji: '🍃',
   },
   angry: {
     title: '生气的情绪',
-    message: '生气是一种自然的情绪反应～ 它告诉你有些事情可能让你感到不舒服或不公平。允许自己有这种感受，它会在适当的时候慢慢消散。',
+    messages: [
+      '你的感受很重要！生气是在告诉你需要保护自己～ 用健康的方式释放情绪，你值得被理解！',
+      '生气是一种充满力量的情绪！它可以转化为积极的行动力～ 相信自己，你能够处理好！',
+      '你的情绪是合理的！每个人都有权利表达自己的感受～ 用适当的方式释放，你会感觉更好！',
+      '生气时的你也很可爱！记住，情绪只是暂时的～ 你内在的力量远比想象中大！',
+      '允许自己有生气的情绪！这是你内心在说话～ 倾听它，然后用爱化解它！',
+    ],
     emoji: '💪',
   },
   scared: {
     title: '害怕的感受',
-    message: '害怕是一种自我保护的情绪～ 它让你更加谨慎，也让你知道自己可能需要一些支持和陪伴。你并不孤单，慢慢来就好。',
+    messages: [
+      '害怕是很正常的感受～ 它说明你在乎，也说明你勇敢面对！你比自己想象的更强大！',
+      '即使感到害怕，你依然很勇敢！每一次面对恐惧都是一次成长～ 相信自己，你可以的！',
+      '害怕不代表软弱！它只是提醒你慢慢来～ 你值得被温柔以待，也值得拥有安全感！',
+      '你的感受被看见了！害怕时会让你更谨慎～ 这是保护自己的智慧，你做得很好！',
+      '别担心，害怕会过去的！你有足够的能力面对挑战～ 相信自己，你并不孤单！',
+    ],
     emoji: '🫂',
   },
   sad: {
     title: '难过的心情',
-    message: '难过是一种需要被看见的情绪～ 它让你慢下来，给自己一些时间和空间去处理内心的感受。这种情绪会过去的，你值得被温柔以待。',
+    messages: [
+      '你的感受很重要！难过时给自己一些时间和空间～ 你值得被温柔以待，情绪会慢慢好起来的！',
+      '难过的你也需要被爱！允许自己有这种感觉～ 它会在适当的时候慢慢消散，你值得被关怀！',
+      '你的情绪是合理的！难过是内心在寻求关怀～ 抱抱自己，你做得已经很好了！',
+      '难过的时候更要爱自己！你值得被理解和陪伴～ 相信自己，阳光总在风雨后！',
+      '你的感受被看见了！难过是一种需要被安抚的情绪～ 给自己一个拥抱，明天会更好！',
+    ],
     emoji: '💙',
   },
   excited: {
     title: '兴奋的感觉',
-    message: '兴奋是一种充满能量的情绪～ 它让你感到充满力量和期待。享受这种充满活力的感觉吧，让它带给你美好的回忆！',
+    messages: [
+      '兴奋是一种充满能量的情绪～ 它让你感到充满力量和期待。享受这种充满活力的感觉吧，让它带给你美好的回忆！',
+      '你的热情很有感染力！兴奋让你更有创造力～ 好好享受这份激动的心情吧！',
+      '兴奋的你真的很迷人！这种充满活力的感觉会带来无限可能～ 好好珍藏这份美好吧！',
+      '你的兴奋是生活的调味剂！它让每一天都变得精彩～ 继续保持这份热爱吧！',
+      '充满期待的你很棒！兴奋会带来新的机遇和可能～ 相信自己，未来会更好！',
+    ],
     emoji: '🌟',
   },
-};
-
-// 数字人表情配置
-const CHARACTER_EXPRESSIONS: Record<EmotionType, {
-  emoji: string;
-}> = {
-  happy: { emoji: '😄' },
-  calm: { emoji: '😌' },
-  angry: { emoji: '😤' },
-  scared: { emoji: '😨' },
-  sad: { emoji: '😢' },
-  excited: { emoji: '🤩' },
 };
 
 // 音效播放工具 - 优化：只在需要时创建 AudioContext
@@ -226,155 +295,61 @@ const ArrowButton = ({
 const MemoArrowButton = ArrowButton;
 export { MemoArrowButton };
 
-// 情绪图标按钮 - 保留动画，优化性能
+// 情绪图标按钮 - 简化版
 const EmotionBubble = memo(({
   emotion,
-  onClick
+  onClick,
+  isSelected,
 }: {
   emotion: EmotionType;
   onClick: (emotion: EmotionType) => void;
+  isSelected: boolean;
 }) => {
   const config = EMOTION_CONFIG[emotion];
 
-  // 性能优化：使用 useMemo 缓存动画配置
-  const shineAnimation = useMemo(() => ({ opacity: [0.3, 0.5, 0.3] }), []);
-  const emojiScaleAnimation = useMemo(() => ({ scale: [1, 1.1, 1] }), []);
-
   return (
-    <motion.button
+    <button
       onClick={() => {
         playSound('select');
         onClick(emotion);
       }}
-      className="flex flex-col items-center gap-2 p-2 md:p-3"
-      style={{ willChange: 'transform' }}
-      whileHover={{ scale: 1.15, rotate: 5 }}
-      whileTap={{ scale: 0.95 }}
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
+      className="flex flex-col items-center gap-2 p-2 md:p-3 relative"
     >
-      <motion.div
-        className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-3xl md:text-4xl shadow-xl border-4 border-white/60 relative overflow-hidden"
-        style={{ background: config.gradient, willChange: 'transform' }}
-        whileHover={{ rotate: 15 }}
-        transition={{ type: 'spring', duration: 0.3 }}
+      {/* 对号标记 */}
+      {isSelected && (
+        <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm shadow-lg z-10">
+          ✓
+        </div>
+      )}
+
+      <div
+        className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-3xl md:text-4xl shadow-xl border-4 border-white/60"
+        style={{ background: config.gradient }}
       >
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent"
-          animate={shineAnimation}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-        <motion.span
-          animate={emojiScaleAnimation}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          {config.emoji}
-        </motion.span>
-      </motion.div>
+        {config.emoji}
+      </div>
       <span className="text-xs md:text-sm font-black text-white drop-shadow-lg bg-black/20 rounded-full px-2 py-0.5">
         {config.label}
       </span>
-    </motion.button>
+    </button>
   );
 });
 EmotionBubble.displayName = 'EmotionBubble';
 
-// 数字人头顶对话气泡 - 保留动画，优化性能
-const DialogueBubble = memo(({
-  emotion,
-  onClose,
-}: {
-  emotion: EmotionType;
-  onClose: () => void;
-}) => {
-  const config = EMOTION_CONFIG[emotion];
-
-  // 性能优化：使用 useMemo 缓存动画配置
-  const floatAnimation = useMemo(() => ({ y: [0, -5, 0], rotate: [0, 2, -2, 0] }), []);
-  const emojiAnimation = useMemo(() => ({ scale: [1, 1.15, 1], rotate: [0, 8, -8, 0] }), []);
-  const starAnimations = useMemo(() => [
-    { scale: [0, 1, 0], opacity: [0, 1, 0], rotate: [0, 180, 360] },
-    { scale: [0, 1, 0], opacity: [0, 1, 0], rotate: [0, 180, 360] },
-    { scale: [0, 1, 0], opacity: [0, 1, 0], rotate: [0, 180, 360] },
-  ], []);
-
-  return (
-    <motion.div
-      className="absolute -top-40 left-1/2 -translate-x-1/2 z-30"
-      initial={{ scale: 0, opacity: 0, y: 20 }}
-      animate={{ scale: 1, opacity: 1, y: 0 }}
-      exit={{ scale: 0, opacity: 0, y: 20 }}
-      transition={{ type: 'spring', bounce: 0.6 }}
-    >
-      <div className="relative">
-        <motion.div
-          className="bg-white/90 backdrop-blur-xl rounded-3xl px-6 py-4 shadow-2xl border-4 border-white/60 min-w-[200px]"
-          animate={floatAnimation}
-          transition={{ duration: 2.5, repeat: Infinity }}
-        >
-          {/* 气泡尾巴 - 指向小人 */}
-          <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-t-[16px] border-t-white/90" />
-
-          <div className="text-center">
-            <motion.div
-              className="text-4xl mb-2"
-              animate={emojiAnimation}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              {config.emoji}
-            </motion.div>
-            <p className="text-gray-700 font-black text-sm md:text-base">
-              {config.description}
-            </p>
-            <motion.button
-              onClick={onClose}
-              className="mt-2 text-xs text-gray-500 hover:text-gray-700 font-bold underline"
-              whileHover={{ scale: 1.1 }}
-            >
-              知道了
-            </motion.button>
-          </div>
-        </motion.div>
-
-        {/* 装饰星星 - 保留动画，优化性能 */}
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-lg"
-            style={{ top: `${i * 15 - 10}px`, right: '-20px' }}
-            animate={starAnimations[i]}
-            transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
-          >
-            ⭐
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  );
-});
-DialogueBubble.displayName = 'DialogueBubble';
-
-// 情绪选择面板 - 保留动画，优化性能
+// 情绪选择面板 - 简化版
 const EmotionPanel = memo(({
   onSelect,
   onClose,
+  selectedEmotion,
 }: {
   onSelect: (emotion: EmotionType) => void;
   onClose: () => void;
+  selectedEmotion: EmotionType | null;
 }) => {
   const emotions = Object.keys(EMOTION_CONFIG) as EmotionType[];
 
-  // 性能优化：使用 useMemo 缓存动画配置
-  const titleAnimation = useMemo(() => ({ scale: [1, 1.05, 1] }), []);
-
   return (
-    <motion.div
-      className="absolute -top-48 left-1/2 -translate-x-1/2 z-30"
-      initial={{ scale: 0, opacity: 0, y: 20 }}
-      animate={{ scale: 1, opacity: 1, y: 0 }}
-      exit={{ scale: 0, opacity: 0, y: 20 }}
-      transition={{ type: 'spring', bounce: 0.5 }}
-    >
+    <div className="absolute -top-48 left-1/2 -translate-x-1/2 z-30">
       <div className="relative">
         <div className="bg-white/35 backdrop-blur-xl rounded-3xl p-4 md:p-6 shadow-2xl border-4 border-white/50">
           <button
@@ -387,38 +362,32 @@ const EmotionPanel = memo(({
           <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-white/35 rotate-45 border-r-4 border-b-4 border-white/50" />
 
           <div className="text-center mb-4">
-            <motion.p
-              className="text-white font-black text-lg md:text-xl drop-shadow-lg mb-2"
-              animate={titleAnimation}
-              transition={{ duration: 2.5, repeat: Infinity }}
-            >
+            <p className="text-white font-black text-lg md:text-xl drop-shadow-lg mb-2">
               ✨ 今天的心情是什么颜色？✨
-            </motion.p>
+            </p>
             <p className="text-white/85 text-xs md:text-sm font-bold">
               选一个吧～
             </p>
           </div>
 
           <div className="grid grid-cols-3 gap-2 md:gap-4">
-            {emotions.map((emotion, index) => (
-              <motion.div
+            {emotions.map((emotion) => (
+              <EmotionBubble
                 key={emotion}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <EmotionBubble emotion={emotion} onClick={onSelect} />
-              </motion.div>
+                emotion={emotion}
+                onClick={onSelect}
+                isSelected={selectedEmotion === emotion}
+              />
             ))}
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 });
 EmotionPanel.displayName = 'EmotionPanel';
 
-// AI 回复弹窗 - 保留动画，优化性能
+// AI 回复弹窗 - 简化版
 const AIResponseModal = memo(({
   emotion,
   onClose,
@@ -426,39 +395,40 @@ const AIResponseModal = memo(({
   emotion: EmotionType;
   onClose: () => void;
 }) => {
+  const navigateTo = useAppStore((state) => state.navigateTo);
+  const startGame = useAppStore((state) => state.startGame);
+  const setHasEnteredPlayground = useAppStore((state) => state.setHasEnteredPlayground);
+
   const response = AI_RESPONSES[emotion];
+  const gameConfig = EMOTION_TO_GAME[emotion];
+
+  // 随机选择一条消息
+  const randomMessage = useMemo(() => {
+    const randomIndex = Math.floor(Math.random() * response.messages.length);
+    return response.messages[randomIndex];
+  }, [emotion, response.messages]);
 
   useEffect(() => {
     playSound(emotion);
   }, [emotion]);
 
-  // 性能优化：使用 useMemo 缓存动画配置
-  const starAnimation = useMemo(() => ({ y: [0, -8, 0], rotate: [0, 8, -8, 0] }), []);
-  const emojiFloatAnimation = useMemo(() => ({ y: [0, -10, 0], rotate: [0, 5, -5, 0] }), []);
-  const iconAnimations = useMemo(() => [
-    { scale: [1, 1.2, 1], rotate: [0, 12, -12, 0] },
-    { scale: [1, 1.15, 1], rotate: [0, 10, -10, 0] },
-    { scale: [1, 1.25, 1], rotate: [0, 15, -15, 0] },
-    { scale: [1, 1.15, 1], rotate: [0, 10, -10, 0] },
-    { scale: [1, 1.2, 1], rotate: [0, 12, -12, 0] },
-  ], []);
+  // 跳转到对应游戏
+  const handleGoToGame = () => {
+    // 设置已进入游乐场（这样可以直接显示游戏列表）
+    setHasEnteredPlayground(true);
+    // 导航到游乐场
+    navigateTo('playground');
+    // 延迟一点启动游戏，让场景切换完成
+    setTimeout(() => {
+      startGame(gameConfig.gameId);
+    }, 300);
+  };
 
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      <motion.div
-        className="relative bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-white/60 max-w-md w-full"
-        initial={{ scale: 0.3, rotate: -10, y: 100 }}
-        animate={{ scale: 1, rotate: 0, y: 0 }}
-        exit={{ scale: 0.3, rotate: 10, y: 100 }}
-        transition={{ type: 'spring', bounce: 0.6 }}
-      >
+      <div className="relative bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-white/60 max-w-md w-full">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/60 hover:bg-white/80 flex items-center justify-center text-xl shadow-lg transition-all z-10"
@@ -466,71 +436,40 @@ const AIResponseModal = memo(({
           ✕
         </button>
 
-        {/* 顶部星星动画 - 恢复 */}
-        <div className="flex justify-center gap-2 mb-4">
-          {[...Array(3)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="text-2xl"
-              animate={starAnimation}
-              transition={{ duration: 2, repeat: Infinity, delay: i * 0.25 }}
-            >
-              ⭐
-            </motion.div>
-          ))}
-        </div>
-
         <div className="text-center mb-4">
-          <motion.div
-            className="text-6xl mb-3"
-            animate={emojiFloatAnimation}
-            transition={{ duration: 2.5, repeat: Infinity }}
-          >
+          <div className="text-6xl mb-3">
             {response.emoji}
-          </motion.div>
+          </div>
           <h3 className="text-xl md:text-2xl font-black text-gray-700 mb-2">
             {response.title}
           </h3>
         </div>
 
-        <motion.div
-          className="bg-white/60 backdrop-blur-xl rounded-2xl p-4 md:p-6 mb-6 border-2 border-white/40"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+        <div
+          className="bg-white/60 backdrop-blur-xl rounded-2xl p-4 md:p-6 mb-4 border-2 border-white/40"
         >
           <p className="text-gray-700 text-sm md:text-base leading-relaxed font-medium">
-            {response.message}
+            {randomMessage}
           </p>
-        </motion.div>
-
-        {/* 底部 emoji 动画 - 恢复 */}
-        <div className="flex justify-center gap-4 mb-4">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="text-xl"
-              animate={iconAnimations[i]}
-              transition={{ duration: 2, repeat: Infinity, delay: i * 0.12 }}
-            >
-              {['💖', '✨', '🌈', '💫', '🦋'][i]}
-            </motion.div>
-          ))}
         </div>
 
-        <motion.button
+        {/* 游戏跳转按钮 */}
+        <button
+          onClick={handleGoToGame}
+          className="w-full bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 text-white font-black text-lg py-4 px-6 rounded-full shadow-xl hover:shadow-2xl transition-all border-4 border-white/60 mb-3 flex items-center justify-center gap-2"
+        >
+          <span className="text-2xl">{gameConfig.gameEmoji}</span>
+          <span>{gameConfig.buttonText}</span>
+        </button>
+
+        <button
           onClick={onClose}
-          className="w-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-xl py-4 px-6 rounded-full shadow-xl hover:shadow-2xl transition-all border-4 border-white/60"
-          whileHover={{ scale: 1.05, y: -3 }}
-          whileTap={{ scale: 0.95 }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          className="w-full bg-gray-200 text-gray-700 font-black text-lg py-3 px-6 rounded-full shadow-xl border-4 border-white/60"
         >
           知道啦～ 💕
-        </motion.button>
-      </motion.div>
-    </motion.div>
+        </button>
+      </div>
+    </div>
   );
 });
 AIResponseModal.displayName = 'AIResponseModal';
@@ -648,8 +587,6 @@ export const HomeScene = () => {
 
   const [showPanel, setShowPanel] = useState(!todayEmotion);
   const [showAIResponse, setShowAIResponse] = useState(false);
-  const [showDialogue, setShowDialogue] = useState(false);
-  const [characterExpression, setCharacterExpression] = useState<EmotionType | null>(null);
   const [showChat, setShowChat] = useState(false);
   const [showAvatarSelector, setShowAvatarSelector] = useState(false);
   const [bgLoaded, setBgLoaded] = useState(false);
@@ -692,20 +629,13 @@ export const HomeScene = () => {
   const handleEmotionSelect = useCallback((emotion: EmotionType) => {
     playSound(emotion);
     setTodayEmotion(emotion);
-    setCharacterExpression(emotion);
     setShowPanel(false);
-    setShowDialogue(true);
-
-    setTimeout(() => {
-      setCharacterExpression(null);
-      setShowDialogue(false);
-      setShowAIResponse(true);
-    }, 2000);
+    // 直接弹出 AI 回复
+    setShowAIResponse(true);
   }, [setTodayEmotion]);
 
   const handleOpenPanel = useCallback(() => {
     setShowAIResponse(false);
-    setShowDialogue(false);
     setShowPanel(true);
   }, []);
 
@@ -725,51 +655,51 @@ export const HomeScene = () => {
       <div className="fixed inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/40" />
 
       {/* 顶部标题栏 - 保留动画，优化性能 */}
-      <div className="sticky top-0 z-20 flex items-center justify-center gap-4 p-4">
+      <div className="sticky top-0 z-20 flex items-center justify-center gap-2 sm:gap-3 md:gap-4 p-2 sm:p-3 md:p-4">
         <motion.button
           onClick={() => navigateTo('parent-dashboard')}
-          className="bg-white/80 backdrop-blur-xl px-4 py-2 rounded-full shadow-xl font-bold text-gray-700 border-2 border-white/60 flex items-center gap-1.5"
+          className="bg-white/80 backdrop-blur-xl px-2 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-xl font-bold text-gray-700 border-2 border-white/60 flex items-center gap-1 sm:gap-1.5"
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ type: 'spring', bounce: 0.5 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="text-lg">⌚</span>
-          <span className="text-sm">手表连接</span>
+          <span className="text-base sm:text-lg">⌚</span>
+          <span className="text-xs sm:text-sm">手表连接</span>
         </motion.button>
 
         <motion.div
-          className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 backdrop-blur-xl rounded-full px-8 py-3 shadow-2xl border-4 border-white/60"
+          className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 backdrop-blur-xl rounded-full px-4 py-2 sm:px-6 sm:py-3 shadow-2xl border-4 border-white/60"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: 'spring', bounce: 0.5 }}
         >
-          <motion.div className="flex items-center gap-3" animate={titleScaleAnimation} transition={{ duration: 3, repeat: Infinity }}>
-            <motion.span className="text-3xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>🏠</motion.span>
-            <span className="text-2xl font-black text-white drop-shadow-2xl">我的家园</span>
-            <motion.span className="text-3xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>✨</motion.span>
+          <motion.div className="flex items-center gap-2 sm:gap-3" animate={titleScaleAnimation} transition={{ duration: 3, repeat: Infinity }}>
+            <motion.span className="text-2xl sm:text-3xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>🏠</motion.span>
+            <span className="text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-2xl">我的家园</span>
+            <motion.span className="text-2xl sm:text-3xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>✨</motion.span>
           </motion.div>
         </motion.div>
 
         <motion.button
           onClick={() => navigateTo('map')}
-          className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 backdrop-blur-xl rounded-full p-3 shadow-2xl border-4 border-white/60"
+          className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 backdrop-blur-xl rounded-full p-2 sm:p-3 shadow-2xl border-4 border-white/60"
           initial={{ y: -50, opacity: 0, scale: 0.8 }}
           animate={{ y: 0, opacity: 1, scale: 1 }}
           transition={{ type: 'spring', bounce: 0.5, delay: 0.2 }}
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
         >
-          <motion.div className="flex items-center gap-2 px-2">
-            <motion.span className="text-2xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>🗺️</motion.span>
-            <span className="text-sm font-black text-white drop-shadow-lg whitespace-nowrap">世界地图</span>
+          <motion.div className="flex items-center gap-1 sm:gap-2 px-1 sm:px-2">
+            <motion.span className="text-xl sm:text-2xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>🗺️</motion.span>
+            <span className="text-xs sm:text-sm font-black text-white drop-shadow-lg whitespace-nowrap">世界地图</span>
           </motion.div>
         </motion.button>
       </div>
 
       {/* 主内容区域 */}
-      <div className="relative z-10 flex flex-col items-center justify-end px-4 pt-8 pb-16 min-h-[calc(100vh-80px)]">
+      <div className="relative z-10 flex flex-col items-center justify-end px-2 sm:px-4 pt-4 sm:pt-8 pb-8 sm:pb-16 min-h-[calc(100vh-60px)] sm:min-h-[calc(100vh-80px)]">
         {/* 角色区域 */}
         <motion.div
           className="relative w-full flex flex-col items-center"
@@ -782,33 +712,11 @@ export const HomeScene = () => {
             {/* 光晕背景 - 静态 */}
             <div className="absolute inset-0 bg-gradient-to-r from-pink-400/30 via-purple-400/30 to-blue-400/30 rounded-full blur-3xl scale-150" />
 
-            {/* 表情 emoji - 保留动画 */}
-            <AnimatePresence mode="wait">
-              {characterExpression && (
-                <motion.div
-                  key={characterExpression}
-                  className="absolute inset-0 flex items-center justify-center z-20"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  transition={{ type: 'spring', bounce: 0.5 }}
-                >
-                  <motion.span
-                    className="text-[7rem] md:text-[8rem] drop-shadow-2xl"
-                    animate={emojiFloatAnimation}
-                    transition={{ duration: 2.5, repeat: Infinity }}
-                  >
-                    {CHARACTER_EXPRESSIONS[characterExpression].emoji}
-                  </motion.span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             {/* 角色图片 - 保留浮动动画 */}
             <motion.img
               src={currentAvatarUrl}
               alt="卡通数字人"
-              className="w-48 h-48 md:w-56 md:h-56 object-contain drop-shadow-2xl"
+              className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 object-contain drop-shadow-2xl"
               animate={characterFloatAnimation}
               transition={{ duration: 3, repeat: Infinity, delay: 0.15 }}
               onError={(e) => {
@@ -820,12 +728,12 @@ export const HomeScene = () => {
             {[...Array(3)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute text-2xl"
+                className="absolute text-lg sm:text-xl md:text-2xl"
                 style={{
-                  top: i === 0 ? '-20px' : i === 1 ? '50%' : undefined,
-                  bottom: i === 2 ? '-20px' : undefined,
-                  left: i === 0 ? '50%' : i === 1 ? '-30px' : undefined,
-                  right: i === 1 ? undefined : i === 2 ? '-30px' : undefined,
+                  top: i === 0 ? '-15px' : i === 1 ? '50%' : undefined,
+                  bottom: i === 2 ? '-15px' : undefined,
+                  left: i === 0 ? '50%' : i === 1 ? '-20px' : undefined,
+                  right: i === 1 ? undefined : i === 2 ? '-20px' : undefined,
                 }}
                 animate={starAnimations[i]}
                 transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
@@ -836,26 +744,21 @@ export const HomeScene = () => {
           </motion.div>
 
           {/* 情绪选择面板 */}
-          <AnimatePresence>
-            {showPanel && (
-              <EmotionPanel onSelect={handleEmotionSelect} onClose={() => {
+          {showPanel && (
+            <EmotionPanel
+              onSelect={handleEmotionSelect}
+              onClose={() => {
                 setShowPanel(false);
                 setShowAIResponse(false);
-              }} />
-            )}
-          </AnimatePresence>
-
-          {/* 对话气泡 */}
-          <AnimatePresence>
-            {showDialogue && todayEmotion && (
-              <DialogueBubble emotion={todayEmotion} onClose={() => setShowDialogue(false)} />
-            )}
-          </AnimatePresence>
+              }}
+              selectedEmotion={todayEmotion}
+            />
+          )}
         </motion.div>
 
         {/* 选择心情按钮 */}
         {todayEmotion && !showPanel && !showAIResponse && (
-          <div className="flex gap-4 mb-4">
+          <div className="flex gap-2 sm:gap-4 mb-2 sm:mb-4">
             <motion.button
               onClick={(e) => {
                 e.preventDefault();
@@ -863,7 +766,7 @@ export const HomeScene = () => {
                 console.log('选择心情按钮被点击！');
                 handleOpenPanel();
               }}
-              className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 text-white font-black text-lg py-3 px-6 rounded-full shadow-xl border-4 border-white/60 relative z-40"
+              className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 text-white font-black text-sm sm:text-lg py-2 px-4 sm:py-3 sm:px-6 rounded-full shadow-xl border-4 border-white/60 relative z-40"
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, y: 20 }}
@@ -876,7 +779,7 @@ export const HomeScene = () => {
 
             <motion.button
               onClick={() => setShowAvatarSelector(true)}
-              className="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 text-white font-black text-lg py-3 px-6 rounded-full shadow-xl border-4 border-white/60 relative z-40"
+              className="bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 text-white font-black text-sm sm:text-lg py-2 px-4 sm:py-3 sm:px-6 rounded-full shadow-xl border-4 border-white/60 relative z-40"
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, y: 20 }}
@@ -891,24 +794,39 @@ export const HomeScene = () => {
         {/* 与小彩虹聊天按钮 */}
         <motion.button
           onClick={() => setShowChat(true)}
-          className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-lg py-3 px-8 rounded-full shadow-xl border-4 border-white/60 mb-4 relative z-40 flex items-center gap-2"
+          className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-sm sm:text-lg py-2 px-4 sm:py-3 sm:px-8 rounded-full shadow-xl border-4 border-white/60 mb-2 sm:mb-4 relative z-40 flex items-center gap-1 sm:gap-2"
           whileHover={{ scale: 1.08, y: -5 }}
           whileTap={{ scale: 0.95 }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <span className="text-2xl">🌈</span>
+          <span className="text-xl sm:text-2xl">🌈</span>
           <span>和小彩虹聊天</span>
-          <span className="text-2xl">💕</span>
+          <span className="text-xl sm:text-2xl">💕</span>
+        </motion.button>
+
+        {/* 查看情绪日记按钮 */}
+        <motion.button
+          onClick={() => navigateTo('emotion-diary')}
+          className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 text-white font-black text-sm sm:text-lg py-2 px-4 sm:py-3 sm:px-8 rounded-full shadow-xl border-4 border-white/60 mb-2 sm:mb-4 relative z-40 flex items-center gap-1 sm:gap-2"
+          whileHover={{ scale: 1.08, y: -5 }}
+          whileTap={{ scale: 0.95 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.75 }}
+        >
+          <span className="text-xl sm:text-2xl">📔</span>
+          <span>查看情绪日记</span>
+          <span className="text-xl sm:text-2xl">💝</span>
         </motion.button>
 
         {/* 底部装饰 - 保留花朵动画，优化性能 */}
-        <div className="flex justify-center gap-6 mt-4">
+        <div className="flex justify-center gap-3 sm:gap-6 mt-2 sm:mt-4">
           {[...Array(5)].map((_, i) => (
             <motion.div
               key={i}
-              className="text-2xl"
+              className="text-lg sm:text-xl md:text-2xl"
               animate={flowerAnimations[i]}
               transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.2 }}
             >
@@ -919,11 +837,11 @@ export const HomeScene = () => {
       </div>
 
       {/* 左右导航按钮 */}
-      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-20">
+      <div className="fixed left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 z-20">
         <MemoArrowButton direction="left" onClick={() => navigateTo('grass')}>草地</MemoArrowButton>
       </div>
 
-      <div className="fixed right-4 top-1/2 -translate-y-1/2 z-20">
+      <div className="fixed right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 z-20">
         <MemoArrowButton direction="right" onClick={() => navigateTo('playground')}>游乐场</MemoArrowButton>
       </div>
 
@@ -944,11 +862,9 @@ export const HomeScene = () => {
       </div>
 
       {/* AI 回复弹窗 */}
-      <AnimatePresence>
-        {showAIResponse && todayEmotion && (
-          <AIResponseModal emotion={todayEmotion} onClose={() => setShowAIResponse(false)} />
-        )}
-      </AnimatePresence>
+      {showAIResponse && todayEmotion && (
+        <AIResponseModal emotion={todayEmotion} onClose={() => setShowAIResponse(false)} />
+      )}
 
       {/* 与小彩虹对话弹窗 */}
       <AnimatePresence>

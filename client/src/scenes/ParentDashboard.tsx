@@ -157,20 +157,20 @@ export const ParentDashboard = memo(() => {
     return (
       <div className="relative min-h-screen w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-green-400 via-emerald-400 to-teal-400" />
-        <div className="relative z-10 flex items-center justify-center min-h-screen">
+        <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
           <motion.div
             className="text-center"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
           >
             <motion.div
-              className="text-6xl mb-4"
+              className="text-4xl sm:text-6xl mb-2 sm:mb-4"
               animate={{ rotate: [0, 360] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
             >
               ⌚
             </motion.div>
-            <p className="text-white font-bold text-xl">加载中...</p>
+            <p className="text-white font-bold text-base sm:text-xl">加载中...</p>
           </motion.div>
         </div>
       </div>
@@ -181,22 +181,22 @@ export const ParentDashboard = memo(() => {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100">
       {/* 顶部栏 */}
-      <div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between">
+      <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-50 flex items-center justify-between gap-2">
         <motion.button
           onClick={handleBack}
-          className="bg-white/80 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-bold text-gray-700 border-2 border-white/60"
+          className="bg-white/80 backdrop-blur-xl px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-bold text-gray-700 border-2 border-white/60 text-xs sm:text-base"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
           ← 返回
         </motion.button>
-        <div className="bg-white/80 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-bold text-gray-700 border-2 border-white/60 flex items-center gap-2">
-          <span>⌚</span>
-          <span>{watchBinding?.parent_name || '家长'}</span>
+        <div className="bg-white/80 backdrop-blur-xl px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-bold text-gray-700 border-2 border-white/60 flex items-center gap-1 sm:gap-2">
+          <span className="text-sm sm:text-base">⌚</span>
+          <span className="text-xs sm:text-base">{watchBinding?.parent_name || '家长'}</span>
         </div>
         <motion.button
           onClick={handleUnbind}
-          className="bg-red-100/80 backdrop-blur-xl px-4 py-2 rounded-full shadow-xl font-bold text-red-600 border-2 border-red-300/60 text-sm"
+          className="bg-red-100/80 backdrop-blur-xl px-2 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-xl font-bold text-red-600 border-2 border-red-300/60 text-xs sm:text-sm"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -205,12 +205,12 @@ export const ParentDashboard = memo(() => {
       </div>
 
       {/* 内容区域 */}
-      <div className="pt-24 pb-8 px-4">
+      <div className="pt-20 sm:pt-24 pb-4 sm:pb-8 px-2 sm:px-4">
         {/* 标签切换 */}
-        <div className="flex gap-4 mb-6 justify-center flex-wrap">
+        <div className="flex gap-2 sm:gap-4 mb-4 sm:mb-6 justify-center flex-wrap">
           <motion.button
             onClick={() => setActiveTab('emotions')}
-            className={`px-6 py-3 rounded-full font-bold ${
+            className={`px-3 py-2 sm:px-6 sm:py-3 rounded-full font-bold text-xs sm:text-base ${
               activeTab === 'emotions'
                 ? 'bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-lg'
                 : 'bg-white/80 text-gray-600'
@@ -222,7 +222,7 @@ export const ParentDashboard = memo(() => {
           </motion.button>
           <motion.button
             onClick={() => setActiveTab('stats')}
-            className={`px-6 py-3 rounded-full font-bold ${
+            className={`px-3 py-2 sm:px-6 sm:py-3 rounded-full font-bold text-xs sm:text-base ${
               activeTab === 'stats'
                 ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white shadow-lg'
                 : 'bg-white/80 text-gray-600'
@@ -234,7 +234,7 @@ export const ParentDashboard = memo(() => {
           </motion.button>
           <motion.button
             onClick={() => setActiveTab('bottles')}
-            className={`px-6 py-3 rounded-full font-bold ${
+            className={`px-3 py-2 sm:px-6 sm:py-3 rounded-full font-bold text-xs sm:text-base ${
               activeTab === 'bottles'
                 ? 'bg-gradient-to-r from-blue-400 to-cyan-400 text-white shadow-lg'
                 : 'bg-white/80 text-gray-600'
@@ -256,11 +256,11 @@ export const ParentDashboard = memo(() => {
 
         {/* 情绪日记列表 */}
         {activeTab === 'emotions' && (
-          <div className="space-y-4 max-w-2xl mx-auto">
+          <div className="space-y-3 sm:space-y-4 max-w-2xl mx-auto">
             {emotions.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">📔</div>
-                <p className="text-gray-500 font-bold">还没有情绪日记哦～</p>
+              <div className="text-center py-8 sm:py-12">
+                <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">📔</div>
+                <p className="text-gray-500 font-bold text-sm sm:text-base">还没有情绪日记哦～</p>
               </div>
             ) : (
               emotions.map((emotion) => {
@@ -268,33 +268,33 @@ export const ParentDashboard = memo(() => {
                 return (
                   <motion.div
                     key={emotion.id}
-                    className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-xl border-4 border-white/60"
+                    className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 shadow-xl border-4 border-white/60"
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${config.color} flex items-center justify-center text-2xl`}>
+                    <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br ${config.color} flex items-center justify-center text-xl sm:text-2xl`}>
                         {config.emoji}
                       </div>
-                      <div>
-                        <div className="font-black text-gray-700">{config.label}</div>
+                      <div className="flex-1">
+                        <div className="text-sm sm:text-base font-black text-gray-700">{config.label}</div>
                         <div className="text-xs text-gray-400">
                           {new Date(emotion.created_at).toLocaleString('zh-CN')}
                         </div>
                       </div>
                     </div>
                     {emotion.content && (
-                      <div className="bg-gray-100 rounded-xl p-3 mb-3">
-                        <p className="text-gray-700 text-sm">{emotion.content}</p>
+                      <div className="bg-gray-100 rounded-xl p-2 sm:p-3 mb-2 sm:mb-3">
+                        <p className="text-gray-700 text-xs sm:text-sm">{emotion.content}</p>
                       </div>
                     )}
                     {emotion.ai_response && (
-                      <div className="bg-gradient-to-r from-indigo-100 to-purple-100 rounded-xl p-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-lg">🌈</span>
+                      <div className="bg-gradient-to-r from-indigo-100 to-purple-100 rounded-xl p-2 sm:p-3">
+                        <div className="flex items-center gap-1 sm:gap-2 mb-1">
+                          <span className="text-base sm:text-lg">🌈</span>
                           <span className="text-xs font-bold text-purple-600">小彩虹说</span>
                         </div>
-                        <p className="text-purple-700 text-sm">{emotion.ai_response}</p>
+                        <p className="text-purple-700 text-xs sm:text-sm">{emotion.ai_response}</p>
                       </div>
                     )}
                   </motion.div>
@@ -306,25 +306,25 @@ export const ParentDashboard = memo(() => {
 
         {/* 漂流瓶列表 */}
         {activeTab === 'bottles' && (
-          <div className="space-y-4 max-w-2xl mx-auto">
+          <div className="space-y-3 sm:space-y-4 max-w-2xl mx-auto">
             {bottles.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">🍾</div>
-                <p className="text-gray-500 font-bold">还没有漂流瓶哦～</p>
+              <div className="text-center py-8 sm:py-12">
+                <div className="text-4xl sm:text-6xl mb-2 sm:mb-4">🍾</div>
+                <p className="text-gray-500 font-bold text-sm sm:text-base">还没有漂流瓶哦～</p>
               </div>
             ) : (
               bottles.map((bottle) => (
                 <motion.div
                   key={bottle.id}
-                  className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-xl border-4 border-white/60"
+                  className="bg-white/90 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-3 sm:p-6 shadow-xl border-4 border-white/60"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="text-3xl">🍾</div>
-                      <div>
-                        <div className="font-bold text-gray-700">
+                  <div className="flex items-center justify-between mb-2 sm:mb-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="text-2xl sm:text-3xl">🍾</div>
+                      <div className="flex-1">
+                        <div className="text-xs sm:text-sm font-bold text-gray-700">
                           心情：{bottle.mood || '普通'}
                         </div>
                         <div className="text-xs text-gray-400">
@@ -338,8 +338,8 @@ export const ParentDashboard = memo(() => {
                       </span>
                     )}
                   </div>
-                  <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-4 border-2 border-blue-200">
-                    <p className="text-gray-700 text-sm leading-relaxed">{bottle.content}</p>
+                  <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-3 sm:p-4 border-2 border-blue-200">
+                    <p className="text-gray-700 text-xs sm:text-sm leading-relaxed">{bottle.content}</p>
                   </div>
                 </motion.div>
               ))

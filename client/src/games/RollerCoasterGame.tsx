@@ -4,109 +4,28 @@ import { useAppStore } from '@/store/appStore';
 
 // 心率区间
 const HEART_RATE_ZONES = {
-  veryLow: { min: 0, max: 50, color: '#A8E6CF', name: '平静', emoji: '😌' },
-  low: { min: 50, max: 70, color: '#FFD43B', name: '放松', emoji: '😊' },
-  normal: { min: 70, max: 90, color: '#FFA94D', name: '正常', emoji: '🙂' },
-  high: { min: 90, max: 110, color: '#FF8E8E', name: '加速', emoji: '💓' },
-  veryHigh: { min: 110, max: 200, color: '#FF6B6B', name: '激动', emoji: '🔥' },
+  veryLow: { min: 0, max: 60, color: '#A8E6CF', name: '平静', emoji: '😌' },
+  low: { min: 60, max: 80, color: '#FFD43B', name: '放松', emoji: '😊' },
+  normal: { min: 80, max: 100, color: '#FFA94D', name: '活跃', emoji: '🙂' },
+  high: { min: 100, max: 130, color: '#FF8E8E', name: '加速', emoji: '💓' },
+  veryHigh: { min: 130, max: 200, color: '#FF6B6B', name: '激动', emoji: '🔥' },
 };
 
-// 积极鼓励话语库 - 无评判，纯粹陪伴和鼓励
-const ENCOURAGEMENTS = {
-  // 心跳平稳时
-  calm: [
-    '你现在的状态很好～ 🌸',
-    '这样的节奏很棒哦～ ✨',
-    '继续保持，你做得很好～ 💖',
-    '和你一起感受这份美好～ 🌙',
-    '慢慢来，很舒服呢～ 🍃',
-    '你做得真的很棒～ 💕',
-    '我在这里，陪你一起感受～ 🫂',
-    '这样的感觉很好～ 🌟',
-  ],
-  // 心跳上升时
-  rising: [
-    '心跳在变化，没关系的～ 💕',
-    '感受它，接纳它～ 🌈',
-    '深呼吸，我在这里陪着你～ 🦋',
-    '你的心跳很有活力～ ✨',
-    '这份感觉，我陪着你～ 🌟',
-    '心跳在告诉你，它很有力量～ 💗',
-    '慢慢感受，不用着急～ 🌊',
-    '你做得很好～ 👏',
-  ],
-  // 心跳很快时
-  high: [
-    '心跳很快，但你很安全～ 🛡️',
-    '这种感觉会过去的，加油～ 💪',
-    '慢慢来，不用着急～ 🐢',
-    '你做得很好，继续前进～ 🚀',
-    '你的心跳很有力量～ 💗',
-    '我陪着你，一起感受～ 🫂',
-    '这样的节奏也可以～ 🎵',
-    '你做得已经很好了～ 👏',
-  ],
-  // 心跳下降时
-  falling: [
-    '心跳在慢慢平稳下来～ 🌊',
-    '你正在调节得很好～ 👏',
-    '太棒了，你在进步～ 🎉',
-    '慢慢来，很舒服～ 🍃',
-    '心跳在休息呢～ 😌',
-    '这样的感觉很好～ 💖',
-    '我在这里，陪着你～ 💕',
-    '你做得真的很棒～ ✨',
-  ],
-  // 收集成功时
-  collect: [
-    '好棒！收集到了～ ⭐',
-    '继续加油～ 💫',
-    '连击！你太厉害了～ 🔥',
-    '哇哦～好厉害～ 🎊',
-    '你又收集到一个～ 🎁',
-    '太棒了，继续～ ✨',
-    '你好棒呀～ 💖',
-    '做得真好～ 👏',
-  ],
-  // 撞到障碍物时（安慰，不评判）
-  hit: [
-    '没关系，我陪着你～ 💕',
-    '下次一定会更好～ 🌟',
-    '继续加油哦～ 💖',
-    '这没什么大不了的～ 🌈',
-    '我在这里，继续前进～ 🫂',
-    '慢慢来，不着急～ 🐢',
-    '你做得已经很好了～ 👏',
-    '继续前进～ ✨',
-  ],
-  // 心跳特别快时的鼓励
-  veryFast: [
-    '你的心跳好有活力～ 💗',
-    '这是很有能量的感觉～ ✨',
-    '我陪着你，一起感受～ 🫂',
-    '这样的感觉也可以～ 🌈',
-    '你做得很好～ 👏',
-    '慢慢感受，不用着急～ 🌊',
-  ],
-  // 心跳特别慢时的鼓励
-  verySlow: [
-    '你很平静，很舒服～ 😌',
-    '慢慢来，很好～ 🌙',
-    '这样的节奏很棒～ 🎵',
-    '我在这里，陪着你～ 💕',
-    '这样的状态很好～ 🌸',
-    '继续感受这份宁静～ ✨',
-  ],
-};
-
-type CollectibleType = 'heart' | 'star' | 'flower' | 'butterfly';
+const ENCOURAGEMENTS = [
+  '好棒！继续加油～ 💖',
+  '心跳很有活力～ ✨',
+  '你做得很好～ 👏',
+  '继续保持～ 🌟',
+  '太厉害了～ 🎉',
+];
 
 interface Collectible {
   id: number;
-  type: CollectibleType;
   x: number;
   y: number;
   collected: boolean;
+  value: number;
+  type: 'heart' | 'star';
 }
 
 interface Obstacle {
@@ -120,7 +39,6 @@ export const RollerCoasterGame = () => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const endGame = useAppStore((state) => state.endGame);
 
-  // 游戏状态
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
@@ -128,244 +46,258 @@ export const RollerCoasterGame = () => {
   const [maxCombo, setMaxCombo] = useState(0);
   const [timeLeft, setTimeLeft] = useState(60);
 
-  // 心率状态
+  // 心率
   const [heartRate, setHeartRate] = useState(75);
-  const [prevHeartRate, setPrevHeartRate] = useState(75);
   const [isWatchConnected, setIsWatchConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [showBreathing, setShowBreathing] = useState(false);
-  const [breathPhase, setBreathPhase] = useState<'inhale' | 'hold' | 'exhale'>('inhale');
-  const [breathCount, setBreathCount] = useState(0);
-  const [heartRateTrend, setHeartRateTrend] = useState<'stable' | 'rising' | 'falling'>('stable');
-  const [currentEncouragement, setCurrentEncouragement] = useState('准备好了吗？开始吧！✨');
-  const [showEncouragement, setShowEncouragement] = useState(false);
   const [heartRateHistory, setHeartRateHistory] = useState<number[]>([75, 75, 75, 75, 75]);
+  const [message, setMessage] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
 
-  // 小火车状态 - 用户可以控制
-  const [trainY, setTrainY] = useState(50); // 垂直位置 0-100%
-  const [trainSpeed, setTrainSpeed] = useState(0); // 前进速度
-  const [isAccelerating, setIsAccelerating] = useState(false);
-
-  // 收集物和障碍物 - 从右向左移动
+  // 用于渲染的状态
+  const [renderTrigger, setRenderTrigger] = useState(0); // 用于触发渲染
   const [collectibles, setCollectibles] = useState<Collectible[]>([]);
   const [obstacles, setObstacles] = useState<Obstacle[]>([]);
 
-  // 特效
-  const [particles, setParticles] = useState<{ id: number; x: number; y: number; emoji: string }[]>([]);
-
-  const gameLoopRef = useRef<number>();
   const containerRef = useRef<HTMLDivElement>(null);
+  const gameLoopRef = useRef<number>();
   const lastSpawnTime = useRef(0);
 
-  // 获取心率区间
-  const getHeartRateZone = (hr: number) => {
-    if (hr < HEART_RATE_ZONES.veryLow.max) return HEART_RATE_ZONES.veryLow;
-    if (hr < HEART_RATE_ZONES.low.max) return HEART_RATE_ZONES.low;
-    if (hr < HEART_RATE_ZONES.normal.max) return HEART_RATE_ZONES.normal;
-    if (hr < HEART_RATE_ZONES.high.max) return HEART_RATE_ZONES.high;
+  // 游戏状态 refs（不触发重新渲染）
+  const trackYRef = useRef(0);
+  const jumpOffsetRef = useRef(0);
+  const trackOffsetRef = useRef(0);
+  const isJumpingRef = useRef(false);
+  const jumpStartTimeRef = useRef(0);
+
+  const [containerSize, setContainerSize] = useState({ w: 800, h: 600 });
+
+  // 常量
+  const GROUND_PERCENT = 75;
+  const PLAYER_X = 80;
+
+  const getZone = (hr: number) => {
+    if (hr < 60) return HEART_RATE_ZONES.veryLow;
+    if (hr < 80) return HEART_RATE_ZONES.low;
+    if (hr < 100) return HEART_RATE_ZONES.normal;
+    if (hr < 130) return HEART_RATE_ZONES.high;
     return HEART_RATE_ZONES.veryHigh;
   };
 
-  const currentZone = getHeartRateZone(heartRate);
+  const zone = getZone(heartRate);
 
-  // 显示鼓励语
-  const showEncouragementMessage = useCallback((message: string) => {
-    setCurrentEncouragement(message);
-    setShowEncouragement(true);
-    setTimeout(() => setShowEncouragement(false), 2500);
-  }, []);
+  const showMsg = (msg: string) => {
+    setMessage(msg);
+    setShowMessage(true);
+    setTimeout(() => setShowMessage(false), 1500);
+  };
 
-  // 连接手表
-  const connectWatch = useCallback(async () => {
+  const disconnectWatch = () => {
+    setIsWatchConnected(false);
+    showMsg('手表已断开');
+  };
+
+  const connectWatch = async () => {
     setIsConnecting(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(r => setTimeout(r, 1500));
     setIsWatchConnected(true);
     setIsConnecting(false);
-    showEncouragementMessage('手表已连接！心跳会随游戏变化哦～ 💕');
-  }, [showEncouragementMessage]);
+    showMsg('手表已连接！💕');
+  };
 
-  const disconnectWatch = useCallback(() => {
-    setIsWatchConnected(false);
+  // 容器尺寸
+  useEffect(() => {
+    const update = () => {
+      if (containerRef.current) {
+        setContainerSize({
+          w: containerRef.current.clientWidth || window.innerWidth,
+          h: containerRef.current.clientHeight || window.innerHeight,
+        });
+      }
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
   }, []);
 
   // 心率模拟
   useEffect(() => {
-    const interval = setInterval(() => {
-      setPrevHeartRate(heartRate);
-      setHeartRate(prev => {
-        const change = Math.floor(Math.random() * 11) - 5;
-        const newHR = Math.max(50, Math.min(150, prev + change));
-        setHeartRateHistory(h => [...h.slice(-10), newHR]);
+    if (!isWatchConnected) {
+      const t = setInterval(() => {
+        setHeartRate(hr => {
+          const change = Math.floor(Math.random() * 11) - 5;
+          const newHR = Math.max(55, Math.min(140, hr + change));
+          setHeartRateHistory(h => [...h.slice(-4), newHR]);
+          return newHR;
+        });
+      }, 2000);
+      return () => clearInterval(t);
+    }
+  }, [isWatchConnected]);
 
-        const diff = newHR - prev;
-        if (diff > 5) setHeartRateTrend('rising');
-        else if (diff < -5) setHeartRateTrend('falling');
-        else setHeartRateTrend('stable');
-
-        return newHR;
-      });
-    }, 2000);
-    return () => clearInterval(interval);
+  // 获取轨道高度
+  const getTrackY = useCallback((x: number, offset: number, width: number, height: number) => {
+    const groundY = (height * GROUND_PERCENT) / 100;
+    const amplitude = 40 + (heartRate - 60) * 0.3;
+    const frequency = 0.008;
+    const baseY = groundY - 80;
+    return baseY + Math.sin((x + offset) * frequency) * amplitude;
   }, [heartRate]);
 
-  // 游戏循环 - 生成物品和障碍物
+  // 跳跃
+  const jump = useCallback(() => {
+    if (!gameStarted || gameOver || isJumpingRef.current) return;
+    isJumpingRef.current = true;
+    jumpStartTimeRef.current = Date.now();
+    showMsg(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]);
+  }, [gameStarted, gameOver]);
+
+  // 键盘和触摸
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w') {
+        e.preventDefault();
+        jump();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [jump]);
+
+  // 游戏循环 - 使用 requestAnimationFrame 统一处理
   useEffect(() => {
     if (!gameStarted || gameOver) return;
 
-    // 根据心跳计算速度系数 (心跳越快，速度越快)
-    const getSpeedMultiplier = (hr: number) => {
-      // 基础心率 70，速度系数 1.0
-      // 心跳 120 时，速度系数约 1.7
-      return 0.6 + (hr - 50) / 140;
-    };
+    const speed = 4 + (heartRate - 60) * 0.05;
+    const height = containerSize.h;
+    const width = containerSize.w;
+    const jumpHeight = 100;
+    const jumpDuration = 600;
 
-    const gameLoop = (timestamp: number) => {
-      // 生成物品
-      if (timestamp - lastSpawnTime.current > 800) {
-        const types: CollectibleType[] = ['heart', 'star', 'flower', 'butterfly'];
-        const newY = Math.random() * 70 + 15; // 15-85%
+    const loop = (timestamp: number) => {
+      // 轨道滚动
+      const newOffset = (Date.now() / 1000) * speed * 50;
+      trackOffsetRef.current = newOffset;
 
-        // 生成收集物
-        if (Math.random() > 0.3) {
-          setCollectibles(prev => [...prev, {
-            id: timestamp,
-            type: types[Math.floor(Math.random() * types.length)],
-            x: 100,
-            y: newY,
-            collected: false,
-          }]);
+      // 更新轨道高度
+      const currentTrackY = getTrackY(PLAYER_X, newOffset, width, height);
+      trackYRef.current = currentTrackY;
+
+      // 更新跳跃状态
+      if (isJumpingRef.current) {
+        const elapsed = Date.now() - jumpStartTimeRef.current;
+        const progress = Math.min(elapsed / jumpDuration, 1);
+        const jumpProgress = Math.sin(progress * Math.PI);
+        jumpOffsetRef.current = jumpHeight * jumpProgress;
+
+        if (progress >= 1) {
+          isJumpingRef.current = false;
+          jumpOffsetRef.current = 0;
         }
+      }
 
-        // 生成障碍物
-        if (Math.random() > 0.6) {
+      // 生成收集物
+      if (timestamp - lastSpawnTime.current > 1000) {
+        const type = Math.random() > 0.5 ? 'heart' : 'star';
+        const value = type === 'heart' ? 10 : 5;
+        const heightOptions = [0, 60, 120];
+        const randomHeight = heightOptions[Math.floor(Math.random() * heightOptions.length)];
+
+        setCollectibles(prev => [...prev, {
+          id: timestamp,
+          x: width + 50,
+          y: currentTrackY - randomHeight,
+          collected: false,
+          value,
+          type,
+        }]);
+
+        if (Math.random() < 0.3) {
           setObstacles(prev => [...prev, {
-            id: timestamp + 1,
-            x: 100,
-            y: Math.random() * 70 + 15,
+            id: timestamp + 1000,
+            x: width + 50,
+            y: currentTrackY,
             hit: false,
           }]);
         }
-
         lastSpawnTime.current = timestamp;
       }
 
-      // 移动物品 - 速度由心跳决定
-      const speedMultiplier = getSpeedMultiplier(heartRate);
-      const baseSpeed = isAccelerating ? 1.5 : 0.8;
-      const speed = baseSpeed * speedMultiplier;
-
+      // 移动物体
       setCollectibles(prev => prev
         .map(c => ({ ...c, x: c.x - speed }))
-        .filter(c => c.x > -10)
+        .filter(c => c.x > -50 && !c.collected)
       );
 
       setObstacles(prev => prev
         .map(o => ({ ...o, x: o.x - speed }))
-        .filter(o => o.x > -10)
+        .filter(o => o.x > -50 && !o.hit)
       );
 
-      gameLoopRef.current = requestAnimationFrame(gameLoop);
+      // 碰撞检测
+      const playerY = trackYRef.current - jumpOffsetRef.current;
+      const playerRect = { x: PLAYER_X, y: playerY, width: 50, height: 40 };
+
+      // 收集物碰撞
+      setCollectibles(prev => {
+        let changed = false;
+        const updated = prev.map(c => {
+          if (c.collected) return c;
+          const dx = Math.abs(c.x - playerRect.x - 25);
+          const dy = Math.abs(c.y - playerY);
+          if (dx < 40 && dy < 60) {
+            changed = true;
+            setScore(s => s + c.value);
+            setCombo(cb => {
+              const nc = cb + 1;
+              setMaxCombo(m => Math.max(m, nc));
+              if (nc % 3 === 0) {
+                showMsg(ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)]);
+              }
+              return nc;
+            });
+            return { ...c, collected: true };
+          }
+          return c;
+        });
+        return changed ? updated.filter(c => !c.collected) : prev;
+      });
+
+      // 障碍物碰撞
+      setObstacles(prev => {
+        let changed = false;
+        const updated = prev.map(o => {
+          if (o.hit) return o;
+          const dx = Math.abs(o.x - playerRect.x - 25);
+          const dy = Math.abs(o.y - playerY);
+          if (dx < 35 && dy < 50) {
+            changed = true;
+            setCombo(0);
+            setHeartRate(hr => Math.min(160, hr + 15));
+            showMsg('小心障碍！⚠️');
+            return { ...o, hit: true };
+          }
+          return o;
+        });
+        return changed ? updated.filter(o => !o.hit) : prev;
+      });
+
+      // 触发渲染（每帧）
+      setRenderTrigger(prev => prev + 1);
+
+      gameLoopRef.current = requestAnimationFrame(loop);
     };
 
-    gameLoopRef.current = requestAnimationFrame(gameLoop);
+    gameLoopRef.current = requestAnimationFrame(loop);
     return () => {
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
-  }, [gameStarted, gameOver, isAccelerating, heartRate]);
-
-  // 碰撞检测
-  useEffect(() => {
-    if (!gameStarted || gameOver) return;
-
-    // 检测收集物
-    setCollectibles(prev => prev.map(c => {
-      if (c.collected) return c;
-      const dx = Math.abs(c.x - 10); // 火车在 x=10% 位置
-      const dy = Math.abs(c.y - trainY);
-      if (dx < 8 && dy < 10) {
-        // 收集成功
-        const points = c.type === 'heart' ? 10 : 5;
-        setScore(s => s + points);
-        setCombo(c => {
-          const newCombo = c + 1;
-          setMaxCombo(max => Math.max(max, newCombo));
-          return newCombo;
-        });
-        setHeartRate(hr => Math.min(150, hr + 2)); // 收集时心跳微升
-
-        const emoji = c.type === 'heart' ? '💖' : c.type === 'star' ? '⭐' : c.type === 'flower' ? '🌸' : '🦋';
-        setParticles(p => [...p, { id: Date.now() + Math.random(), x: 10, y: trainY, emoji }]);
-
-        if (combo > 0 && combo % 5 === 0) {
-          showEncouragementMessage(ENCOURAGEMENTS.collect[Math.floor(Math.random() * ENCOURAGEMENTS.collect.length)]);
-        }
-        return { ...c, collected: true };
-      }
-      return c;
-    }).filter(c => !c.collected));
-
-    // 检测障碍物
-    setObstacles(prev => prev.map(o => {
-      if (o.hit) return o;
-      const dx = Math.abs(o.x - 10);
-      const dy = Math.abs(o.y - trainY);
-      if (dx < 8 && dy < 10) {
-        setCombo(0);
-        setHeartRate(hr => Math.min(150, hr + 8)); // 撞到心跳上升
-        showEncouragementMessage(ENCOURAGEMENTS.hit[Math.floor(Math.random() * ENCOURAGEMENTS.hit.length)]);
-        return { ...o, hit: true };
-      }
-      return o;
-    }).filter(o => !o.hit));
-  }, [trainY, gameStarted, gameOver, combo, showEncouragementMessage]);
-
-  // 根据心跳趋势显示鼓励语
-  useEffect(() => {
-    if (!gameStarted || gameOver) return;
-
-    const interval = setInterval(() => {
-      // 根据心率和趋势选择合适的鼓励语
-      let messages: string[] = [];
-
-      if (heartRate < 55) {
-        // 心跳特别慢
-        messages = ENCOURAGEMENTS.verySlow;
-      } else if (heartRate > 115) {
-        // 心跳特别快
-        messages = ENCOURAGEMENTS.veryFast;
-      } else {
-        // 根据趋势选择
-        if (heartRateTrend === 'rising') {
-          messages = ENCOURAGEMENTS.rising;
-        } else if (heartRateTrend === 'falling') {
-          messages = ENCOURAGEMENTS.falling;
-        } else if (heartRate > 95) {
-          messages = ENCOURAGEMENTS.high;
-        } else {
-          messages = ENCOURAGEMENTS.calm;
-        }
-      }
-
-      if (messages.length > 0) {
-        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-        showEncouragementMessage(randomMsg);
-      }
-    }, 8000); // 每 8 秒显示一次鼓励语
-
-    return () => clearInterval(interval);
-  }, [gameStarted, gameOver, heartRate, heartRateTrend, showEncouragementMessage]);
-
-  // 清理粒子
-  useEffect(() => {
-    if (particles.length === 0) return;
-    const timeout = setTimeout(() => setParticles(p => p.slice(1)), 800);
-    return () => clearTimeout(timeout);
-  }, [particles]);
+  }, [gameStarted, gameOver, heartRate, containerSize, getTrackY]);
 
   // 计时器
   useEffect(() => {
     if (!gameStarted || gameOver) return;
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 1) {
           setGameOver(true);
@@ -374,80 +306,10 @@ export const RollerCoasterGame = () => {
         return t - 1;
       });
     }, 1000);
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, [gameStarted, gameOver]);
 
-  // 呼吸练习
-  useEffect(() => {
-    if (showBreathing) {
-      const cycle = () => {
-        setBreathPhase('inhale');
-        setTimeout(() => {
-          setBreathPhase('hold');
-          setTimeout(() => {
-            setBreathPhase('exhale');
-            setTimeout(() => {
-              setBreathCount(c => c + 1);
-              setHeartRate(hr => Math.max(50, hr - 5));
-            }, 4000);
-          }, 2000);
-        }, 4000);
-      };
-      cycle();
-      const interval = setInterval(cycle, 10000);
-      return () => clearInterval(interval);
-    } else {
-      setBreathPhase('inhale');
-      setBreathCount(0);
-    }
-  }, [showBreathing]);
-
-  // 触摸/鼠标控制
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!gameStarted || gameOver) return;
-    const rect = containerRef.current?.getBoundingClientRect();
-    if (rect) {
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      setTrainY(Math.max(10, Math.min(90, y)));
-    }
-  }, [gameStarted, gameOver]);
-
-  const handlePointerDown = useCallback(() => {
-    if (!gameStarted || gameOver) return;
-    setIsAccelerating(true);
-    setHeartRate(hr => Math.min(150, hr + 3));
-  }, [gameStarted, gameOver]);
-
-  const handlePointerUp = useCallback(() => {
-    setIsAccelerating(false);
-  }, []);
-
-  // 键盘控制
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!gameStarted || gameOver) return;
-      if (e.key === 'ArrowUp' || e.key === 'w') {
-        setTrainY(y => Math.max(10, y - 5));
-      } else if (e.key === 'ArrowDown' || e.key === 's') {
-        setTrainY(y => Math.min(90, y + 5));
-      } else if (e.key === ' ' || e.key === 'ArrowRight') {
-        setIsAccelerating(true);
-      }
-    };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === ' ' || e.key === 'ArrowRight') {
-        setIsAccelerating(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, [gameStarted, gameOver]);
-
-  const handleStart = () => {
+  const startGame = () => {
     setGameStarted(true);
     setGameOver(false);
     setScore(0);
@@ -456,178 +318,332 @@ export const RollerCoasterGame = () => {
     setTimeLeft(60);
     setCollectibles([]);
     setObstacles([]);
-    setTrainY(50);
-    lastSpawnTime.current = 0;
-    showEncouragementMessage('出发！移动鼠标/触摸控制小火车～ 🚂');
+    trackYRef.current = 0;
+    jumpOffsetRef.current = 0;
+    isJumpingRef.current = false;
+    trackOffsetRef.current = 0;
+    showMsg('点击或按空格跳跃！🎢');
   };
 
-  const handleBack = () => {
-    endGame();
-    navigateTo('playground');
-  };
+  const groundY = (containerSize.h * GROUND_PERCENT) / 100;
 
-  const getCollectibleEmoji = (type: CollectibleType) => {
-    switch (type) {
-      case 'heart': return '💖';
-      case 'star': return '⭐';
-      case 'flower': return '🌸';
-      case 'butterfly': return '🦋';
+  const generateTrackPoints = () => {
+    const points = [];
+    for (let x = -50; x <= containerSize.w + 50; x += 20) {
+      const y = getTrackY(x, trackOffsetRef.current, containerSize.w, containerSize.h);
+      points.push(`${x},${y}`);
     }
+    return points.join(' ');
   };
+
+  // 小车位置
+  const cartY = trackYRef.current - jumpOffsetRef.current;
 
   // 开始界面
   if (!gameStarted) {
     return (
-      <div className="relative min-h-screen w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-300 via-pink-200 to-yellow-100" />
-        <motion.div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-          <motion.button onClick={handleBack} className="bg-white/80 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60" whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>← 返回</motion.button>
-        </motion.div>
-        <div className="relative z-10 flex items-center justify-center min-h-screen">
-          <motion.div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border-4 border-white/60 max-w-md w-full mx-4" initial={{ scale: 0.8, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} transition={{ type: 'spring', bounce: 0.6 }}>
-            <motion.div className="text-center mb-6" animate={{ y: [0, -5, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-              <div className="text-7xl mb-4">🚂</div>
-              <h1 className="text-3xl font-black bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">心跳过山车</h1>
-            </motion.div>
-            <div className="space-y-3 mb-6">
-              <div className="bg-purple-100 rounded-2xl p-3"><div className="flex items-center gap-2"><span className="text-2xl">🖱️</span><p className="text-sm font-bold text-gray-700">移动鼠标/触摸屏幕控制小火车上下</p></div></div>
-              <div className="bg-pink-100 rounded-2xl p-3"><div className="flex items-center gap-2"><span className="text-2xl">⬆️⬇️</span><p className="text-sm font-bold text-gray-700">或用键盘方向键/W S 键控制</p></div></div>
-              <div className="bg-yellow-100 rounded-2xl p-3"><div className="flex items-center gap-2"><span className="text-2xl">🖱️</span><p className="text-sm font-bold text-gray-700">按住鼠标/屏幕加速冲刺</p></div></div>
-              <div className="bg-green-100 rounded-2xl p-3"><div className="flex items-center gap-2"><span className="text-2xl">💖⭐</span><p className="text-sm font-bold text-gray-700">收集爱心和星星获得分数</p></div></div>
-              <div className="bg-blue-100 rounded-2xl p-3"><div className="flex items-center gap-2"><span className="text-2xl">⚠️</span><p className="text-sm font-bold text-gray-700">躲避红色障碍物，保持连击</p></div></div>
+      <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-100">
+        <div className="absolute top-4 left-4 z-50">
+          <button
+            onClick={() => { endGame(); navigateTo('playground'); }}
+            className="bg-white px-4 py-2 rounded-full shadow-lg font-bold text-emerald-600"
+          >
+            ← 返回
+          </button>
+        </div>
+
+        <div className="flex items-center justify-center min-h-screen px-4">
+          <div className="bg-white/90 backdrop-blur rounded-2xl p-6 shadow-2xl max-w-sm w-full">
+            <div className="text-center mb-4">
+              <motion.div
+                className="text-6xl mb-2"
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                🎢
+              </motion.div>
+              <h1 className="text-2xl font-black text-emerald-600">心跳过山车</h1>
+              <p className="text-xs text-gray-500 mt-1">心跳越快，速度越快！</p>
             </div>
-            <div className="mb-6 p-3 bg-gray-100 rounded-2xl">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2"><span className="text-2xl">{isWatchConnected ? '⌚' : '❌'}</span><span className="text-sm font-bold text-gray-600">{isWatchConnected ? '手表已连接' : '未连接手表'}</span></div>
-                {!isWatchConnected ? (
-                  <motion.button onClick={connectWatch} disabled={isConnecting} className="bg-gradient-to-r from-blue-400 to-purple-400 text-white font-black text-sm py-2 px-4 rounded-full" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>{isConnecting ? '连接中...' : '连接'}</motion.button>
-                ) : (
-                  <motion.button onClick={disconnectWatch} className="bg-gray-300 text-gray-700 font-black text-sm py-2 px-4 rounded-full" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>断开</motion.button>
-                )}
+
+            <div className="space-y-2 mb-4 text-sm">
+              <div className="flex items-center gap-2">
+                <span>🎢</span>
+                <span>小车自动在轨道上前进</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>👆</span>
+                <span>点击或按空格跳跃</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>💖</span>
+                <span>收集爱心 (+10) 和星星 (+5)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>🚧</span>
+                <span>躲避障碍物</span>
               </div>
             </div>
-            <motion.button onClick={handleStart} className="w-full bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 text-white font-black text-xl py-4 rounded-full shadow-xl" whileHover={{ scale: 1.05, y: -3 }} whileTap={{ scale: 0.95 }} animate={{ boxShadow: ['0 0 20px rgba(168,85,247,0.5)', '0 0 40px rgba(236,72,153,0.8)', '0 0 20px rgba(168,85,247,0.5)'] }} transition={{ duration: 2, repeat: Infinity }}>开始游戏 🎮</motion.button>
-          </motion.div>
+
+            <div className="mb-4 p-2 bg-gray-100 rounded-xl">
+              <div className="flex items-center justify-between">
+                <span className="text-sm">{isWatchConnected ? '⌚ 已连接' : '❌ 未连接'}</span>
+                <button
+                  onClick={isWatchConnected ? disconnectWatch : connectWatch}
+                  disabled={isConnecting}
+                  className="bg-emerald-500 text-white px-3 py-1 rounded-full text-sm"
+                >
+                  {isConnecting ? '...' : isWatchConnected ? '断开' : '连接'}
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={startGame}
+              className="w-full bg-gradient-to-r from-emerald-400 to-teal-400 text-white font-black py-3 rounded-full text-lg"
+            >
+              开始游戏
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
-  // 游戏结束界面
+  // 结束界面
   if (gameOver) {
     return (
-      <div className="relative min-h-screen w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-300 via-pink-200 to-yellow-100" />
-        <div className="relative z-10 flex items-center justify-center min-h-screen">
-          <motion.div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border-4 border-white/60 max-w-md w-full mx-4 text-center" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-            <div className="text-6xl mb-4">🎉</div>
-            <h2 className="text-3xl font-black text-purple-600 mb-4">时间到！</h2>
-            <div className="space-y-3 mb-6">
-              <div className="bg-purple-100 rounded-2xl p-4"><div className="text-sm text-gray-600">得分</div><div className="text-4xl font-black text-purple-600">{score}</div></div>
-              <div className="bg-pink-100 rounded-2xl p-4"><div className="text-sm text-gray-600">最大连击</div><div className="text-2xl font-black text-pink-600">{maxCombo} 连击 🔥</div></div>
+      <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-100">
+        <div className="flex items-center justify-center min-h-screen px-4">
+          <div className="bg-white/90 backdrop-blur rounded-2xl p-6 shadow-2xl max-w-sm w-full text-center">
+            <motion.div
+              className="text-6xl mb-2"
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 1, repeat: Infinity }}
+            >
+              🎉
+            </motion.div>
+            <h2 className="text-xl font-black text-emerald-600 mb-4">游戏结束</h2>
+
+            <div className="space-y-2 mb-4">
+              <div className="bg-emerald-100 rounded-xl p-3">
+                <div className="text-xs text-gray-500">得分</div>
+                <div className="text-3xl font-black text-emerald-600">{score}</div>
+              </div>
+              <div className="bg-teal-100 rounded-xl p-3">
+                <div className="text-xs text-gray-500">最大连击</div>
+                <div className="text-xl font-black text-teal-600">{maxCombo} 🔥</div>
+              </div>
             </div>
-            <div className="flex gap-3">
-              <motion.button onClick={handleStart} className="flex-1 bg-gradient-to-r from-purple-400 to-pink-400 text-white font-black py-3 rounded-full" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>再来一次</motion.button>
-              <motion.button onClick={handleBack} className="flex-1 bg-gray-300 text-gray-700 font-black py-3 rounded-full" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>返回</motion.button>
+
+            <div className="flex gap-2">
+              <button
+                onClick={startGame}
+                className="flex-1 bg-emerald-400 text-white py-2 rounded-full font-bold"
+              >
+                再来
+              </button>
+              <button
+                onClick={() => { endGame(); navigateTo('playground'); }}
+                className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-full font-bold"
+              >
+                返回
+              </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     );
   }
 
-  // 游戏主界面
+  // 游戏画面
   return (
-    <div className="relative min-h-screen w-full overflow-hidden" ref={containerRef} onPointerMove={handlePointerMove} onPointerDown={handlePointerDown} onPointerUp={handlePointerUp} onPointerLeave={handlePointerUp}>
-      {/* 背景 */}
-      <motion.div className="absolute inset-0" animate={{ background: `linear-gradient(135deg, ${currentZone.color}40, ${currentZone.color}20, #ffffff)` }} transition={{ duration: 1 }} />
-
-      {/* 顶部导航 */}
-      <motion.div className="absolute top-4 left-4 right-4 z-50 flex items-center justify-between" initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-        <motion.button onClick={handleBack} className="bg-white/80 backdrop-blur-xl px-5 py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60" whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}>← 返回</motion.button>
-        <motion.div className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 backdrop-blur-xl px-6 py-3 rounded-full shadow-2xl border-4 border-white/60" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity }}><span className="text-xl font-black text-white drop-shadow-lg">🚂 心跳过山车</span></motion.div>
-        <div className="w-20" />
-      </motion.div>
-
-      {/* 左侧面板 - 心率 */}
-      <motion.div className="absolute top-24 left-4 z-40" initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-4 shadow-xl border-4 border-white/60 min-w-[130px]">
-          <div className="flex items-center gap-2 mb-2"><motion.div animate={{ scale: isWatchConnected ? [1, 1.2, 1] : 1 }}>{isWatchConnected ? '⌚' : '❌'}</motion.div><span className="text-xs font-bold text-gray-600">{isWatchConnected ? '已连接' : '模拟'}</span></div>
-          <motion.div className="text-center mb-2" animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 60 / heartRate, repeat: Infinity }}><div className="text-3xl font-black" style={{ color: currentZone.color }}>{heartRate}</div><div className="text-xs text-gray-500 font-bold">次/分钟</div></motion.div>
-          <motion.div className="text-center py-1.5 rounded-full mb-2" style={{ backgroundColor: `${currentZone.color}30` }}><span className="text-sm font-bold" style={{ color: currentZone.color }}>{currentZone.emoji} {currentZone.name}</span></motion.div>
-          <motion.button onClick={() => setShowBreathing(!showBreathing)} className={`w-full font-black text-xs py-1.5 px-2 rounded-full ${showBreathing ? 'bg-green-400 text-white' : 'bg-pink-400 text-white'}`} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>{showBreathing ? '🧘 呼吸中' : '🧘 呼吸'}</motion.button>
-          <div className="mt-2"><div className="text-xs font-bold text-gray-500 mb-1">心跳曲线</div><div className="flex items-end gap-0.5 h-10">{heartRateHistory.map((hr, i) => (<motion.div key={i} className="flex-1 rounded-t" style={{ backgroundColor: getHeartRateZone(hr).color, height: `${((hr - 50) / 100) * 100}%` }} initial={{ scaleY: 0 }} animate={{ scaleY: 1 }} />))}</div></div>
+    <div
+      ref={containerRef}
+      className="relative min-h-screen w-full overflow-hidden bg-gradient-to-b from-emerald-100 via-teal-100 to-cyan-100"
+      onClick={jump}
+      onTouchStart={jump}
+    >
+      {/* 顶部栏 */}
+      <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-4">
+        <button
+          onClick={() => { endGame(); navigateTo('playground'); }}
+          className="bg-white px-3 py-1.5 rounded-full shadow font-bold text-sm text-emerald-600"
+        >
+          ← 返回
+        </button>
+        <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-full shadow font-black text-emerald-600">
+          🎢 心跳过山车
         </div>
-      </motion.div>
-
-      {/* 右侧面板 - 分数和时间 */}
-      <motion.div className="absolute top-24 right-4 z-40" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-4 shadow-xl border-4 border-white/60">
-          <div className="text-center mb-3"><div className="text-xs text-gray-500 font-bold">得分</div><motion.div className="text-3xl font-black text-purple-600" key={score} initial={{ scale: 1.3 }} animate={{ scale: 1 }}>{score}</motion.div></div>
-          <div className="text-center mb-3"><div className="text-xs text-gray-500 font-bold">连击</div><motion.div className={`text-xl font-black ${combo > 5 ? 'text-pink-600' : 'text-gray-600'}`}>{combo} 🔥</motion.div></div>
-          <div className="text-center"><div className="text-xs text-gray-500 font-bold">时间</div><div className={`text-2xl font-black ${timeLeft < 10 ? 'text-red-500' : 'text-gray-600'}`}>{timeLeft}s</div></div>
-        </div>
-      </motion.div>
-
-      {/* 游戏区域 */}
-      <div className="absolute inset-0 z-10">
-        {/* 轨道 */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-24">
-          <svg className="w-full h-full" preserveAspectRatio="none">
-            <motion.path d="M 0 50% L 100% 50%" fill="none" stroke={currentZone.color} strokeWidth="6" strokeLinecap="round" animate={{ stroke: currentZone.color, strokeWidth: [4, 8, 4] }} transition={{ duration: 2, repeat: Infinity }} />
-            <path d="M 0 50% L 100% 50%" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2" />
-          </svg>
-        </div>
-
-        {/* 收集物 */}
-        {collectibles.map(c => (
-          <motion.div key={c.id} className="absolute text-4xl" style={{ left: `${c.x}%`, top: `${c.y}%` }} animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }} transition={{ duration: 0.8, repeat: Infinity }}>{getCollectibleEmoji(c.type)}</motion.div>
-        ))}
-
-        {/* 障碍物 */}
-        {obstacles.map(o => (
-          <motion.div key={o.id} className="absolute text-3xl" style={{ left: `${o.x}%`, top: `${o.y}%` }} animate={{ rotate: [0, 360] }} transition={{ duration: 1, repeat: Infinity }}>⚠️</motion.div>
-        ))}
-
-        {/* 小火车 - 固定在左侧，y 坐标由用户控制 */}
-        <motion.div className="absolute z-20" style={{ left: '10%', top: `${trainY}%`, transform: 'translate(-50%, -50%)' }} animate={isAccelerating ? { scale: [1, 1.1, 1] } : {}} transition={{ duration: 0.2, repeat: Infinity }}>
-          <div className="w-16 h-10 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-full shadow-lg border-4 border-white relative">
-            <div className="absolute top-1 left-2 w-2.5 h-2.5 bg-white/80 rounded-full" />
-            <div className="absolute top-1 left-6 w-2.5 h-2.5 bg-white/80 rounded-full" />
-            <motion.div className="absolute -top-2 right-1 text-lg" animate={{ y: [0, -3, 0], scale: [1, 1.2, 1] }} transition={{ duration: 0.4, repeat: Infinity }}>💗</motion.div>
-          </div>
-          <div className="absolute -bottom-1 left-0.5 w-3 h-3 bg-gray-800 rounded-full border-2 border-white" />
-          <div className="absolute -bottom-1 right-0.5 w-3 h-3 bg-gray-800 rounded-full border-2 border-white" />
-          {/* 加速特效 */}
-          {isAccelerating && (
-            <div className="absolute -left-4 top-1/2 -translate-y-1/2">
-              <motion.div className="text-2xl" animate={{ x: [-10, -20], opacity: [1, 0] }} transition={{ duration: 0.3, repeat: Infinity }}>💨</motion.div>
-            </div>
-          )}
-        </motion.div>
-
-        {/* 粒子特效 */}
-        {particles.map(p => (
-          <motion.div key={p.id} className="absolute text-3xl z-30" style={{ left: `${p.x}%`, top: `${p.y}%` }} initial={{ scale: 0, opacity: 1 }} animate={{ scale: [0, 1.5, 0], opacity: [1, 0], y: -30 }} transition={{ duration: 0.6 }}>{p.emoji}</motion.div>
-        ))}
+        <div className="w-16" />
       </div>
 
-      {/* 鼓励语气泡 */}
+      {/* 左侧心率 */}
+      <div className="absolute top-20 left-4 z-40 bg-white/90 backdrop-blur rounded-xl p-2 shadow-lg">
+        <div className="flex items-center gap-1 mb-1">
+          <span className="text-lg">{isWatchConnected ? '⌚' : '❌'}</span>
+          <span className="text-xs font-bold">{isWatchConnected ? '已连接' : '模拟'}</span>
+        </div>
+        <motion.div
+          className="text-center"
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 60 / heartRate, repeat: Infinity }}
+        >
+          <div className="text-xl font-black" style={{ color: zone.color }}>{heartRate}</div>
+        </motion.div>
+        <div className="text-[10px] text-gray-500 text-center">次/分</div>
+        <div
+          className="text-center mt-1 py-0.5 rounded text-xs font-bold"
+          style={{ backgroundColor: `${zone.color}30`, color: zone.color }}
+        >
+          {zone.emoji} {zone.name}
+        </div>
+      </div>
+
+      {/* 右侧分数 */}
+      <div className="absolute top-20 right-4 z-40 bg-white/90 backdrop-blur rounded-xl p-2 shadow-lg">
+        <div className="text-center">
+          <div className="text-[10px] text-gray-500">得分</div>
+          <div className="text-lg font-black text-emerald-600">{score}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[10px] text-gray-500">连击</div>
+          <div className="text-sm font-black">{combo} 🔥</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[10px] text-gray-500">时间</div>
+          <div className={`text-base font-black ${timeLeft < 10 ? 'text-red-500' : 'text-gray-600'}`}>
+            {timeLeft}s
+          </div>
+        </div>
+      </div>
+
+      {/* 背景山 */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none">
+        <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+          <polygon points="0,100 20,40 40,70 60,30 80,60 100,20 100,100 0,100" fill={zone.color} opacity="0.3" />
+        </svg>
+      </div>
+
+      {/* 轨道 */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none">
+        <defs>
+          <linearGradient id="trackGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#FF6B6B" />
+            <stop offset="50%" stopColor="#FFD43B" />
+            <stop offset="100%" stopColor="#69DB7C" />
+          </linearGradient>
+        </defs>
+
+        <polyline
+          points={generateTrackPoints()}
+          fill="none"
+          stroke="url(#trackGradient)"
+          strokeWidth="8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* 轨道支撑 */}
+        {Array.from({ length: 20 }).map((_, i) => {
+          const x = ((trackOffsetRef.current / 2 + i * 60) % (containerSize.w + 100)) - 50;
+          const y = getTrackY(x, trackOffsetRef.current, containerSize.w, containerSize.h);
+          return (
+            <line
+              key={i}
+              x1={x}
+              y1={y}
+              x2={x}
+              y2={groundY + 50}
+              stroke="#8B4513"
+              strokeWidth="3"
+              opacity="0.5"
+            />
+          );
+        })}
+      </svg>
+
+      {/* 收集物 */}
       <AnimatePresence>
-        {showEncouragement && (
-          <motion.div className="absolute top-32 left-1/2 -translate-x-1/2 z-50" initial={{ scale: 0, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0, opacity: 0, y: -20 }}><motion.div className="bg-white/95 backdrop-blur-xl rounded-3xl px-6 py-3 shadow-2xl border-4 border-pink-400/60" animate={{ y: [0, -3, 0] }} transition={{ duration: 1.5, repeat: Infinity }}><p className="text-base font-black text-gray-700 text-center">{currentEncouragement}</p></motion.div></motion.div>
+        {collectibles.map(c => (
+          <motion.div
+            key={c.id}
+            className="absolute text-3xl"
+            style={{ left: c.x, top: c.y }}
+            initial={{ scale: 0 }}
+            animate={{ scale: [1, 1.2, 1], rotate: [0, 15, -15, 0] }}
+            transition={{ duration: 0.6, repeat: Infinity }}
+          >
+            {c.type === 'heart' ? '💖' : '⭐'}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      {/* 障碍物 */}
+      <AnimatePresence>
+        {obstacles.map(o => (
+          <motion.div
+            key={o.id}
+            className="absolute text-3xl"
+            style={{ left: o.x, top: o.y - 20 }}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1, rotate: [0, 8, -8, 0] }}
+            transition={{ duration: 0.8, repeat: Infinity }}
+          >
+            🚧
+          </motion.div>
+        ))}
+      </AnimatePresence>
+
+      {/* 过山车 - 使用 transform 代替 top 以提高性能 */}
+      <div
+        className="absolute z-20"
+        style={{
+          left: PLAYER_X,
+          top: cartY,
+        }}
+      >
+        <div className="relative">
+          {/* 车身 */}
+          <div className="w-16 h-8 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-lg shadow-lg border-2 border-white">
+            <div className="absolute top-1 left-1 w-2 h-2 bg-white/80 rounded-full" />
+            <div className="absolute top-1 left-6 w-2 h-2 bg-white/80 rounded-full" />
+            <motion.div
+              className="absolute -top-2 right-0 text-xl"
+              animate={{ scale: [1, 1.3, 1], y: [0, -5, 0] }}
+              transition={{ duration: 60 / heartRate, repeat: Infinity }}
+            >
+              💗
+            </motion.div>
+          </div>
+          {/* 轮子 */}
+          <div className="absolute -bottom-1 left-1 w-3 h-3 bg-gray-800 rounded-full border border-white" />
+          <div className="absolute -bottom-1 right-1 w-3 h-3 bg-gray-800 rounded-full border border-white" />
+        </div>
+      </div>
+
+      {/* 鼓励语 */}
+      <AnimatePresence>
+        {showMessage && (
+          <motion.div
+            className="absolute top-1/3 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
+            initial={{ scale: 0, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0, opacity: 0, y: -20 }}
+          >
+            <div className="bg-white/95 backdrop-blur rounded-xl px-4 py-2 shadow-xl border-2 border-pink-400">
+              <p className="text-sm font-black text-gray-700 text-center">{message}</p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
       {/* 底部提示 */}
-      <motion.div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-40" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}><div className="bg-white/80 backdrop-blur-xl rounded-full px-6 py-3 shadow-xl border-4 border-white/60"><p className="text-gray-700 font-bold text-sm">🖱️ 移动鼠标控制上下 · 按住加速 · ⬆️⬇️ 键盘也可控制</p></div></motion.div>
-
-      {/* 呼吸练习覆盖层 */}
-      <AnimatePresence>
-        {showBreathing && (
-          <motion.div className="absolute inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowBreathing(false)}><motion.div className="relative" initial={{ scale: 0.5 }} animate={{ scale: 1 }}><motion.div className="w-56 h-56 rounded-full flex items-center justify-center" style={{ background: `radial-gradient(circle, ${currentZone.color}80, ${currentZone.color}40)` }} animate={{ scale: breathPhase === 'inhale' ? [1, 1.5] : breathPhase === 'hold' ? 1.5 : [1.5, 1] }} transition={{ duration: breathPhase === 'inhale' ? 4 : breathPhase === 'hold' ? 2 : 4 }}><div className="text-center"><div className="text-5xl mb-3">{breathPhase === 'inhale' ? '🌬️' : breathPhase === 'hold' ? '😌' : '💨'}</div><div className="text-xl font-black text-white">{breathPhase === 'inhale' ? '吸气～' : breathPhase === 'hold' ? '屏住～' : '呼气～'}</div><div className="text-white/80 font-bold mt-2">第 {breathCount + 1} 次</div></div></motion.div></motion.div></motion.div>
-        )}
-      </AnimatePresence>
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-none">
+        <div className="bg-white/80 backdrop-blur rounded-full px-4 py-2 shadow-lg border-2 border-white/60">
+          <p className="text-xs font-bold text-gray-700">👆 点击跳跃 · 空格也可 · 心跳影响速度</p>
+        </div>
+      </div>
     </div>
   );
 };

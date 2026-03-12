@@ -1,5 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import {
+  getEmotions,
+  saveEmotion,
+  deleteAllEmotions,
+  type EmotionRecord as ApiEmotionRecord,
+} from '@/services/emotionApi';
 
 export type EmotionType =
   | 'happy'      // 开心
@@ -22,6 +28,7 @@ export interface EmotionState {
   todayDate: string | null;  // 记录当前情绪对应的日期
   history: EmotionRecord[];
   lastCleanupDate: string | null;  // 上次清理日期 YYYY-MM
+  isLoading: boolean;  // 加载状态
 
   // Actions
   setTodayEmotion: (emotion: EmotionType, intensity?: number) => void;
@@ -30,6 +37,10 @@ export interface EmotionState {
   clearHistory: () => void;
   checkAndResetDaily: () => void;  // 检查并重置每日情绪
   checkAndCleanupMonthly: () => void;  // 检查并清理月度数据
+  fetchEmotionsFromBackend: (year: number, month: number) => Promise<void>;  // 从后端加载情绪数据
+  syncEmotionsToBackend: () => Promise<boolean>;  // 同步到后端
+  deleteAllEmotionsFromBackend: () => Promise<boolean>;  // 删除后端数据
+  setLoading: (loading: boolean) => void;  // 设置加载状态
 }
 
 // 获取今天日期字符串 YYYY-MM-DD
@@ -65,6 +76,86 @@ export const useEmotionStore = create<EmotionState>()(
       todayDate: null,
       history: [],
       lastCleanupDate: getCurrentMonth(),
+      isLoading: false,
+
+      // 设置加载状态
+      setLoading: (loading) => set({ isLoading: loading }),
+
+      // 从后端加载情绪数据
+      fetchEmotionsFromBackend: async (year, month) => {
+        set({ isLoading: true });
+        try {
+          const records = await getEmotions(year, month);
+          // 转换类型并更新本地状态
+          const localRecords: EmotionRecord[] = records.map(r => ({
+            ...r,
+            emotion: r.emotion as EmotionType,
+          }));
+
+          // 合并到本地 history
+          const state = get();
+          const existingDates = new Set(state.history.map(r => r.date));
+
+          // 添加新记录（不重复）
+          const newRecords = localRecords.filter(r => !existingDates.has(r.date));
+          if (newRecords.length > 0) {
+            set({
+              history: [...state.history, ...newRecords].sort((a, b) => a.date.localeCompare(b.date)),
+            });
+            console.log(`📥 从后端加载 ${newRecords.length} 条情绪记录`);
+          }
+        } catch (error) {
+          console.error('加载情绪数据失败:', error);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      // 同步情绪数据到后端
+      syncEmotionsToBackend: async () => {
+        try {
+          const state = get();
+          const today = getTodayDate();
+          const todayRecord = state.history.find(r => r.date === today);
+
+          if (todayRecord) {
+            const apiRecord: ApiEmotionRecord = {
+              id: todayRecord.id,
+              date: todayRecord.date,
+              emotion: todayRecord.emotion,
+              intensity: todayRecord.intensity,
+              note: todayRecord.note,
+            };
+
+            const saved = await saveEmotion(apiRecord);
+            if (saved) {
+              console.log('✅ 情绪记录已同步到后端');
+              return true;
+            }
+          }
+          return false;
+        } catch (error) {
+          console.error('同步情绪数据失败:', error);
+          return false;
+        }
+      },
+
+      // 删除后端所有数据
+      deleteAllEmotionsFromBackend: async () => {
+        try {
+          const deleted = await deleteAllEmotions();
+          if (deleted) {
+            console.log('🗑️ 后端情绪记录已清空');
+            // 同时清空本地数据
+            set({ history: [], todayEmotion: null, todayDate: null });
+            return true;
+          }
+          return false;
+        } catch (error) {
+          console.error('删除后端数据失败:', error);
+          return false;
+        }
+      },
 
       // 检查并重置每日情绪 - 在应用启动时调用
       checkAndResetDaily: () => {
@@ -134,6 +225,9 @@ export const useEmotionStore = create<EmotionState>()(
           todayDate: today,
           history: newHistory,
         });
+
+        // 异步同步到后端
+        get().syncEmotionsToBackend();
       },
 
       getHistory: () => {
@@ -155,10 +249,21 @@ export const useEmotionStore = create<EmotionState>()(
           .sort((a, b) => a.date.localeCompare(b.date));
       },
 
-      clearHistory: () => set({ history: [] }),
+      clearHistory: () => {
+        set({ history: [], todayEmotion: null, todayDate: null });
+        // 同时清空后端数据
+        get().deleteAllEmotionsFromBackend();
+      },
     }),
     {
       name: 'rainbow-emotion-storage',
+      // 持久化时排除 isLoading 状态
+      partialize: (state) => ({
+        todayEmotion: state.todayEmotion,
+        todayDate: state.todayDate,
+        history: state.history,
+        lastCleanupDate: state.lastCleanupDate,
+      }),
     }
   )
 );

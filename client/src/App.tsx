@@ -5,6 +5,7 @@ import { MapScene } from '@/scenes/MapScene';
 import { GrassScene } from '@/scenes/GrassScene';
 import { PlaygroundScene } from '@/scenes/PlaygroundScene';
 import { ParentDashboard } from '@/scenes/ParentDashboard';
+import { EmotionDiaryScene } from '@/scenes/EmotionDiaryScene';
 import { RollerCoasterGame } from '@/games/RollerCoasterGame';
 import { FallCatchGame } from '@/games/FallCatchGame';
 import { ShadowHouseGame } from '@/games/ShadowHouseGame';
@@ -53,6 +54,8 @@ function App() {
         return <PlaygroundScene />;
       case 'parent-dashboard':
         return <ParentDashboard />;
+      case 'emotion-diary':
+        return <EmotionDiaryScene />;
       default:
         return <LoginScene />;
     }

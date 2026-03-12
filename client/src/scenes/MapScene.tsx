@@ -252,25 +252,25 @@ export const MapScene = memo(() => {
 
         {/* ========== 顶部标题栏 - 固定在顶部 ========== */}
         <motion.div
-          className="sticky top-0 left-0 right-0 z-50 flex items-center justify-between p-4"
+          className="sticky top-0 left-0 right-0 z-50 flex items-center justify-between p-2 sm:p-3 md:p-4"
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, type: 'spring', bounce: 0.6 }}
         >
           <motion.button
             onClick={() => navigateTo('home')}
-            className="bg-gradient-to-r from-pink-400 to-rose-400 backdrop-blur-xl px-4 py-2 rounded-full shadow-2xl border-4 border-white/60 font-black text-white text-sm md:text-lg"
+            className="bg-gradient-to-r from-pink-400 to-rose-400 backdrop-blur-xl px-2 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-white/60 font-black text-white text-xs sm:text-sm md:text-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             ← 回家
           </motion.button>
 
-          <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 backdrop-blur-xl px-4 py-2 rounded-full shadow-2xl border-4 border-white/60">
-            <span className="text-lg md:text-2xl font-black text-white drop-shadow-lg">🗺️ 奇妙世界地图</span>
+          <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 backdrop-blur-xl px-2 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-white/60">
+            <span className="text-sm sm:text-lg md:text-2xl font-black text-white drop-shadow-lg">🗺️ 奇妙世界地图</span>
           </div>
 
-          <div className="w-20 md:w-24" />
+          <div className="w-16 sm:w-20 md:w-24" />
         </motion.div>
 
         {/* ========== 地图路径内容区域 - 可滚动 ========== */}
@@ -308,7 +308,7 @@ export const MapScene = memo(() => {
         </svg>
 
         {/* 地点按钮容器 - 相对定位 */}
-        <div className="relative h-[500px] md:h-[600px]">
+        <div className="relative h-[400px] sm:h-[500px] md:h-[600px]">
           {/* ========== 地点按钮 - 全部开放，移除锁定 ========== */}
           {LOCATIONS.map((location, index) => {
           const isCurrentLocation = currentScene === location.id;
@@ -324,7 +324,7 @@ export const MapScene = memo(() => {
             >
               {/* 地点按钮主体 */}
               <motion.button
-                className={`relative w-28 h-28 md:w-36 md:h-36 rounded-full flex flex-col items-center justify-center shadow-2xl transform -translate-x-1/2 -translate-y-1/2 border-4 border-white/80`}
+                className={`relative w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-36 lg:h-36 rounded-full flex flex-col items-center justify-center shadow-2xl transform -translate-x-1/2 -translate-y-1/2 border-4 border-white/80`}
                 style={{
                   background: location.gradient
                 }}
@@ -333,11 +333,11 @@ export const MapScene = memo(() => {
                 onClick={() => handleLocationSelect(location.id, index)}
               >
                 {/* 内层光晕 */}
-                <div className="absolute inset-2 rounded-full bg-white/20 blur-md" />
+                <div className="absolute inset-1 sm:inset-2 rounded-full bg-white/20 blur-md" />
 
                 {/* Emoji 图标 */}
                 <motion.span
-                  className="text-5xl md:text-6xl mb-2 drop-shadow-2xl"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-1 sm:mb-2 drop-shadow-2xl"
                   animate={{
                     rotate: isCurrentLocation ? [0, 10, -10, 0] : [0, 5, -5, 0],
                     scale: isCurrentLocation ? [1, 1.15, 1] : [1, 1.05, 1],
@@ -348,7 +348,7 @@ export const MapScene = memo(() => {
                 </motion.span>
 
                 {/* 地点名称 */}
-                <span className="font-black text-sm md:text-base drop-shadow-2xl text-white">
+                <span className="font-black text-xs sm:text-sm md:text-base drop-shadow-2xl text-white">
                   {location.name}
                 </span>
 
@@ -407,17 +407,17 @@ export const MapScene = memo(() => {
               <motion.img
                 src={defaultAvatarUrl}
                 alt="卡通数字人"
-                className="w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-2xl relative z-10"
+                className="w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-2xl relative z-10"
                 style={{ filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.6))' }}
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
-                  e.target.nextElementSibling?.classList.remove('hidden');
+                  (e.target as HTMLImageElement).parentElement?.querySelector('.hidden')?.classList.remove('hidden');
                 }}
               />
 
               {/* 备用 emoji (图片加载失败时显示) */}
               <motion.div
-                className="hidden absolute inset-0 flex items-center justify-center text-6xl md:text-7xl drop-shadow-2xl z-10"
+                className="hidden absolute inset-0 flex items-center justify-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-2xl z-10"
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
@@ -428,7 +428,7 @@ export const MapScene = memo(() => {
               {isMoving && (
                 <>
                   <motion.div
-                    className="absolute text-lg -left-4 top-1/2"
+                    className="absolute text-xs sm:text-sm -left-4 top-1/2"
                     initial={{ opacity: 0, x: 0 }}
                     animate={{ opacity: [0.8, 0], x: -20 }}
                     transition={{ duration: 0.3, repeat: Infinity }}
@@ -441,12 +441,12 @@ export const MapScene = memo(() => {
 
             {/* 对话气泡 - 简化动画 */}
             <motion.div
-              className="absolute -top-14 left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-2xl px-4 py-2 shadow-2xl whitespace-nowrap border-3 border-white/60 z-20"
+              className="absolute -top-14 left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 rounded-2xl px-3 py-1.5 sm:px-4 sm:py-2 shadow-2xl whitespace-nowrap border-3 border-white/60 z-20"
               initial={{ scale: 0, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <span className="text-sm md:text-base font-black text-white drop-shadow-lg">
+              <span className="text-xs sm:text-sm md:text-base font-black text-white drop-shadow-lg">
                 {isMoving ? '🚀 出发咯～' : '🎉 到啦！'}
               </span>
               {/* 气泡尾巴 */}
@@ -456,7 +456,7 @@ export const MapScene = memo(() => {
         </AnimatePresence>
 
         {/* ========== 底部装饰草地带 - 简化动画 ========== */}
-        <div className="relative bottom-0 left-0 right-0 h-24 pointer-events-none z-20 mt-8">
+        <div className="relative bottom-0 left-0 right-0 h-16 sm:h-20 md:h-24 pointer-events-none z-20 mt-4 sm:mt-6 md:mt-8">
           {/* 第一层草地 - 静态 */}
           <svg viewBox="0 0 400 80" className="w-full h-full">
             {[...Array(30)].map((_, i) => (
@@ -473,7 +473,7 @@ export const MapScene = memo(() => {
           {[...Array(6)].map((_, i) => (
             <div
               key={`flower-${i}`}
-              className="absolute text-2xl md:text-3xl"
+              className="absolute text-lg sm:text-xl md:text-2xl lg:text-3xl"
               style={{
                 left: `${15 + i * 15}%`,
                 bottom: `${15 + (i % 2) * 10}px`,
@@ -486,13 +486,13 @@ export const MapScene = memo(() => {
 
         {/* ========== 浮动提示 - 静态 ========== */}
         <motion.div
-          className="sticky bottom-4 left-0 right-0 z-40 flex justify-center px-4"
+          className="sticky bottom-2 sm:bottom-4 left-0 right-0 z-40 flex justify-center px-2 sm:px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="bg-white/90 backdrop-blur-xl px-4 py-2 rounded-full shadow-2xl border-4 border-white/60">
-            <span className="text-xs md:text-base font-bold text-gray-700">
+          <div className="bg-white/90 backdrop-blur-xl px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-white/60">
+            <span className="text-xs sm:text-sm md:text-base font-bold text-gray-700">
               👆 点击地点，小人会飞过去哦～ 🏃‍♀️
             </span>
           </div>
