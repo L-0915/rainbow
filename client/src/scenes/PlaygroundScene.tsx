@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useAppStore, PlaygroundGame } from '@/store/appStore';
 import { memo } from 'react';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 
 const GAMES: {
   id: PlaygroundGame;
@@ -107,7 +108,7 @@ export const PlaygroundScene = memo(() => {
           >
             {/* 入口图片 */}
             <motion.img
-              src="/游乐场入口.png"
+              src={getPublicUrl('/游乐场入口.png')}
               alt="游乐场入口"
               className="relative rounded-2xl sm:rounded-3xl shadow-2xl w-full object-contain border-4 sm:border-8 border-white/80"
               whileHover={{ scale: 1.02 }}

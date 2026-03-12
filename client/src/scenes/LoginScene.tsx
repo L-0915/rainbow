@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
 import { useCharacterStore } from '@/store/characterStore';
 import { useState, memo, useMemo } from 'react';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 
 // 卡通风格输入框
 const CartoonInput = ({ value, onChange, placeholder, type = 'text', icon }: {
@@ -150,8 +151,8 @@ export const LoginScene = memo(() => {
 
   // 获取当前角色图片路径 - 根据 avatarStyle id 映射到实际文件名
   const currentAvatarUrl = characterConfig?.avatarStyle
-    ? (characterConfig.avatarStyle === '卡通2' ? '/卡通数字人2.png' : '/卡通数字人.png')
-    : '/卡通数字人.png';
+    ? (characterConfig.avatarStyle === '卡通2' ? getPublicUrl('/卡通数字人2.png') : getPublicUrl('/卡通数字人.png'))
+    : getPublicUrl('/卡通数字人.png');
 
   // 忘记密码相关状态
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -198,7 +199,7 @@ export const LoginScene = memo(() => {
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/login-bg.png')`,
+          backgroundImage: `url('${getPublicUrl('/login-bg.png')}')`,
         }}
       />
 

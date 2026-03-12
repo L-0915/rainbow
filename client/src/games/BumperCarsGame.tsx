@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAppStore } from '@/store/appStore';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 
 /**
  * 💓 心跳共振 - Heartbeat Resonance
@@ -97,7 +98,7 @@ export const BumperCarsGame = () => {
   const endGame = useAppStore((state) => state.endGame);
 
   // 默认角色图片
-  const defaultAvatarUrl = '/卡通数字人.png';
+  const defaultAvatarUrl = getPublicUrl('/卡通数字人.png');
 
   // 游戏状态
   const [gamePhase, setGamePhase] = useState<'intro' | 'playing' | 'breathing' | 'finished'>('intro');

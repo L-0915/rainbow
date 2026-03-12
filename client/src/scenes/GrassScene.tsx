@@ -4,6 +4,7 @@ import { useEmotionStore } from '@/store/emotionStore';
 import { useCharacterStore } from '@/store/characterStore';
 import { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { MessageBottle } from '@/components/bottle/MessageBottle';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 
 type CharacterAction = 'stand' | 'lie' | 'roll';
 
@@ -91,8 +92,8 @@ export const GrassScene = memo(() => {
 
   // 获取当前角色图片路径 - 根据 avatarStyle id 映射到实际文件名
   const currentAvatarUrl = characterConfig?.avatarStyle === '卡通2'
-    ? '/卡通数字人2.png'
-    : '/卡通数字人.png';
+    ? getPublicUrl('/卡通数字人2.png')
+    : getPublicUrl('/卡通数字人.png');
 
   const handleLieDown = () => {
     setCharacterAction('lie');
@@ -141,7 +142,7 @@ export const GrassScene = memo(() => {
       <div
         className="fixed inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/草地.png')`,
+          backgroundImage: `url('${getPublicUrl('/草地.png')}')`,
           opacity: 0.5,
         }}
       />

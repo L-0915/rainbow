@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 import { useAppStore } from '@/store/appStore';
 
 // 积极的下落元素：爱心、星星、彩虹、花朵、糖果、阳光等
@@ -529,7 +530,7 @@ export const FallCatchGame = () => {
           transition={{ duration: 0.6, repeat: Infinity }}
         >
           <img
-            src="/彩虹3.png"
+            src={getPublicUrl('/彩虹3.png')}
             alt="彩虹篮子"
             className="w-full h-full object-contain"
             draggable={false}

@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppStore } from '@/store/appStore';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 import { useCharacterStore } from '@/store/characterStore';
+import { useAppStore } from '@/store/appStore';
 
 // 情绪影子数据 - 每个影子都有多条温暖鼓励的话语（随机显示）
 const SHADOWS = [
@@ -118,8 +119,8 @@ export const ShadowHouseGame = () => {
 
   // 获取当前角色图片路径 - 根据 avatarStyle id 映射到实际文件名
   const currentAvatarUrl = characterConfig?.avatarStyle === '卡通2'
-    ? '/卡通数字人2.png'
-    : '/卡通数字人.png';
+    ? getPublicUrl('/卡通数字人2.png')
+    : getPublicUrl('/卡通数字人.png');
 
   // 游戏状态
   const [entered, setEntered] = useState(false);

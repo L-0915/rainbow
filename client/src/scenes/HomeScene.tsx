@@ -4,6 +4,7 @@ import { useEmotionStore, EMOTION_CONFIG, EmotionType } from '@/store/emotionSto
 import { useCharacterStore, AVATAR_STYLES } from '@/store/characterStore';
 import { useState, useEffect, useCallback, useMemo, memo, useRef } from 'react';
 import { RainbowChatDialog } from '@/components/chat/RainbowChatDialog';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 
 // 性能优化：GPU 加速 CSS 类
 const GPU_ACCEL = 'will-change-transform content-visibility-auto';
@@ -549,7 +550,7 @@ const AvatarSelector = memo(({
                   alt={style.label}
                   className="w-full h-full object-contain"
                   onError={(e) => {
-                    const fallback = style.id === '卡通 2' ? '/卡通数字人 2.png' : '/卡通数字人.png';
+                    const fallback = style.id === '卡通2' ? getPublicUrl('/卡通数字人2.png') : getPublicUrl('/卡通数字人.png');
                     (e.target as HTMLImageElement).src = fallback;
                   }}
                 />
@@ -612,7 +613,7 @@ export const HomeScene = () => {
   // 预加载背景图片
   useEffect(() => {
     const img = new Image();
-    img.src = '/home-bg.png';
+    img.src = getPublicUrl('/home-bg.png');
     img.onload = () => setBgLoaded(true);
     img.onerror = () => setBgLoaded(true);
 
@@ -622,7 +623,7 @@ export const HomeScene = () => {
 
   // 获取当前角色图片路径
   const currentAvatarUrl = useMemo(() =>
-    characterConfig.avatarStyle === '卡通 2' ? '/卡通数字人 2.png' : '/卡通数字人.png',
+    characterConfig.avatarStyle === '卡通 2' ? getPublicUrl('/卡通数字人 2.png') : getPublicUrl('/卡通数字人.png'),
     [characterConfig.avatarStyle]
   );
 
@@ -644,7 +645,7 @@ export const HomeScene = () => {
       {/* 背景图片 */}
       <div
         className={`fixed inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{ backgroundImage: `url('/home-bg.png')` }}
+        style={{ backgroundImage: `url('${getPublicUrl('/home-bg.png')}')` }}
       />
 
       {!bgLoaded && (
@@ -720,7 +721,7 @@ export const HomeScene = () => {
               animate={characterFloatAnimation}
               transition={{ duration: 3, repeat: Infinity, delay: 0.15 }}
               onError={(e) => {
-                (e.target as HTMLImageElement).src = '/卡通数字人.png';
+                (e.target as HTMLImageElement).src = getPublicUrl('/卡通数字人.png');
               }}
             />
 

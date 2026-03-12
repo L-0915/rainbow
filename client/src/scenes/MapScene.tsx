@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore, SceneType } from '@/store/appStore';
+import { useCharacterStore } from '@/store/characterStore';
 import { useState, useEffect, memo } from 'react';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 
 // 地点配置 - 横版卷轴布局
 const LOCATIONS: {
@@ -73,12 +75,15 @@ const DECORATIONS = [
 export const MapScene = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const currentScene = useAppStore((state) => state.currentScene);
+  const { config: characterConfig } = useCharacterStore();
   const [targetIndex, setTargetIndex] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // 默认角色图片
-  const defaultAvatarUrl = '/卡通数字人.png';
+  // 获取当前角色图片路径 - 根据 avatarStyle id 映射到实际文件名
+  const currentAvatarUrl = characterConfig?.avatarStyle === '卡通 2'
+    ? getPublicUrl('/卡通数字人 2.png')
+    : getPublicUrl('/卡通数字人.png');
 
   // 数字人位置状态（用于飞行动画）
   const [characterPosition, setCharacterPosition] = useState({ x: 50, y: 28 });
@@ -405,7 +410,7 @@ export const MapScene = memo(() => {
 
               {/* 卡通数字人图片 */}
               <motion.img
-                src={defaultAvatarUrl}
+                src={currentAvatarUrl}
                 alt="卡通数字人"
                 className="w-14 h-14 sm:w-16 sm:h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 object-contain drop-shadow-2xl relative z-10"
                 style={{ filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.6))' }}

@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useCharacterStore } from '@/store/characterStore';
+import { getPublicUrl } from '@/utils/getPublicUrl';
 
 // 情绪小可爱们 - 只保留积极正面的表情（7 个）
 const EMOTION_PETS = [
@@ -75,8 +76,8 @@ export const MerryGoRoundGame = () => {
 
   // 获取当前角色图片路径 - 根据 avatarStyle id 映射到实际文件名
   const currentAvatarUrl = characterConfig?.avatarStyle === '卡通2'
-    ? '/卡通数字人2.png'
-    : '/卡通数字人.png';
+    ? getPublicUrl('/卡通数字人2.png')
+    : getPublicUrl('/卡通数字人.png');
 
   // 游戏状态
   const [gameStarted, setGameStarted] = useState(false);
