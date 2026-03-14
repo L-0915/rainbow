@@ -3,7 +3,6 @@ import { useAppStore, useAuthStore } from '@/store/appStore';
 import { useCharacterStore } from '@/store/characterStore';
 import { useState, memo, useMemo } from 'react';
 import { getPublicUrl } from '@/utils/getPublicUrl';
-import { login as apiLogin, register as apiRegister, isAuthenticated } from '@/services/auth';
 
 // 卡通风格输入框
 const CartoonInput = ({ value, onChange, placeholder, type = 'text', icon }: {
@@ -149,7 +148,6 @@ export const LoginScene = memo(() => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const setUserInfo = useAuthStore((state) => state.setUserInfo);
 
@@ -165,36 +163,7 @@ export const LoginScene = memo(() => {
   const [code, setCode] = useState('');
   const [countdown, setCountdown] = useState(0);
 
-  const handleLogin = async () => {
-    if (!username.trim() || !password.trim()) {
-      setError('请输入用户名和密码');
-      return;
-    }
-
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const result = await apiLogin({
-        nickname: username.trim(),
-        password: password.trim(),
-      });
-
-      // 保存用户信息
-      setUserInfo(result.parent, result.child);
-
-      if (!hasInitialized) {
-        setHasInitialized(true);
-      }
-      login();
-    } catch (err: any) {
-      setError(err.message || '登录失败，请检查用户名和密码');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleRegister = async () => {
+  const handleLogin = () => {
     if (!username.trim() || !password.trim()) {
       setError('请输入用户名和密码');
       return;
@@ -205,28 +174,43 @@ export const LoginScene = memo(() => {
       return;
     }
 
-    setIsLoading(true);
     setError('');
 
-    try {
-      const result = await apiRegister({
-        nickname: username.trim(),
-        password: password.trim(),
-        phone: undefined,
-      });
+    // Mock 用户信息
+    setUserInfo(
+      { id: 1, nickname: username.trim() },
+      { id: 1, nickname: '宝贝', avatar: 'default.png' }
+    );
 
-      // 保存用户信息
-      setUserInfo(result.parent, result.child);
-
-      if (!hasInitialized) {
-        setHasInitialized(true);
-      }
-      login();
-    } catch (err: any) {
-      setError(err.message || '注册失败');
-    } finally {
-      setIsLoading(false);
+    if (!hasInitialized) {
+      setHasInitialized(true);
     }
+    login();
+  };
+
+  const handleRegister = () => {
+    if (!username.trim() || !password.trim()) {
+      setError('请输入用户名和密码');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('密码长度至少 6 位');
+      return;
+    }
+
+    setError('');
+
+    // Mock 用户信息
+    setUserInfo(
+      { id: 1, nickname: username.trim() },
+      { id: 1, nickname: '宝贝', avatar: 'default.png' }
+    );
+
+    if (!hasInitialized) {
+      setHasInitialized(true);
+    }
+    login();
   };
 
   const handleSendCode = () => {
@@ -524,8 +508,8 @@ export const LoginScene = memo(() => {
 
           {/* 登录按钮 - 居中 */}
           <div className="flex justify-center mb-4 sm:mb-6">
-            <RainbowButton onClick={isLoginMode ? handleLogin : handleRegister} disabled={isLoading}>
-              {isLoading ? (isLoginMode ? '🌈 登录中...' : '✨ 注册中...') : (isLoginMode ? '🌈 登 录' : '✨ 注 册')}
+            <RainbowButton onClick={isLoginMode ? handleLogin : handleRegister}>
+              {isLoginMode ? '🌈 登 录' : '✨ 注 册'}
             </RainbowButton>
           </div>
 
