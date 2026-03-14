@@ -21,6 +21,25 @@ export interface Achievement {
   sentToParent: boolean;
 }
 
+export interface UserInfo {
+  id: number;
+  nickname: string;
+  phone?: string;
+}
+
+export interface ChildInfo {
+  id: number;
+  nickname: string;
+  avatar: string;
+}
+
+export interface AuthState {
+  parent: UserInfo | null;
+  child: ChildInfo | null;
+  setUserInfo: (parent: UserInfo, child: ChildInfo) => void;
+  clearUserInfo: () => void;
+}
+
 export interface AchievementState {
   achievements: Record<string, Achievement>;
   unlockAchievement: (id: string) => void;
@@ -101,22 +120,52 @@ const defaultAchievements: Record<string, Achievement> = {
   },
 };
 
-export const useAppStore = create<AppState>()(
+// 用户认证 store
+export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
+      parent: null,
+      child: null,
+
+      setUserInfo: (parent, child) => set({ parent, child }),
+
+      clearUserInfo: () => set({ parent: null, child: null }),
+    }),
+    {
+      name: 'rainbow-auth-storage',
+    }
+  )
+);
+
+export const useAppStore = create<AppState>()(
+  persist(
+    (set, get) => ({
       currentScene: 'login',
       isLoggedIn: false,
       currentGame: null,
       isTransitioning: false,
       hasEnteredPlayground: false,
 
-      login: () => set({ isLoggedIn: true, currentScene: 'home' }),
+      login: () => {
+        // 检查是否有用户信息，如果有则直接跳转到主页
+        const state = get();
+        if (state.isLoggedIn) {
+          set({ currentScene: 'home' });
+        } else {
+          // 如果没有登录，保持在登录页面
+          set({ currentScene: 'login' });
+        }
+      },
 
-      logout: () => set({
-        isLoggedIn: false,
-        currentScene: 'login',
-        currentGame: null,
-      }),
+      logout: () => {
+        set({
+          isLoggedIn: false,
+          currentScene: 'login',
+          currentGame: null,
+        });
+        // 清除 auth store
+        useAuthStore.getState().clearUserInfo();
+      },
 
       navigateTo: (scene) => set({ currentScene: scene }),
 

@@ -65,9 +65,10 @@ app.add_middleware(
 )
 
 # ============ 导入路由 ============
-from app.api import parents, children, rainbow_chat
+from app.api import parents, children, rainbow_chat, auth
 
 # 注册路由
+app.include_router(auth.router, prefix="/api/auth", tags=["用户认证"])
 app.include_router(parents.router, prefix="/api/parents", tags=["家长端"])
 app.include_router(children.router, prefix="/api/children", tags=["孩子端"])
 app.include_router(rainbow_chat.router, prefix="/api/rainbow-chat", tags=["小彩虹聊天"])

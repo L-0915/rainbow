@@ -1,4 +1,4 @@
-import { useAppStore } from '@/store/appStore';
+import { useAppStore, useAuthStore } from '@/store/appStore';
 import { LoginScene } from '@/scenes/LoginScene';
 import { HomeScene } from '@/scenes/HomeScene';
 import { MapScene } from '@/scenes/MapScene';
@@ -13,11 +13,32 @@ import { MerryGoRoundGame } from '@/games/MerryGoRoundGame';
 import { PaperPlaneGame } from '@/games/PaperPlaneGame';
 import { BumperCarsGame } from '@/games/BumperCarsGame';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
+import { isAuthenticated, getCurrentUser, logout } from '@/services/auth';
 
 function App() {
   const currentScene = useAppStore((state) => state.currentScene);
   const currentGame = useAppStore((state) => state.currentGame);
   const isTransitioning = useAppStore((state) => state.isTransitioning);
+  const login = useAppStore((state) => state.login);
+  const setUserInfo = useAuthStore((state) => state.setUserInfo);
+
+  // 检查登录状态
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (isAuthenticated()) {
+        const userInfo = await getCurrentUser();
+        if (userInfo) {
+          setUserInfo(userInfo.parent, userInfo.child);
+          login();
+        } else {
+          // Token 无效，清除并跳转到登录页
+          logout();
+        }
+      }
+    };
+    checkAuth();
+  }, []);
 
   const renderScene = () => {
     // 如果正在游戏中，优先渲染游戏
