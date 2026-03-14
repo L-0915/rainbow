@@ -393,7 +393,6 @@ export const HomeScene = () => {
   const [showPanel, setShowPanel] = useState(!todayEmotion);
   const [showAIResponse, setShowAIResponse] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [bgLoaded, setBgLoaded] = useState(false);
 
   // 性能优化：使用 useMemo 缓存动画配置
   const titleScaleAnimation = useMemo(() => ({ scale: [1, 1.02, 1] }), []);
@@ -412,13 +411,8 @@ export const HomeScene = () => {
     { rotate: [0, 8, -8, 0], scale: [1, 1.08, 1] },
   ], []);
 
-  // 预加载背景图片
+  // 初始化：检查每曰/每月重置
   useEffect(() => {
-    const img = new Image();
-    img.src = getPublicUrl('/home-bg.png');
-    img.onload = () => setBgLoaded(true);
-    img.onerror = () => setBgLoaded(true);
-
     checkAndResetDaily();
     checkAndCleanupMonthly();
   }, []);
@@ -441,18 +435,8 @@ export const HomeScene = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden">
-      {/* 背景图片 */}
-      <div
-        className={`fixed inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
-        style={{ backgroundImage: `url('${getPublicUrl('/home-bg.png')}')` }}
-      />
-
-      {!bgLoaded && (
-        <div className="fixed inset-0 bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 transition-opacity duration-700" />
-      )}
-
-      {/* 渐变遮罩 */}
-      <div className="fixed inset-0 bg-gradient-to-b from-black/10 via-black/5 to-black/40" />
+      {/* 渐变背景 - 移除背景图片 */}
+      <div className="fixed inset-0 bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200" />
 
       {/* 顶部标题栏 - 简化版 */}
       <div className="sticky top-0 z-20 flex items-center justify-center p-2 sm:p-3 md:p-4">

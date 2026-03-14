@@ -65,75 +65,12 @@ const GAMES: {
 export const PlaygroundScene = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const startGame = useAppStore((state) => state.startGame);
-  const hasEnteredPlayground = useAppStore((state) => state.hasEnteredPlayground);
-  const setHasEnteredPlayground = useAppStore((state) => state.setHasEnteredPlayground);
-
-  const handleEnterPlayground = () => {
-    setHasEnteredPlayground(true);
-  };
 
   const handleGameSelect = (gameId: PlaygroundGame) => {
     startGame(gameId);
   };
 
-  const handleBackToEntrance = () => {
-    setHasEnteredPlayground(false);
-  };
-
-  // 入口界面 - 显示游乐场入口图片
-  if (!hasEnteredPlayground) {
-    return (
-      <div className="relative min-h-screen w-full overflow-hidden">
-        {/* 渐变背景 */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-300 via-pink-200 to-yellow-100" />
-
-        {/* 顶部导航 */}
-        <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 z-50">
-          <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 backdrop-blur-xl px-3 py-1.5 sm:px-6 sm:py-3 rounded-full shadow-2xl border-4 border-white/60">
-            <span className="text-sm sm:text-xl font-black text-white drop-shadow-lg">🎡 游乐场</span>
-          </div>
-        </div>
-
-        {/* 入口图片容器 */}
-        <div className="relative z-10 flex items-center justify-center min-h-screen px-4 py-20">
-          <motion.div
-            className="relative w-full max-w-md"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            {/* 入口图片 */}
-            <motion.img
-              src={getPublicUrl('/游乐场入口.png')}
-              alt="游乐场入口"
-              className="relative rounded-2xl sm:rounded-3xl shadow-2xl w-full object-contain border-4 sm:border-8 border-white/80"
-              whileHover={{ scale: 1.02 }}
-            />
-
-            {/* 进入按钮 */}
-            <motion.div
-              className="absolute -bottom-16 sm:-bottom-24 left-1/2 -translate-x-1/2 w-full px-4"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <motion.button
-                onClick={handleEnterPlayground}
-                className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 text-white font-black text-lg sm:text-2xl py-3 px-8 sm:py-5 sm:px-16 rounded-full shadow-2xl border-4 border-white/60 flex items-center gap-2 sm:gap-3 justify-center w-full"
-                whileHover={{ scale: 1.1, y: -5 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <span>进入游乐场</span>
-                <span>➜</span>
-              </motion.button>
-            </motion.div>
-          </motion.div>
-        </div>
-      </div>
-    );
-  }
-
-  // 游乐场主界面 - 优化性能，减少动画
+  // 直接显示游乐场主界面
   return (
     <div className="relative min-h-screen w-full overflow-hidden">
       {/* 游乐场背景 */}
