@@ -27,6 +27,11 @@ export const BottomNavBar = memo(({ hideHome = false }: BottomNavBarProps) => {
       emoji: '🎡',
       label: '游乐场',
     },
+    {
+      scene: 'parent-dashboard' as const,
+      emoji: '⌚',
+      label: '手表',
+    },
   ];
 
   return (
@@ -41,9 +46,9 @@ export const BottomNavBar = memo(({ hideHome = false }: BottomNavBarProps) => {
               return (
                 <div
                   key={item.scene}
-                  className="flex flex-col items-center gap-1 px-6 py-2 opacity-50"
+                  className="flex flex-col items-center gap-1 px-4 py-2 opacity-50"
                 >
-                  <div className="text-3xl">{item.emoji}</div>
+                  <div className="text-2xl">{item.emoji}</div>
                   <span className="text-xs font-bold text-gray-500">{item.label}</span>
                 </div>
               );
@@ -53,13 +58,13 @@ export const BottomNavBar = memo(({ hideHome = false }: BottomNavBarProps) => {
               <motion.button
                 key={item.scene}
                 onClick={() => navigateTo(item.scene)}
-                className={`flex flex-col items-center gap-1 px-6 py-2 ${
+                className={`flex flex-col items-center gap-1 px-4 py-2 ${
                   isActive ? 'scale-110' : ''
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <div className="text-3xl">{item.emoji}</div>
+                <div className="text-2xl">{item.emoji}</div>
                 <span className={`text-xs font-black ${
                   isActive ? 'text-pink-500' : 'text-gray-700'
                 }`}>
