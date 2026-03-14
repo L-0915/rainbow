@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useAppStore, PlaygroundGame } from '@/store/appStore';
 import { memo } from 'react';
+import { BottomNavBar } from '@/components/BottomNavBar';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
 const GAMES: {
@@ -87,15 +88,10 @@ export const PlaygroundScene = memo(() => {
         <div className="absolute inset-0 bg-gradient-to-br from-purple-300 via-pink-200 to-yellow-100" />
 
         {/* 顶部导航 */}
-        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-50">
-          <motion.button
-            onClick={() => navigateTo('home')}
-            className="bg-white/80 backdrop-blur-xl px-3 py-2 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60 text-sm sm:text-base"
-            whileHover={{ scale: 1.08 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            ← 回家
-          </motion.button>
+        <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 z-50">
+          <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 backdrop-blur-xl px-3 py-1.5 sm:px-6 sm:py-3 rounded-full shadow-2xl border-4 border-white/60">
+            <span className="text-sm sm:text-xl font-black text-white drop-shadow-lg">🎡 游乐场</span>
+          </div>
         </div>
 
         {/* 入口图片容器 */}
@@ -159,21 +155,10 @@ export const PlaygroundScene = memo(() => {
       </div>
 
       {/* 顶部导航栏 */}
-      <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-50 flex items-center justify-between gap-2">
-        <motion.button
-          onClick={handleBackToEntrance}
-          className="bg-white/80 backdrop-blur-xl px-2 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60 text-xs sm:text-base whitespace-nowrap"
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          ← 返回
-        </motion.button>
-
+      <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 z-50">
         <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 backdrop-blur-xl px-3 py-1.5 sm:px-6 sm:py-3 rounded-full shadow-2xl border-4 border-white/60">
           <span className="text-base sm:text-xl font-black text-white drop-shadow-lg">🎡 游乐场</span>
         </div>
-
-        <div className="w-8 sm:w-24" />
       </div>
 
       {/* 主内容区域 */}
@@ -242,6 +227,9 @@ export const PlaygroundScene = memo(() => {
           ))}
         </svg>
       </div>
+
+      {/* 底部导航栏 */}
+      <BottomNavBar />
     </div>
   );
 });

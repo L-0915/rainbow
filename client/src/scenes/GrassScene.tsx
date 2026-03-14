@@ -4,6 +4,7 @@ import { useEmotionStore } from '@/store/emotionStore';
 import { useCharacterStore } from '@/store/characterStore';
 import { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { MessageBottle } from '@/components/bottle/MessageBottle';
+import { BottomNavBar } from '@/components/BottomNavBar';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
 type CharacterAction = 'stand' | 'lie' | 'roll';
@@ -171,20 +172,11 @@ export const GrassScene = memo(() => {
 
       {/* 顶部标题栏 - 固定在顶部 */}
       <motion.div
-        className="fixed top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 z-50 flex items-center justify-between"
+        className="fixed top-2 sm:top-4 left-1/2 -translate-x-1/2 z-50"
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <motion.button
-          onClick={() => navigateTo('home')}
-          className="bg-white/80 backdrop-blur-xl px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-xl font-black text-gray-700 border-4 border-white/60 text-xs sm:text-base"
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          ← 回家
-        </motion.button>
-
         <motion.div
           className="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 backdrop-blur-xl px-3 py-1.5 sm:px-6 sm:py-3 rounded-full shadow-2xl border-4 border-white/60"
           animate={{
@@ -195,9 +187,6 @@ export const GrassScene = memo(() => {
         >
           <span className="text-sm sm:text-xl font-black text-white drop-shadow-lg">🌿 情绪草地</span>
         </motion.div>
-
-        {/* 占位，保持标题居中 */}
-        <div className="w-16 sm:w-24" />
       </motion.div>
 
       {/* ========== 天空区域 - 治愈云朵 ========== */}
@@ -531,6 +520,9 @@ export const GrassScene = memo(() => {
 
       {/* 漂流瓶组件 */}
       <MessageBottle />
+
+      {/* 底部导航栏 */}
+      <BottomNavBar />
 
       {/* ========== 阳光射线效果 ========== */}
       <div className="fixed top-0 left-0 right-0 h-48 sm:h-56 md:h-64 pointer-events-none z-5 overflow-hidden">

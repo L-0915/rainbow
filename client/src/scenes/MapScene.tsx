@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore, SceneType } from '@/store/appStore';
 import { useCharacterStore } from '@/store/characterStore';
 import { useState, useEffect, memo } from 'react';
+import { BottomNavBar } from '@/components/BottomNavBar';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
 // 地点配置 - 横版卷轴布局
@@ -257,25 +258,14 @@ export const MapScene = memo(() => {
 
         {/* ========== 顶部标题栏 - 固定在顶部 ========== */}
         <motion.div
-          className="sticky top-0 left-0 right-0 z-50 flex items-center justify-between p-2 sm:p-3 md:p-4"
+          className="sticky top-0 left-1/2 -translate-x-1/2 z-50 flex justify-center p-2 sm:p-3 md:p-4"
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, type: 'spring', bounce: 0.6 }}
         >
-          <motion.button
-            onClick={() => navigateTo('home')}
-            className="bg-gradient-to-r from-pink-400 to-rose-400 backdrop-blur-xl px-2 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-white/60 font-black text-white text-xs sm:text-sm md:text-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            ← 回家
-          </motion.button>
-
           <div className="bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 backdrop-blur-xl px-2 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-white/60">
             <span className="text-sm sm:text-lg md:text-2xl font-black text-white drop-shadow-lg">🗺️ 奇妙世界地图</span>
           </div>
-
-          <div className="w-16 sm:w-20 md:w-24" />
         </motion.div>
 
         {/* ========== 地图路径内容区域 - 可滚动 ========== */}
@@ -491,7 +481,7 @@ export const MapScene = memo(() => {
 
         {/* ========== 浮动提示 - 静态 ========== */}
         <motion.div
-          className="sticky bottom-2 sm:bottom-4 left-0 right-0 z-40 flex justify-center px-2 sm:px-4"
+          className="sticky bottom-20 sm:bottom-24 left-0 right-0 z-40 flex justify-center px-2 sm:px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -504,6 +494,9 @@ export const MapScene = memo(() => {
         </motion.div>
 
       </div>
+
+      {/* 底部导航栏 */}
+      <BottomNavBar />
     </div>
   );
 });

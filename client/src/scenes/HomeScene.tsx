@@ -3,6 +3,7 @@ import { useAppStore, PlaygroundGame } from '@/store/appStore';
 import { useEmotionStore, EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
 import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { RainbowChatDialog } from '@/components/chat/RainbowChatDialog';
+import { BottomNavBar } from '@/components/BottomNavBar';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
 // 情绪对应游戏配置
@@ -589,42 +590,7 @@ export const HomeScene = () => {
       </div>
 
       {/* 底部导航栏 - 经典 App 布局 */}
-      <div className="fixed bottom-0 left-0 right-0 z-20">
-        <div className="bg-white/90 backdrop-blur-xl border-t-4 border-white/60 shadow-2xl">
-          <div className="flex items-center justify-around py-2 pb-4">
-            {/* 草地 */}
-            <motion.button
-              onClick={() => navigateTo('grass')}
-              className="flex flex-col items-center gap-1 px-6 py-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="text-3xl">🌿</div>
-              <span className="text-xs font-bold text-gray-700">草地</span>
-            </motion.button>
-
-            {/* 家园 - 当前页 */}
-            <motion.div
-              className="flex flex-col items-center gap-1 px-6 py-2"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="text-3xl">🏠</div>
-              <span className="text-xs font-black text-pink-500">家园</span>
-            </motion.div>
-
-            {/* 游乐场 */}
-            <motion.button
-              onClick={() => navigateTo('playground')}
-              className="flex flex-col items-center gap-1 px-6 py-2"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="text-3xl">🎡</div>
-              <span className="text-xs font-bold text-gray-700">游乐场</span>
-            </motion.button>
-          </div>
-        </div>
-      </div>
+      <BottomNavBar hideHome={true} />
 
       {/* 底部草地装饰带 - 保留 SVG 动画，优化性能 */}
       <div className="fixed bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-green-500/50 to-transparent pointer-events-none z-0">

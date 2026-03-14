@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
 import { useEmotionStore, EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
 import { useState, useEffect, useMemo, memo } from 'react';
+import { BottomNavBar } from '@/components/BottomNavBar';
 
 // 获取当月天数
 const getDaysInMonth = (year: number, month: number) => {
@@ -346,25 +347,14 @@ export const EmotionDiaryScene = memo(() => {
 
       {/* 顶部导航栏 */}
       <motion.div
-        className="sticky top-0 left-0 right-0 z-50 flex items-center justify-between p-2 sm:p-3 md:p-4"
+        className="sticky top-0 left-1/2 -translate-x-1/2 z-50 flex justify-center p-2 sm:p-3 md:p-4"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3, type: 'spring', bounce: 0.6 }}
       >
-        <motion.button
-          onClick={() => navigateTo('home')}
-          className="bg-gradient-to-r from-green-500 to-emerald-500 backdrop-blur-xl px-2 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-white/60 font-black text-white text-xs sm:text-sm md:text-lg"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          ← 回家
-        </motion.button>
-
         <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 backdrop-blur-xl px-2 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-white/60">
           <span className="text-sm sm:text-lg md:text-xl font-black text-white drop-shadow-lg">📔 情绪日记</span>
         </div>
-
-        <div className="w-16 sm:w-20 md:w-24" />
       </motion.div>
 
       {/* 主要内容区域 */}
@@ -505,7 +495,7 @@ export const EmotionDiaryScene = memo(() => {
 
         {/* 底部提示 */}
         <motion.div
-          className="bg-white/90 backdrop-blur-xl px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-green-200"
+          className="bg-white/90 backdrop-blur-xl px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-2xl border-4 border-green-200 mb-20"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1 }}
@@ -516,6 +506,9 @@ export const EmotionDiaryScene = memo(() => {
         </motion.div>
 
       </div>
+
+      {/* 底部导航栏 */}
+      <BottomNavBar />
     </div>
   );
 });
