@@ -4,14 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'client/**'
-      - '.github/workflows/build-apk.yml'
-  pull_request:
-    branches:
-      - master
-    paths:
-      - 'client/**'
   workflow_dispatch:
 
 env:
