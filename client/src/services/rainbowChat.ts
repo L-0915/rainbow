@@ -5,7 +5,7 @@
  */
 
 // 后端 API 基础 URL - 部署时根据实际地址配置
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
