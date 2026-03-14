@@ -625,9 +625,9 @@ export const HomeScene = () => {
         {showChat && <RainbowChatDialog isOpen={showChat} onClose={() => setShowChat(false)} />}
       </AnimatePresence>
 
-      {/* 联系家长弹窗 */}
+      {/* 闪闪发光时刻弹窗 */}
       <AnimatePresence>
-        {showContactParent && <ContactParentDialog onClose={() => setShowContactParent(false)} />}
+        {showContactParent && <StarMomentDialog onClose={() => setShowContactParent(false)} />}
       </AnimatePresence>
     </div>
   );
