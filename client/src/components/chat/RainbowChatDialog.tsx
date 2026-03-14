@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sendChatMessage, getGreeting, type ChatMessage } from '@/services/rainbowChat';
+import { useAchievementStore } from '@/store/appStore';
 import { Rainbow } from '@/components/rainbow/Rainbow';
 
 interface RainbowChatDialogProps {
@@ -23,6 +24,8 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
   const [rainbowMood, setRainbowMood] = useState<'happy' | 'calm' | 'excited'>('happy');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const unlockAchievement = useAchievementStore((state) => state.unlockAchievement);
+  const [hasUnlockedChatAchievement, setHasUnlockedChatAchievement] = useState(false);
 
   // 滚动到底部 - 性能优化：使用 useCallback 缓存
   const scrollToBottom = useCallback(() => {
@@ -43,6 +46,14 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
       });
     }
   }, [isOpen]);
+
+  // 解锁成就：聊天小明星（第一次发送消息时）
+  useEffect(() => {
+    if (messages.length >= 2 && !hasUnlockedChatAchievement) {
+      unlockAchievement('chat-star');
+      setHasUnlockedChatAchievement(true);
+    }
+  }, [messages.length, hasUnlockedChatAchievement, unlockAchievement]);
 
   // 聚焦输入框
   useEffect(() => {

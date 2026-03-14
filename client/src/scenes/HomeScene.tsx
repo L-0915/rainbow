@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAppStore, PlaygroundGame } from '@/store/appStore';
+import { useAppStore, PlaygroundGame, useAchievementStore } from '@/store/appStore';
 import { useEmotionStore, EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
 import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { RainbowChatDialog } from '@/components/chat/RainbowChatDialog';
+import { ContactParentDialog } from '@/components/ContactParentDialog';
 import { BottomNavBar } from '@/components/BottomNavBar';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
@@ -389,10 +390,12 @@ export const HomeScene = () => {
   const setTodayEmotion = useEmotionStore((state) => state.setTodayEmotion);
   const checkAndResetDaily = useEmotionStore((state) => state.checkAndResetDaily);
   const checkAndCleanupMonthly = useEmotionStore((state) => state.checkAndCleanupMonthly);
+  const unlockAchievement = useAchievementStore((state) => state.unlockAchievement);
 
   const [showPanel, setShowPanel] = useState(!todayEmotion);
   const [showAIResponse, setShowAIResponse] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showContactParent, setShowContactParent] = useState(false);
 
   // 性能优化：使用 useMemo 缓存动画配置
   const titleScaleAnimation = useMemo(() => ({ scale: [1, 1.02, 1] }), []);
@@ -424,9 +427,15 @@ export const HomeScene = () => {
     playSound(emotion);
     setTodayEmotion(emotion);
     setShowPanel(false);
+    // 解锁成就：情绪小主人
+    unlockAchievement('emotion-master');
+    // 如果是害怕或生气，解锁勇敢小战士
+    if (emotion === 'scared' || emotion === 'angry') {
+      unlockAchievement('brave-warrior');
+    }
     // 直接弹出 AI 回复
     setShowAIResponse(true);
-  }, [setTodayEmotion]);
+  }, [setTodayEmotion, unlockAchievement]);
 
   const handleOpenPanel = useCallback(() => {
     setShowAIResponse(false);
@@ -512,7 +521,7 @@ export const HomeScene = () => {
           )}
         </motion.div>
 
-        {/* 核心功能按钮区域 - 简化为 2 个大按钮 */}
+        {/* 核心功能按钮区域 - 3 个大按钮 */}
         <div className="flex flex-col items-center gap-3 sm:gap-4 mb-4 sm:mb-6 w-full max-w-xs">
 
           {/* 按钮 1：选择今天的心情 */}
@@ -545,6 +554,20 @@ export const HomeScene = () => {
           >
             <span className="text-2xl sm:text-3xl">🌈</span>
             <span>和小彩虹聊天</span>
+          </motion.button>
+
+          {/* 按钮 3：联系家长 */}
+          <motion.button
+            onClick={() => setShowContactParent(true)}
+            className="w-full bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white font-black text-lg sm:text-xl py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 relative z-40 flex items-center justify-center gap-2"
+            whileHover={{ scale: 1.05, y: -5 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <span className="text-2xl sm:text-3xl">💌</span>
+            <span>联系家长</span>
           </motion.button>
         </div>
 
@@ -600,6 +623,11 @@ export const HomeScene = () => {
       {/* 与小彩虹对话弹窗 */}
       <AnimatePresence>
         {showChat && <RainbowChatDialog isOpen={showChat} onClose={() => setShowChat(false)} />}
+      </AnimatePresence>
+
+      {/* 联系家长弹窗 */}
+      <AnimatePresence>
+        {showContactParent && <ContactParentDialog onClose={() => setShowContactParent(false)} />}
       </AnimatePresence>
     </div>
   );

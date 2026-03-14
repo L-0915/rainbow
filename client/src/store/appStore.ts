@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export type SceneType = 'login' | 'map' | 'home' | 'grass' | 'playground' | 'parent-dashboard' | 'emotion-diary';
 
@@ -9,6 +10,23 @@ export type PlaygroundGame =
   | 'merry-go-round'   // 慢慢转木马
   | 'paper-plane'      // 纸飞机投掷场
   | 'bumper-cars';     // 碰碰车广场
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  emoji: string;
+  gradient: string;
+  unlocked: boolean;
+  sentToParent: boolean;
+}
+
+export interface AchievementState {
+  achievements: Record<string, Achievement>;
+  unlockAchievement: (id: string) => void;
+  sendToParent: (id: string) => void;
+  getUnlockedCount: () => number;
+}
 
 export interface AppState {
   currentScene: SceneType;
@@ -26,28 +44,141 @@ export interface AppState {
   setHasEnteredPlayground: (value: boolean) => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
-  currentScene: 'login',
-  isLoggedIn: false,
-  currentGame: null,
-  isTransitioning: false,
-  hasEnteredPlayground: false,
+const defaultAchievements: Record<string, Achievement> = {
+  'emotion-master': {
+    id: 'emotion-master',
+    title: '情绪小主人',
+    description: '记录今天的心情',
+    emoji: '💭',
+    gradient: 'linear-gradient(135deg, #FFB6C1 0%, #FFA0A0 100%)',
+    unlocked: false,
+    sentToParent: false,
+  },
+  'grass-explorer': {
+    id: 'grass-explorer',
+    title: '草地探险家',
+    description: '在草地上放松玩耍',
+    emoji: '🌿',
+    gradient: 'linear-gradient(135deg, #A8E6CF 0%, #88D8B7 100%)',
+    unlocked: false,
+    sentToParent: false,
+  },
+  'cloud-collector': {
+    id: 'cloud-collector',
+    title: '云朵收藏家',
+    description: '收集 6 朵温暖云朵的祝福',
+    emoji: '☁️',
+    gradient: 'linear-gradient(135deg, #C7CEEA 0%, #B5C0E0 100%)',
+    unlocked: false,
+    sentToParent: false,
+  },
+  'playground-hero': {
+    id: 'playground-hero',
+    title: '游乐场小英雄',
+    description: '完成一场游乐场游戏',
+    emoji: '🎡',
+    gradient: 'linear-gradient(135deg, #FFA94D 0%, #FFB961 100%)',
+    unlocked: false,
+    sentToParent: false,
+  },
+  'chat-star': {
+    id: 'chat-star',
+    title: '聊天小明星',
+    description: '和小彩虹说悄悄话',
+    emoji: '🌈',
+    gradient: 'linear-gradient(135deg, #DA77F2 0%, #E599F7 100%)',
+    unlocked: false,
+    sentToParent: false,
+  },
+  'brave-warrior': {
+    id: 'brave-warrior',
+    title: '勇敢小战士',
+    description: '面对害怕或生气的情绪',
+    emoji: '💪',
+    gradient: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%)',
+    unlocked: false,
+    sentToParent: false,
+  },
+};
 
-  login: () => set({ isLoggedIn: true, currentScene: 'home' }),
+export const useAppStore = create<AppState>()(
+  persist(
+    (set) => ({
+      currentScene: 'login',
+      isLoggedIn: false,
+      currentGame: null,
+      isTransitioning: false,
+      hasEnteredPlayground: false,
 
-  logout: () => set({
-    isLoggedIn: false,
-    currentScene: 'login',
-    currentGame: null,
-  }),
+      login: () => set({ isLoggedIn: true, currentScene: 'home' }),
 
-  navigateTo: (scene) => set({ currentScene: scene }),
+      logout: () => set({
+        isLoggedIn: false,
+        currentScene: 'login',
+        currentGame: null,
+      }),
 
-  startGame: (game) => set({ currentGame: game }),
+      navigateTo: (scene) => set({ currentScene: scene }),
 
-  endGame: () => set({ currentGame: null }),
+      startGame: (game) => set({ currentGame: game }),
 
-  setTransitioning: (value) => set({ isTransitioning: value }),
+      endGame: () => set({ currentGame: null }),
 
-  setHasEnteredPlayground: (value) => set({ hasEnteredPlayground: value }),
-}));
+      setTransitioning: (value) => set({ isTransitioning: value }),
+
+      setHasEnteredPlayground: (value) => set({ hasEnteredPlayground: value }),
+    }),
+    {
+      name: 'rainbow-app-storage',
+      partialize: (state) => ({
+        isLoggedIn: state.isLoggedIn,
+        hasEnteredPlayground: state.hasEnteredPlayground,
+      }),
+    }
+  )
+);
+
+// 成就状态 store - 单独持久化
+export const useAchievementStore = create<AchievementState>()(
+  persist(
+    (set, get) => ({
+      achievements: defaultAchievements,
+
+      unlockAchievement: (id) =>
+        set((state) => {
+          const achievement = state.achievements[id];
+          if (achievement && !achievement.unlocked) {
+            return {
+              achievements: {
+                ...state.achievements,
+                [id]: { ...achievement, unlocked: true },
+              },
+            };
+          }
+          return state;
+        }),
+
+      sendToParent: (id) =>
+        set((state) => {
+          const achievement = state.achievements[id];
+          if (achievement && achievement.unlocked) {
+            return {
+              achievements: {
+                ...state.achievements,
+                [id]: { ...achievement, sentToParent: true },
+              },
+            };
+          }
+          return state;
+        }),
+
+      getUnlockedCount: () => {
+        const state = get();
+        return Object.values(state.achievements).filter((a) => a.unlocked).length;
+      },
+    }),
+    {
+      name: 'rainbow-achievements',
+    }
+  )
+);

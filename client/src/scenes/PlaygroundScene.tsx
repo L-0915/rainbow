@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useAppStore, PlaygroundGame } from '@/store/appStore';
+import { useAppStore, PlaygroundGame, useAchievementStore } from '@/store/appStore';
 import { memo } from 'react';
 import { BottomNavBar } from '@/components/BottomNavBar';
 import { getPublicUrl } from '@/utils/getPublicUrl';
@@ -65,8 +65,11 @@ const GAMES: {
 export const PlaygroundScene = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const startGame = useAppStore((state) => state.startGame);
+  const unlockAchievement = useAchievementStore((state) => state.unlockAchievement);
 
   const handleGameSelect = (gameId: PlaygroundGame) => {
+    // 解锁成就：游乐场小英雄
+    unlockAchievement('playground-hero');
     startGame(gameId);
   };
 

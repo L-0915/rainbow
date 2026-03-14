@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
 import { useEmotionStore } from '@/store/emotionStore';
 import { useCharacterStore } from '@/store/characterStore';
+import { useAchievementStore } from '@/store/appStore';
 import { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { MessageBottle } from '@/components/bottle/MessageBottle';
 import { BottomNavBar } from '@/components/BottomNavBar';
@@ -98,6 +99,8 @@ export const GrassScene = memo(() => {
 
   const handleLieDown = () => {
     setCharacterAction('lie');
+    // 解锁成就：草地探险家
+    unlockAchievement('grass-explorer');
   };
 
   const handleRoll = () => {
@@ -113,8 +116,12 @@ export const GrassScene = memo(() => {
 
   const handleCloudClick = (cloud: typeof CLOUDS[0], index: number) => {
     setSelectedCloud(cloud);
-    if (!revealedClouds.includes(index)) {
-      setRevealedClouds([...revealedClouds, index]);
+    const newRevealedClouds = [...revealedClouds, index];
+    setRevealedClouds(newRevealedClouds);
+
+    // 解锁成就：云朵收藏家（收集 6 朵云）
+    if (newRevealedClouds.length >= 6) {
+      unlockAchievement('cloud-collector');
     }
   };
 
