@@ -3,7 +3,7 @@ import { useAppStore, PlaygroundGame, useAchievementStore } from '@/store/appSto
 import { useEmotionStore, EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
 import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { RainbowChatDialog } from '@/components/chat/RainbowChatDialog';
-import { ContactParentDialog } from '@/components/ContactParentDialog';
+import { StarMomentDialog } from '@/components/StarMomentDialog';
 import { BottomNavBar } from '@/components/BottomNavBar';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
@@ -556,7 +556,7 @@ export const HomeScene = () => {
             <span>和小彩虹聊天</span>
           </motion.button>
 
-          {/* 按钮 3：联系家长 */}
+          {/* 按钮 3：闪闪发光时刻 */}
           <motion.button
             onClick={() => setShowContactParent(true)}
             className="w-full bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white font-black text-lg sm:text-xl py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 relative z-40 flex items-center justify-center gap-2"
@@ -566,8 +566,8 @@ export const HomeScene = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
           >
-            <span className="text-2xl sm:text-3xl">💌</span>
-            <span>联系家长</span>
+            <span className="text-2xl sm:text-3xl">⭐</span>
+            <span>闪闪发光</span>
           </motion.button>
         </div>
 

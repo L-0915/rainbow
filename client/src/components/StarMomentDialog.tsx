@@ -3,11 +3,11 @@ import { memo, useState, useCallback } from 'react';
 import { useAchievementStore, Achievement } from '@/store/appStore';
 import { AchievementCard } from './AchievementCard';
 
-interface ContactParentDialogProps {
+interface StarMomentDialogProps {
   onClose: () => void;
 }
 
-export const ContactParentDialog = memo(({ onClose }: ContactParentDialogProps) => {
+export const StarMomentDialog = memo(({ onClose }: StarMomentDialogProps) => {
   const { achievements, unlockAchievement, sendToParent, getUnlockedCount } = useAchievementStore();
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
   const [showSuccessToast, setShowSuccessToast] = useState(false);
@@ -45,10 +45,10 @@ export const ContactParentDialog = memo(({ onClose }: ContactParentDialogProps) 
         <div className="text-center mb-4">
           <div className="text-5xl sm:text-6xl mb-2">💌</div>
           <h2 className="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500">
-            联系家长
+            闪闪发光时刻
           </h2>
           <p className="text-sm font-bold text-gray-600 mt-1">
-            分享你的成长瞬间给爸爸妈妈～
+            把你的成长瞬间变成星星，送给爸爸妈妈～
           </p>
         </div>
 
@@ -111,7 +111,7 @@ export const ContactParentDialog = memo(({ onClose }: ContactParentDialogProps) 
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -100, opacity: 0 }}
             >
-              ✨ 已发送给家长！
+              ✨ 已成功分享！
             </motion.div>
           )}
         </AnimatePresence>
@@ -120,4 +120,4 @@ export const ContactParentDialog = memo(({ onClose }: ContactParentDialogProps) 
   );
 });
 
-ContactParentDialog.displayName = 'ContactParentDialog';
+StarMomentDialog.displayName = 'StarMomentDialog';
