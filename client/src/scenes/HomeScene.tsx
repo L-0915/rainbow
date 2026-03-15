@@ -443,12 +443,12 @@ export const HomeScene = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="relative w-full h-full overflow-y-auto overflow-x-hidden">
       {/* 渐变背景 - 移除背景图片 */}
       <div className="absolute inset-0 bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200" />
 
       {/* 顶部标题栏 - 手表优化 */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-center p-2">
+      <div className="sticky top-0 left-0 right-0 z-20 flex items-center justify-center p-2">
         <motion.div
           className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 backdrop-blur-xl rounded-full px-4 py-2 sm:px-6 sm:py-3 shadow-2xl border-4 border-white/60"
           initial={{ y: -50, opacity: 0 }}
@@ -464,7 +464,7 @@ export const HomeScene = () => {
       </div>
 
       {/* 主内容区域 - 手表优化布局 */}
-      <div className="relative z-10 flex flex-col items-center justify-center w-full h-full px-2 pt-12 pb-20">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen w-full px-2 pt-12 pb-20">
         {/* 角色区域 - 手表优化 */}
         <motion.div
           className="relative w-full flex flex-col items-center flex-shrink-0"
