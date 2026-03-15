@@ -97,11 +97,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-  /* 允许垂直滚动 */
+  /* 手表优化：移除 user-select 禁止，避免影响点击 */
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+/* 按钮和可点击元素允许触摸选择 */
+button, a, [role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 }
 
 #root {

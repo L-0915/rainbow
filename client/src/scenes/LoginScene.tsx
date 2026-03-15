@@ -48,8 +48,8 @@ const RainbowButton = ({ onClick, children, disabled }: {
   return (
     <motion.button
       onClick={onClick}
-      whileHover={{ scale: disabled ? 1 : 1.05, rotate: disabled ? 0 : -2 }}
       whileTap={{ scale: disabled ? 1 : 0.95 }}
+      onTouchStart={() => {}}
       className={`
         bg-gradient-to-r from-pink-400 via-purple-400 via-blue-400 via-green-400 via-yellow-400 to-orange-400
         bg-[length:300%_100%]
