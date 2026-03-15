@@ -89,7 +89,6 @@
 html, body, #root {
   height: 100%;
   width: 100%;
-  overflow: hidden; /* 防止页面级别滚动 */
 }
 
 body {
@@ -100,9 +99,14 @@ body {
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
-  /* 手表优化：禁止水平滚动 */
+  /* 允许垂直滚动 */
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+#root {
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* 自定义滚动条 - 隐藏但保留功能 */
