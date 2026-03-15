@@ -194,7 +194,7 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
 
       {/* 对话框 - 手表优化 */}
       <motion.div
-        className="relative w-full md:max-w-sm md:rounded-3xl bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 md:shadow-2xl overflow-hidden flex flex-col"
+        className="relative w-full md:max-w-sm md:rounded-3xl md:shadow-2xl overflow-hidden flex flex-col bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50"
         style={{ maxHeight: 'calc(100vh - 20px)', height: 'calc(100vh - 20px)' }}
         initial={{ y: '100%' }}
         animate={{ y: 0 }}

@@ -35,12 +35,14 @@ export const StarMomentDialog = memo(({ onClose }: StarMomentDialogProps) => {
 
       {/* 对话框 */}
       <motion.div
-        className="relative bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 w-full sm:max-w-lg sm:rounded-[2.5rem] rounded-t-[2.5rem] p-4 sm:p-6 md:p-8 shadow-2xl border-4 border-white/80 max-h-[80vh] overflow-y-auto"
+        className="relative bg-gradient-to-br from-pink-100 via-purple-50 to-blue-100 w-full sm:max-w-lg sm:rounded-[2.5rem] rounded-t-[2.5rem] p-4 sm:p-6 md:p-8 shadow-2xl border-4 border-white/80 max-h-[80vh] flex flex-col"
         initial={{ y: '100%' }}
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       >
+        {/* 可滚动内容区域 */}
+        <div className="overflow-y-auto flex-1">
         {/* 顶部装饰 */}
         <div className="text-center mb-4">
           <div className="text-5xl sm:text-6xl mb-2">💌</div>
@@ -93,6 +95,8 @@ export const StarMomentDialog = memo(({ onClose }: StarMomentDialogProps) => {
         </div>
 
         {/* 关闭按钮 */}
+        </div>
+
         <motion.button
           onClick={onClose}
           className="mt-4 w-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-base sm:text-lg py-3 px-6 rounded-full shadow-xl border-4 border-white/60"

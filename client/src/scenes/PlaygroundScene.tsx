@@ -75,7 +75,7 @@ export const PlaygroundScene = memo(() => {
 
   // 直接显示游乐场主界面
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <div className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden">
       {/* 游乐场背景 */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-300 via-pink-200 to-yellow-100" />
 
