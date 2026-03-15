@@ -15,6 +15,7 @@ export interface ChatMessage {
 export interface RainbowChatResponse {
   success: boolean;
   content?: string;
+  suggestions?: string[]; // AI 生成的后续可点击选项
   error?: string;
 }
 
@@ -54,10 +55,11 @@ export const sendChatMessage = async (
     const data = await response.json();
     console.log('✅ 响应数据:', data);
 
-    // 后端直接返回 {reply: "..."}
+    // 后端返回 {reply: "...", suggestions: ["...", "..."]}
     return {
       success: true,
       content: data.reply,
+      suggestions: data.suggestions || [],
     };
   } catch (error) {
     console.error('彩虹聊天 API 调用失败:', error);

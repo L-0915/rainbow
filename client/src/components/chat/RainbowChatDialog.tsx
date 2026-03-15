@@ -9,8 +9,8 @@ interface RainbowChatDialogProps {
   onClose: () => void;
 }
 
-// 性能优化：缓存快速回复选项
-const QUICK_REPLIES = [
+// 初始快速回复选项（开场使用）
+const INITIAL_QUICK_REPLIES = [
   '今天我很开心！😊',
   '我有点难过...💙',
   '我想和你分享一件事～',
@@ -22,6 +22,7 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [rainbowMood, setRainbowMood] = useState<'happy' | 'calm' | 'excited'>('happy');
+  const [currentSuggestions, setCurrentSuggestions] = useState<string[]>([]); // AI 生成的建议选项
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const unlockAchievement = useAchievementStore((state) => state.unlockAchievement);
@@ -63,7 +64,7 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
   }, [isOpen]);
 
   // 性能优化：使用 useMemo 缓存快速回复数组
-  const quickReplies = useMemo(() => QUICK_REPLIES, []);
+  const quickReplies = useMemo(() => INITIAL_QUICK_REPLIES, []);
 
   // 发送消息 - 性能优化：使用 useCallback 缓存
   const handleSend = useCallback(async () => {
@@ -78,12 +79,17 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
     setInputValue('');
     setIsLoading(true);
     setRainbowMood('calm');
+    setCurrentSuggestions([]); // 清空之前的建议
 
     try {
       const response = await sendChatMessage([...messages, userMessage]);
 
       if (response.success && response.content) {
         setMessages((prev) => [...prev, { role: 'assistant', content: response.content! }]);
+        // 设置 AI 生成的建议选项
+        if (response.suggestions && response.suggestions.length > 0) {
+          setCurrentSuggestions(response.suggestions);
+        }
         // 根据回复内容判断情绪
         if (response.content.includes('开心') || response.content.includes('太棒了')) {
           setRainbowMood('happy');
@@ -127,6 +133,51 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
     setInputValue(text);
     inputRef.current?.focus();
   }, []);
+
+  // 点击建议选项直接发送
+  const handleSuggestionClick = useCallback((text: string) => {
+    setInputValue(text);
+    // 直接发送
+    setTimeout(() => {
+      if (text.trim()) {
+        const userMessage: ChatMessage = {
+          role: 'user',
+          content: text.trim(),
+        };
+        setMessages((prev) => [...prev, userMessage]);
+        setInputValue('');
+        setIsLoading(true);
+        setRainbowMood('calm');
+        setCurrentSuggestions([]);
+
+        sendChatMessage([...messages, userMessage]).then((response) => {
+          if (response.success && response.content) {
+            setMessages((prev) => [...prev, { role: 'assistant', content: response.content! }]);
+            if (response.suggestions && response.suggestions.length > 0) {
+              setCurrentSuggestions(response.suggestions);
+            }
+            if (response.content.includes('开心') || response.content.includes('太棒了')) {
+              setRainbowMood('happy');
+            } else if (response.content.includes('！') || response.content.includes('～')) {
+              setRainbowMood('excited');
+            } else {
+              setRainbowMood('calm');
+            }
+          }
+          setIsLoading(false);
+        }).catch(() => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: 'assistant',
+              content: '小彩虹没听清楚～ 🦋 你能再说一次吗？💖',
+            },
+          ]);
+          setIsLoading(false);
+        });
+      }
+    }, 50);
+  }, [messages]);
 
   if (!isOpen) return null;
 
@@ -231,8 +282,28 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
           <div ref={messagesEndRef} />
         </div>
 
-        {/* 快速回复选项 */}
-        {messages.length < 3 && (
+        {/* AI 生成的建议选项 */}
+        {currentSuggestions.length > 0 && !isLoading && (
+          <div className="px-4 py-2 bg-gradient-to-r from-pink-50 to-purple-50 border-t border-purple-200">
+            <p className="text-xs text-gray-500 font-bold mb-2">💡 你可以这样说：</p>
+            <div className="flex flex-wrap gap-2">
+              {currentSuggestions.map((suggestion, index) => (
+                <motion.button
+                  key={index}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className="px-3 py-1.5 bg-gradient-to-r from-purple-100 to-blue-100 rounded-full text-xs font-bold text-gray-700 border border-purple-300 hover:border-purple-400 transition-all"
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {suggestion}
+                </motion.button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 初始快速回复选项（仅在前 3 条消息显示） */}
+        {messages.length < 3 && currentSuggestions.length === 0 && (
           <div className="px-4 py-2 bg-white/50 border-t border-purple-100">
             <p className="text-xs text-gray-500 font-bold mb-2">💬 快速回复：</p>
             <div className="flex flex-wrap gap-2">
