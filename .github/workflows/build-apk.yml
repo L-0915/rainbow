@@ -57,6 +57,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Create .env.production
+        run: |
+          echo "VITE_API_BASE_URL=https://rainbow.cpolar.cn" > .env.production
+          cat .env.production
+
+      - name: Create .env.production
+        run: |
+          echo "VITE_API_BASE_URL=https://rainbow.cpolar.cn" > .env.production
+          cat .env.production
+
       - name: Build Vite
         run: npm run build
 
