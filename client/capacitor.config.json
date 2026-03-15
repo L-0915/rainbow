@@ -1,6 +1,6 @@
 {
   "appId": "com.rainbow.bandage",
-  "appName": "彩虹创口贴",
+  "appName": "彩虹语",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

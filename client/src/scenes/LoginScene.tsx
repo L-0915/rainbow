@@ -297,7 +297,7 @@ export const LoginScene = memo(() => {
           animate={{ y: 0, opacity: 1, rotate: 0 }}
           transition={{ type: 'spring', bounce: 0.6, delay: 0.2 }}
         >
-          {/* 彩虹创口贴 - 每个字不同颜色，更卡通 */}
+          {/* 彩虹箴 - 每个字不同颜色，更卡通 */}
           <div className="flex justify-center items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
             <motion.span
               className="text-3xl sm:text-5xl md:text-7xl font-black drop-shadow-2xl"

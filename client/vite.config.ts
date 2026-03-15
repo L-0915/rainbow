@@ -23,8 +23,8 @@ export default defineConfig({
       },
       includeAssets: ['icon.png'],
       manifest: {
-        name: '彩虹创口贴',
-        short_name: '彩虹创口贴',
+        name: '彩虹语',
+        short_name: '彩虹语',
         description: '情绪管理小助手',
         theme_color: '#FFB6C1',
         background_color: '#FFB6C1',
