@@ -205,7 +205,7 @@ const playSound = (type: 'select' | 'happy' | 'calm' | 'angry' | 'scared' | 'sad
   }
 };
 
-// 情绪图标按钮 - 简化版
+// 情绪图标按钮 - 手表优化版
 const EmotionBubble = memo(({
   emotion,
   onClick,
@@ -223,22 +223,22 @@ const EmotionBubble = memo(({
         playSound('select');
         onClick(emotion);
       }}
-      className="flex flex-col items-center gap-2 p-2 md:p-3 relative"
+      className="flex flex-col items-center gap-1 p-1.5 relative touch-target"
     >
       {/* 对号标记 */}
       {isSelected && (
-        <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-sm shadow-lg z-10">
+        <div className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs shadow-lg z-10">
           ✓
         </div>
       )}
 
       <div
-        className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-3xl md:text-4xl shadow-xl border-4 border-white/60"
+        className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-xl border-2 border-white/60"
         style={{ background: config.gradient }}
       >
         {config.emoji}
       </div>
-      <span className="text-xs md:text-sm font-black text-white drop-shadow-lg bg-black/20 rounded-full px-2 py-0.5">
+      <span className="text-xs font-black text-white drop-shadow-lg bg-black/20 rounded-full px-1.5 py-0.5 whitespace-nowrap">
         {config.label}
       </span>
     </button>
@@ -246,7 +246,7 @@ const EmotionBubble = memo(({
 });
 EmotionBubble.displayName = 'EmotionBubble';
 
-// 情绪选择面板 - 简化版
+// 情绪选择面板 - 手表优化版
 const EmotionPanel = memo(({
   onSelect,
   onClose,
@@ -259,28 +259,28 @@ const EmotionPanel = memo(({
   const emotions = Object.keys(EMOTION_CONFIG) as EmotionType[];
 
   return (
-    <div className="absolute -top-48 left-1/2 -translate-x-1/2 z-30">
+    <div className="absolute -top-40 left-1/2 -translate-x-1/2 z-30">
       <div className="relative">
-        <div className="bg-white/35 backdrop-blur-xl rounded-3xl p-4 md:p-6 shadow-2xl border-4 border-white/50">
+        <div className="bg-white/35 backdrop-blur-xl rounded-2xl p-3 sm:p-4 shadow-2xl border-4 border-white/50 max-w-[280px]">
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/60 hover:bg-white/80 flex items-center justify-center text-lg shadow-lg z-10"
+            className="absolute top-1 right-1 w-7 h-7 rounded-full bg-white/60 hover:bg-white/80 flex items-center justify-center text-base shadow-lg z-10"
           >
             ✕
           </button>
 
-          <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-8 h-8 bg-white/35 rotate-45 border-r-4 border-b-4 border-white/50" />
+          <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-white/35 rotate-45 border-r-4 border-b-4 border-white/50" />
 
-          <div className="text-center mb-4">
-            <p className="text-white font-black text-lg md:text-xl drop-shadow-lg mb-2">
+          <div className="text-center mb-3">
+            <p className="text-white font-black text-sm sm:text-base drop-shadow-lg mb-1">
               ✨ 今天的心情是什么颜色？✨
             </p>
-            <p className="text-white/85 text-xs md:text-sm font-bold">
+            <p className="text-white/85 text-xs font-bold">
               选一个吧～
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 md:gap-4">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
             {emotions.map((emotion) => (
               <EmotionBubble
                 key={emotion}
@@ -297,7 +297,7 @@ const EmotionPanel = memo(({
 });
 EmotionPanel.displayName = 'EmotionPanel';
 
-// AI 回复弹窗 - 简化版
+// AI 回复弹窗 - 手表优化版
 const AIResponseModal = memo(({
   emotion,
   onClose,
@@ -335,46 +335,46 @@ const AIResponseModal = memo(({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-white/60 max-w-md w-full">
+      <div className="relative bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 rounded-2xl p-4 sm:p-6 shadow-2xl border-4 border-white/60 max-w-[90%] w-full max-h-[80vh] overflow-y-auto">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white/60 hover:bg-white/80 flex items-center justify-center text-xl shadow-lg transition-all z-10"
+          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/60 hover:bg-white/80 flex items-center justify-center text-lg shadow-lg transition-all z-10"
         >
           ✕
         </button>
 
-        <div className="text-center mb-4">
-          <div className="text-6xl mb-3">
+        <div className="text-center mb-3">
+          <div className="text-4xl sm:text-5xl mb-2">
             {response.emoji}
           </div>
-          <h3 className="text-xl md:text-2xl font-black text-gray-700 mb-2">
+          <h3 className="text-base sm:text-lg font-black text-gray-700 mb-1">
             {response.title}
           </h3>
         </div>
 
         <div
-          className="bg-white/60 backdrop-blur-xl rounded-2xl p-4 md:p-6 mb-4 border-2 border-white/40"
+          className="bg-white/60 backdrop-blur-xl rounded-xl p-3 sm:p-4 mb-3 border-2 border-white/40"
         >
-          <p className="text-gray-700 text-sm md:text-base leading-relaxed font-medium">
+          <p className="text-gray-700 text-xs sm:text-sm leading-relaxed font-medium">
             {randomMessage}
           </p>
         </div>
 
-        {/* 游戏跳转按钮 */}
+        {/* 游戏跳转按钮 - 手表优化 */}
         <button
           onClick={handleGoToGame}
-          className="w-full bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 text-white font-black text-lg py-4 px-6 rounded-full shadow-xl hover:shadow-2xl transition-all border-4 border-white/60 mb-3 flex items-center justify-center gap-2"
+          className="w-full bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400 text-white font-black text-sm py-3 px-4 rounded-full shadow-xl hover:shadow-2xl transition-all border-4 border-white/60 mb-2 flex items-center justify-center gap-1"
         >
-          <span className="text-2xl">{gameConfig.gameEmoji}</span>
+          <span className="text-xl">{gameConfig.gameEmoji}</span>
           <span>{gameConfig.buttonText}</span>
         </button>
 
         <button
           onClick={onClose}
-          className="w-full bg-gray-200 text-gray-700 font-black text-lg py-3 px-6 rounded-full shadow-xl border-4 border-white/60"
+          className="w-full bg-gray-200 text-gray-700 font-black text-sm py-2 px-4 rounded-full shadow-xl border-4 border-white/60"
         >
           知道啦～ 💕
         </button>
@@ -443,31 +443,31 @@ export const HomeScene = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full overflow-y-auto overflow-x-hidden">
+    <div className="relative w-full h-full overflow-hidden">
       {/* 渐变背景 - 移除背景图片 */}
-      <div className="fixed inset-0 bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200" />
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200" />
 
-      {/* 顶部标题栏 - 简化版 */}
-      <div className="sticky top-0 z-20 flex items-center justify-center p-2 sm:p-3 md:p-4">
+      {/* 顶部标题栏 - 手表优化 */}
+      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-center p-2">
         <motion.div
-          className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 backdrop-blur-xl rounded-full px-6 py-3 sm:px-8 sm:py-4 shadow-2xl border-4 border-white/60"
+          className="bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 backdrop-blur-xl rounded-full px-4 py-2 sm:px-6 sm:py-3 shadow-2xl border-4 border-white/60"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: 'spring', bounce: 0.5 }}
         >
-          <motion.div className="flex items-center gap-2 sm:gap-3" animate={titleScaleAnimation} transition={{ duration: 3, repeat: Infinity }}>
-            <motion.span className="text-2xl sm:text-3xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>🏠</motion.span>
-            <span className="text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-2xl">我的家园</span>
-            <motion.span className="text-2xl sm:text-3xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>✨</motion.span>
+          <motion.div className="flex items-center gap-1 sm:gap-2" animate={titleScaleAnimation} transition={{ duration: 3, repeat: Infinity }}>
+            <motion.span className="text-xl sm:text-2xl md:text-3xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>🏠</motion.span>
+            <span className="text-sm sm:text-base md:text-lg font-black text-white drop-shadow-2xl">我的家园</span>
+            <motion.span className="text-xl sm:text-2xl md:text-3xl" animate={titleRotateAnimation} transition={{ duration: 3, repeat: Infinity }}>✨</motion.span>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* 主内容区域 */}
-      <div className="relative z-10 flex flex-col items-center justify-end px-2 sm:px-4 pt-4 sm:pt-8 pb-24 sm:pb-28 min-h-[calc(100vh-60px)] sm:min-h-[calc(100vh-80px)]">
-        {/* 角色区域 */}
+      {/* 主内容区域 - 手表优化布局 */}
+      <div className="relative z-10 flex flex-col items-center justify-center w-full h-full px-2 pt-12 pb-20">
+        {/* 角色区域 - 手表优化 */}
         <motion.div
-          className="relative w-full flex flex-col items-center"
+          className="relative w-full flex flex-col items-center flex-shrink-0"
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.3, type: 'spring', bounce: 0.4 }}
@@ -477,11 +477,11 @@ export const HomeScene = () => {
             {/* 光晕背景 - 静态 */}
             <div className="absolute inset-0 bg-gradient-to-r from-pink-400/30 via-purple-400/30 to-blue-400/30 rounded-full blur-3xl scale-150" />
 
-            {/* 角色图片 - 保留浮动动画 */}
+            {/* 角色图片 - 手表优化尺寸 */}
             <motion.img
               src={currentAvatarUrl}
               alt="卡通数字人"
-              className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 object-contain drop-shadow-2xl"
+              className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 lg:w-44 lg:h-44 object-contain drop-shadow-2xl"
               animate={characterFloatAnimation}
               transition={{ duration: 3, repeat: Infinity, delay: 0.15 }}
               onError={(e) => {
@@ -493,12 +493,12 @@ export const HomeScene = () => {
             {[...Array(3)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute text-lg sm:text-xl md:text-2xl"
+                className="absolute text-sm sm:text-base md:text-lg"
                 style={{
-                  top: i === 0 ? '-15px' : i === 1 ? '50%' : undefined,
-                  bottom: i === 2 ? '-15px' : undefined,
-                  left: i === 0 ? '50%' : i === 1 ? '-20px' : undefined,
-                  right: i === 1 ? undefined : i === 2 ? '-20px' : undefined,
+                  top: i === 0 ? '-10px' : i === 1 ? '40%' : undefined,
+                  bottom: i === 2 ? '-10px' : undefined,
+                  left: i === 0 ? '50%' : i === 1 ? '-15px' : undefined,
+                  right: i === 1 ? undefined : i === 2 ? '-15px' : undefined,
                 }}
                 animate={starAnimations[i]}
                 transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
@@ -508,7 +508,7 @@ export const HomeScene = () => {
             ))}
           </motion.div>
 
-          {/* 情绪选择面板 */}
+          {/* 情绪选择面板 - 手表优化 */}
           {showPanel && (
             <EmotionPanel
               onSelect={handleEmotionSelect}
@@ -521,8 +521,8 @@ export const HomeScene = () => {
           )}
         </motion.div>
 
-        {/* 核心功能按钮区域 - 3 个大按钮 */}
-        <div className="flex flex-col items-center gap-3 sm:gap-4 mb-4 sm:mb-6 w-full max-w-xs">
+        {/* 核心功能按钮区域 - 手表优化 */}
+        <div className="flex flex-col items-center gap-2 sm:gap-3 mb-2 sm:mb-4 w-full max-w-[280px] flex-shrink-0">
 
           {/* 按钮 1：选择今天的心情 */}
           <motion.button
@@ -531,62 +531,62 @@ export const HomeScene = () => {
               e.stopPropagation();
               handleOpenPanel();
             }}
-            className="w-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-lg sm:text-xl py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 relative z-40 flex items-center justify-center gap-2"
-            whileHover={{ scale: 1.05, y: -5 }}
+            className="w-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-black text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6 rounded-full shadow-2xl border-4 border-white/60 relative z-40 flex items-center justify-center gap-1 sm:gap-2"
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <span className="text-2xl sm:text-3xl">💭</span>
+            <span className="text-xl sm:text-2xl">💭</span>
             <span>今天的心情</span>
           </motion.button>
 
           {/* 按钮 2：和小彩虹聊天 */}
           <motion.button
             onClick={() => setShowChat(true)}
-            className="w-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 text-white font-black text-lg sm:text-xl py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 relative z-40 flex items-center justify-center gap-2"
-            whileHover={{ scale: 1.05, y: -5 }}
+            className="w-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 text-white font-black text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6 rounded-full shadow-2xl border-4 border-white/60 relative z-40 flex items-center justify-center gap-1 sm:gap-2"
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
           >
-            <span className="text-2xl sm:text-3xl">🌈</span>
+            <span className="text-xl sm:text-2xl">🌈</span>
             <span>和小彩虹聊天</span>
           </motion.button>
 
           {/* 按钮 3：闪闪发光时刻 */}
           <motion.button
             onClick={() => setShowContactParent(true)}
-            className="w-full bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white font-black text-lg sm:text-xl py-4 px-8 rounded-full shadow-2xl border-4 border-white/60 relative z-40 flex items-center justify-center gap-2"
-            whileHover={{ scale: 1.05, y: -5 }}
+            className="w-full bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white font-black text-sm sm:text-base py-2 sm:py-3 px-4 sm:px-6 rounded-full shadow-2xl border-4 border-white/60 relative z-40 flex items-center justify-center gap-1 sm:gap-2"
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
           >
-            <span className="text-2xl sm:text-3xl">⭐</span>
+            <span className="text-xl sm:text-2xl">⭐</span>
             <span>闪闪发光</span>
           </motion.button>
         </div>
 
-        {/* 提示文字 */}
+        {/* 提示文字 - 手表优化 */}
         <motion.p
-          className="text-white/80 text-xs sm:text-sm font-bold text-center mb-2"
+          className="text-white/80 text-xs font-bold text-center mb-1 flex-shrink-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
         >
-          ✨ 点击心情或聊天，开始今天的冒险吧！
+          ✨ 点击开始冒险！
         </motion.p>
 
-        {/* 底部装饰 - 保留花朵动画，优化性能 */}
-        <div className="flex justify-center gap-3 sm:gap-6 mt-2 sm:mt-4">
+        {/* 底部装饰 - 手表优化 */}
+        <div className="flex justify-center gap-2 sm:gap-4 mt-1 flex-shrink-0">
           {[...Array(5)].map((_, i) => (
             <motion.div
               key={i}
-              className="text-lg sm:text-xl md:text-2xl"
+              className="text-base sm:text-lg md:text-xl"
               animate={flowerAnimations[i]}
               transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.2 }}
             >
@@ -600,7 +600,7 @@ export const HomeScene = () => {
       <BottomNavBar hideHome={true} />
 
       {/* 底部草地装饰带 - 保留 SVG 动画，优化性能 */}
-      <div className="fixed bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-green-500/50 to-transparent pointer-events-none z-0">
+      <div className="absolute bottom-0 left-0 right-0 h-12 sm:h-16 bg-gradient-to-t from-green-500/50 to-transparent pointer-events-none z-0">
         <svg viewBox="0 0 400 60" className="w-full h-full" preserveAspectRatio="none">
           {[...Array(20)].map((_, i) => (
             <motion.path

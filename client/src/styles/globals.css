@@ -40,6 +40,45 @@
   --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
+/* 手表屏幕适配 - 圆形屏幕优化 */
+@media (max-width: 200px) {
+  :root {
+    --watch-scale: 0.6;
+  }
+}
+
+@media (min-width: 201px) and (max-width: 300px) {
+  :root {
+    --watch-scale: 0.75;
+  }
+}
+
+@media (min-width: 301px) and (max-width: 400px) {
+  :root {
+    --watch-scale: 0.9;
+  }
+}
+
+/* 检测圆形屏幕 */
+@media (resolution: 200dpi) and (max-width: 400px),
+       (pointer: coarse) and (max-width: 400px) {
+  html {
+    font-size: 14px;
+  }
+
+  /* 圆形屏幕特殊处理 */
+  .watch-safe-area {
+    padding: calc(var(--radius-lg) * var(--watch-scale, 1));
+  }
+
+  /* 隐藏滚动条但保留功能 */
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
+
 /* 全局样式重置 */
 * {
   margin: 0;
@@ -50,6 +89,7 @@
 html, body, #root {
   height: 100%;
   width: 100%;
+  overflow: hidden; /* 防止页面级别滚动 */
 }
 
 body {
@@ -60,9 +100,9 @@ body {
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
-  /* 允许垂直滚动 */
-  overflow-y: auto;
+  /* 手表优化：禁止水平滚动 */
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* 自定义滚动条 - 隐藏但保留功能 */
@@ -76,7 +116,7 @@ body {
 @layer components {
   .btn-cartoon {
     @apply relative inline-flex items-center justify-center;
-    @apply px-6 py-3 text-lg font-bold;
+    @apply px-4 py-2 md:px-6 md:py-3 text-base md:text-lg font-bold;
     @apply rounded-3xl;
     @apply transition-all duration-200;
     @apply shadow-soft hover:shadow-hover;
@@ -111,12 +151,12 @@ body {
     overflow: hidden;
   }
 
-  /* 情绪按钮 */
+  /* 情绪按钮 - 手表优化尺寸 */
   .emotion-btn {
-    @apply w-16 h-16 md:w-20 md:h-20;
+    @apply w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20;
     @apply rounded-full;
     @apply flex items-center justify-center;
-    @apply text-3xl md:text-4xl;
+    @apply text-2xl md:text-3xl lg:text-4xl;
     @apply transition-all duration-200;
     @apply shadow-soft;
     @apply hover:scale-110 hover:shadow-hover;
@@ -247,4 +287,49 @@ body {
   min-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+/* 手表屏幕适配工具类 */
+.watch-container {
+  @apply w-full h-full;
+  @apply flex flex-col;
+  overflow: hidden;
+}
+
+.watch-content {
+  @apply flex-1;
+  @apply overflow-y-auto;
+  @apply p-2;
+}
+
+/* 安全区域 - 圆形屏幕四角内容保护 */
+.watch-safe-corner {
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* 响应式字体大小 - 手表友好 */
+.text-watch-sm {
+  font-size: clamp(0.65rem, 2.5vw, 0.75rem);
+}
+
+.text-watch-base {
+  font-size: clamp(0.75rem, 3vw, 0.875rem);
+}
+
+.text-watch-lg {
+  font-size: clamp(0.875rem, 3.5vw, 1rem);
+}
+
+.text-watch-xl {
+  font-size: clamp(1rem, 4vw, 1.25rem);
+}
+
+/* 按钮触摸优化 */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
 }

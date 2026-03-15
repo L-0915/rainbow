@@ -37,7 +37,7 @@ export const BottomNavBar = memo(({ hideHome = false }: BottomNavBarProps) => {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <div className="bg-white/90 backdrop-blur-xl border-t-4 border-white/60 shadow-2xl">
-        <div className="flex items-center justify-around py-2 pb-4">
+        <div className="flex items-center justify-around py-1.5 pb-3">
           {navItems.map((item) => {
             const isActive = currentScene === item.scene;
 
@@ -46,9 +46,9 @@ export const BottomNavBar = memo(({ hideHome = false }: BottomNavBarProps) => {
               return (
                 <div
                   key={item.scene}
-                  className="flex flex-col items-center gap-1 px-4 py-2 opacity-50"
+                  className="flex flex-col items-center gap-0.5 px-2 py-1.5 opacity-50"
                 >
-                  <div className="text-2xl">{item.emoji}</div>
+                  <div className="text-xl sm:text-2xl">{item.emoji}</div>
                   <span className="text-xs font-bold text-gray-500">{item.label}</span>
                 </div>
               );
@@ -58,13 +58,13 @@ export const BottomNavBar = memo(({ hideHome = false }: BottomNavBarProps) => {
               <motion.button
                 key={item.scene}
                 onClick={() => navigateTo(item.scene)}
-                className={`flex flex-col items-center gap-1 px-4 py-2 ${
+                className={`flex flex-col items-center gap-0.5 px-2 py-1.5 ${
                   isActive ? 'scale-110' : ''
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <div className="text-2xl">{item.emoji}</div>
+                <div className="text-xl sm:text-2xl">{item.emoji}</div>
                 <span className={`text-xs font-black ${
                   isActive ? 'text-pink-500' : 'text-gray-700'
                 }`}>

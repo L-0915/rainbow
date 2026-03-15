@@ -182,7 +182,7 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-end justify-center">
       {/* 背景遮罩 */}
       <motion.div
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
@@ -192,30 +192,30 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
         onClick={onClose}
       />
 
-      {/* 对话框 */}
+      {/* 对话框 - 手表优化 */}
       <motion.div
-        className="relative w-full md:max-w-lg md:rounded-3xl bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 md:shadow-2xl overflow-hidden flex flex-col"
-        style={{ maxHeight: 'calc(100vh - 80px)', height: '600px' }}
+        className="relative w-full md:max-w-sm md:rounded-3xl bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 md:shadow-2xl overflow-hidden flex flex-col"
+        style={{ maxHeight: 'calc(100vh - 20px)', height: 'calc(100vh - 20px)' }}
         initial={{ y: '100%' }}
         animate={{ y: 0 }}
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
       >
-        {/* 顶部标题栏 */}
-        <div className="relative z-10 flex items-center justify-between p-4 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center">
+        {/* 顶部标题栏 - 手表优化 */}
+        <div className="relative z-10 flex items-center justify-between p-2 bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 flex-shrink-0">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-white/30 flex items-center justify-center">
               <Rainbow size="sm" isAnimated={true} mood={rainbowMood} />
             </div>
             <div>
-              <h3 className="text-white font-black text-lg drop-shadow-lg">小彩虹</h3>
-              <p className="text-white/80 text-xs">你的知心大姐姐 🌈</p>
+              <h3 className="text-white font-black text-sm drop-shadow-lg">小彩虹</h3>
+              <p className="text-white/80 text-xs">知心大姐姐 🌈</p>
             </div>
           </div>
 
           <motion.button
             onClick={onClose}
-            className="w-10 h-10 rounded-full bg-white/30 hover:bg-white/50 flex items-center justify-center text-white text-xl transition-all"
+            className="w-8 h-8 rounded-full bg-white/30 hover:bg-white/50 flex items-center justify-center text-white text-lg transition-all"
             whileHover={{ scale: 1.1, rotate: 90 }}
             whileTap={{ scale: 0.9 }}
           >
@@ -223,8 +223,8 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
           </motion.button>
         </div>
 
-        {/* 消息列表 */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gradient-to-b from-white/50 to-transparent">
+        {/* 消息列表 - 手表优化 */}
+        <div className="flex-1 overflow-y-auto p-2 space-y-2 bg-gradient-to-b from-white/50 to-transparent">
           <AnimatePresence>
             {messages.map((message, index) => (
               <motion.div
@@ -236,13 +236,13 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
                 transition={{ type: 'spring', damping: 20 }}
               >
                 <div
-                  className={`max-w-[75%] rounded-2xl px-4 py-3 shadow-lg ${
+                  className={`max-w-[80%] rounded-xl px-3 py-2 shadow-lg ${
                     message.role === 'user'
                       ? 'bg-gradient-to-r from-blue-400 to-purple-400 text-white rounded-br-sm'
                       : 'bg-white/90 backdrop-blur-sm text-gray-700 rounded-bl-sm border-2 border-purple-200'
                   }`}
                 >
-                  <p className="text-sm md:text-base whitespace-pre-wrap font-medium">
+                  <p className="text-xs sm:text-sm whitespace-pre-wrap font-medium">
                     {message.content}
                   </p>
                 </div>
@@ -257,20 +257,20 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <div className="bg-white/90 backdrop-blur-sm rounded-2xl rounded-bl-sm px-4 py-3 border-2 border-purple-200">
-                <div className="flex items-center gap-2">
+              <div className="bg-white/90 backdrop-blur-sm rounded-xl rounded-bl-sm px-3 py-2 border-2 border-purple-200">
+                <div className="flex items-center gap-1.5">
                   <motion.div
-                    className="w-2 h-2 rounded-full bg-pink-400"
+                    className="w-1.5 h-1.5 rounded-full bg-pink-400"
                     animate={{ scale: [1, 1.5, 1] }}
                     transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
                   />
                   <motion.div
-                    className="w-2 h-2 rounded-full bg-purple-400"
+                    className="w-1.5 h-1.5 rounded-full bg-purple-400"
                     animate={{ scale: [1, 1.5, 1] }}
                     transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
                   />
                   <motion.div
-                    className="w-2 h-2 rounded-full bg-blue-400"
+                    className="w-1.5 h-1.5 rounded-full bg-blue-400"
                     animate={{ scale: [1, 1.5, 1] }}
                     transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
                   />
@@ -282,20 +282,20 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
           <div ref={messagesEndRef} />
         </div>
 
-        {/* AI 生成的建议选项 */}
+        {/* AI 生成的建议选项 - 手表优化 */}
         {currentSuggestions.length > 0 && !isLoading && (
-          <div className="px-4 py-2 bg-gradient-to-r from-pink-50 to-purple-50 border-t border-purple-200">
-            <p className="text-xs text-gray-500 font-bold mb-2">💡 你可以这样说：</p>
-            <div className="flex flex-wrap gap-2">
+          <div className="px-2 py-1.5 bg-gradient-to-r from-pink-50 to-purple-50 border-t border-purple-200 flex-shrink-0">
+            <p className="text-xs text-gray-500 font-bold mb-1">💡 你可以这样说：</p>
+            <div className="flex flex-wrap gap-1">
               {currentSuggestions.map((suggestion, index) => (
                 <motion.button
                   key={index}
                   onClick={() => handleSuggestionClick(suggestion)}
-                  className="px-3 py-1.5 bg-gradient-to-r from-purple-100 to-blue-100 rounded-full text-xs font-bold text-gray-700 border border-purple-300 hover:border-purple-400 transition-all"
-                  whileHover={{ scale: 1.05, y: -2 }}
+                  className="px-2 py-1 bg-gradient-to-r from-purple-100 to-blue-100 rounded-full text-xs font-bold text-gray-700 border border-purple-300 hover:border-purple-400 transition-all"
+                  whileHover={{ scale: 1.05, y: -1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  {suggestion}
+                  {suggestion.length > 10 ? suggestion.slice(0, 10) + '...' : suggestion}
                 </motion.button>
               ))}
             </div>
@@ -304,15 +304,15 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
 
         {/* 初始快速回复选项（仅在前 3 条消息显示） */}
         {messages.length < 3 && currentSuggestions.length === 0 && (
-          <div className="px-4 py-2 bg-white/50 border-t border-purple-100">
-            <p className="text-xs text-gray-500 font-bold mb-2">💬 快速回复：</p>
-            <div className="flex flex-wrap gap-2">
+          <div className="px-2 py-1.5 bg-white/50 border-t border-purple-100 flex-shrink-0">
+            <p className="text-xs text-gray-500 font-bold mb-1">💬 快速回复：</p>
+            <div className="flex flex-wrap gap-1">
               {quickReplies.map((reply, index) => (
                 <motion.button
                   key={index}
                   onClick={() => handleQuickReply(reply)}
-                  className="px-3 py-1.5 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full text-xs font-bold text-gray-700 border border-purple-200 hover:border-purple-300 transition-all"
-                  whileHover={{ scale: 1.05, y: -2 }}
+                  className="px-2 py-1 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full text-xs font-bold text-gray-700 border border-purple-200 hover:border-purple-300 transition-all"
+                  whileHover={{ scale: 1.05, y: -1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   {reply}
@@ -322,9 +322,9 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
           </div>
         )}
 
-        {/* 输入区域 */}
-        <div className="p-4 bg-white/80 backdrop-blur-sm border-t-4 border-purple-200">
-          <div className="flex items-center gap-2">
+        {/* 输入区域 - 手表优化 */}
+        <div className="p-2 bg-white/80 backdrop-blur-sm border-t-4 border-purple-200 flex-shrink-0">
+          <div className="flex items-center gap-1.5">
             <input
               ref={inputRef}
               type="text"
@@ -332,28 +332,28 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="和小彩虹说点什么吧～ 💕"
-              className="flex-1 px-4 py-3 rounded-full border-2 border-purple-200 focus:border-purple-400 focus:outline-none text-gray-700 font-medium bg-white/90"
+              className="flex-1 px-3 py-2 rounded-full border-2 border-purple-200 focus:border-purple-400 focus:outline-none text-xs sm:text-sm text-gray-700 font-medium bg-white/90"
               disabled={isLoading}
             />
             <motion.button
               onClick={handleSend}
               disabled={!inputValue.trim() || isLoading}
-              className="w-14 h-14 rounded-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 flex items-center justify-center text-white text-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 flex items-center justify-center text-white text-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
               🌈
             </motion.button>
           </div>
-          <p className="text-xs text-gray-400 text-center mt-2">
+          <p className="text-xs text-gray-400 text-center mt-1">
             和小彩虹聊聊天，分享你的心情吧～ ✨
           </p>
         </div>
 
-        {/* 装饰星星 */}
-        <div className="absolute top-20 left-4 text-2xl opacity-50">⭐</div>
-        <div className="absolute top-32 right-8 text-xl opacity-50">✨</div>
-        <div className="absolute bottom-32 left-8 text-xl opacity-50">🦋</div>
+        {/* 装饰星星 - 手表优化 */}
+        <div className="absolute top-16 left-2 text-xl opacity-50">⭐</div>
+        <div className="absolute top-24 right-4 text-lg opacity-50">✨</div>
+        <div className="absolute bottom-24 left-4 text-lg opacity-50">🦋</div>
       </motion.div>
     </div>
   );

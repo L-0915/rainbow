@@ -4,7 +4,7 @@ import { useCharacterStore } from '@/store/characterStore';
 import { useState, memo, useMemo } from 'react';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
-// 卡通风格输入框
+// 卡通风格输入框 - 手表优化
 const CartoonInput = ({ value, onChange, placeholder, type = 'text', icon }: {
   value: string;
   onChange: (value: string) => void;
@@ -13,9 +13,9 @@ const CartoonInput = ({ value, onChange, placeholder, type = 'text', icon }: {
   icon?: string;
 }) => {
   return (
-    <div className="relative w-full max-w-xs">
+    <div className="relative w-full max-w-[260px] sm:max-w-xs">
       {icon && (
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl z-10">
+        <span className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-xl sm:text-2xl z-10">
           {icon}
         </span>
       )}
@@ -25,11 +25,11 @@ const CartoonInput = ({ value, onChange, placeholder, type = 'text', icon }: {
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={`
-          w-full ${icon ? 'pl-14' : 'px-6'} py-4 rounded-full
+          w-full ${icon ? 'pl-12 sm:pl-14' : 'px-4'} py-2.5 sm:py-4 rounded-full
           bg-white/95 backdrop-blur-md
           border-4 border-white
           shadow-xl
-          text-gray-700 font-bold text-base
+          text-gray-700 font-bold text-sm sm:text-base
           placeholder-gray-400
           focus:outline-none focus:ring-4 focus:ring-pink-300 focus:border-pink-300
           transition-all duration-200
@@ -39,7 +39,7 @@ const CartoonInput = ({ value, onChange, placeholder, type = 'text', icon }: {
   );
 };
 
-// 彩虹渐变按钮
+// 彩虹渐变按钮 - 手表优化
 const RainbowButton = ({ onClick, children, disabled }: {
   onClick: () => void;
   children: React.ReactNode;
@@ -48,13 +48,13 @@ const RainbowButton = ({ onClick, children, disabled }: {
   return (
     <motion.button
       onClick={onClick}
-      whileHover={{ scale: disabled ? 1 : 1.08, rotate: disabled ? 0 : -2 }}
+      whileHover={{ scale: disabled ? 1 : 1.05, rotate: disabled ? 0 : -2 }}
       whileTap={{ scale: disabled ? 1 : 0.95 }}
       className={`
         bg-gradient-to-r from-pink-400 via-purple-400 via-blue-400 via-green-400 via-yellow-400 to-orange-400
         bg-[length:300%_100%]
-        px-12 py-5 rounded-full
-        text-white font-extrabold text-2xl tracking-wide
+        px-6 sm:px-12 py-2.5 sm:py-5 rounded-full
+        text-white font-extrabold text-base sm:text-2xl tracking-wide
         shadow-2xl border-4 border-white/60
         transition-all duration-300
         animate-gradient
@@ -70,7 +70,7 @@ const RainbowButton = ({ onClick, children, disabled }: {
   );
 };
 
-// 标签页按钮 - 完全居中版本
+// 标签页按钮 - 手表优化
 const TabButton = ({ active, onClick, children }: {
   active: boolean;
   onClick: () => void;
@@ -79,7 +79,7 @@ const TabButton = ({ active, onClick, children }: {
   return (
     <motion.button
       onClick={onClick}
-      className={`px-8 py-3 rounded-full font-extrabold text-lg transition-all duration-300 ${
+      className={`px-4 sm:px-8 py-2 sm:py-3 rounded-full font-extrabold text-sm sm:text-lg transition-all duration-300 ${
         active
           ? 'bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-xl scale-110'
           : 'text-white/80 hover:text-white hover:bg-white/10'
@@ -405,9 +405,9 @@ export const LoginScene = memo(() => {
           </motion.p>
         </motion.div>
 
-        {/* 数字人图片 - 使用你提供的图片 */}
+        {/* 数字人图片 - 手表优化 */}
         <motion.div
-          className="mb-4 sm:mb-6 relative"
+          className="mb-3 sm:mb-4 md:mb-6 relative"
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', bounce: 0.5, delay: 0.4 }}
@@ -415,12 +415,12 @@ export const LoginScene = memo(() => {
           {/* 光晕背景 */}
           <div className="absolute inset-0 bg-gradient-to-r from-pink-400/30 via-purple-400/30 to-blue-400/30 rounded-full blur-2xl scale-125" />
 
-          {/* 数字人图片 - 使用用户选择的角色 */}
+          {/* 数字人图片 - 手表优化尺寸 */}
           <motion.img
             key={currentAvatarUrl}
             src={currentAvatarUrl}
             alt="卡通数字人"
-            className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 object-contain relative z-10 drop-shadow-2xl"
+            className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-contain relative z-10 drop-shadow-2xl"
             animate={{ y: [0, -10, 0], rotate: [0, 3, 0, -3, 0], scale: [1, 1.05, 1] }}
             transition={{ duration: 3, repeat: Infinity }}
             onError={(e) => {
@@ -428,16 +428,16 @@ export const LoginScene = memo(() => {
             }}
           />
 
-          {/* 闪烁的星星 */}
+          {/* 闪烁的星星 - 手表优化 */}
           {[...Array(4)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute text-lg sm:text-xl"
+              className="absolute text-sm sm:text-base"
               style={{
-                top: i % 2 === 0 ? '-10px' : undefined,
-                bottom: i % 2 === 1 ? '-10px' : undefined,
-                left: i < 2 ? '-15px' : 'auto',
-                right: i >= 2 ? '-15px' : 'auto',
+                top: i % 2 === 0 ? '-8px' : undefined,
+                bottom: i % 2 === 1 ? '-8px' : undefined,
+                left: i < 2 ? '-10px' : 'auto',
+                right: i >= 2 ? '-10px' : 'auto',
               }}
               animate={{ scale: [0, 1, 0], opacity: [0, 1, 0], rotate: [0, 180, 360] }}
               transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
