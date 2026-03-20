@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useAppStore, PlaygroundGame, useAchievementStore } from '@/store/appStore';
+import { useIsWatch } from '@/hooks/useIsWatch';
 import { memo } from 'react';
 import { BottomNavBar } from '@/components/BottomNavBar';
 import { getPublicUrl } from '@/utils/getPublicUrl';
@@ -63,6 +64,67 @@ const GAMES: {
 ];
 
 export const PlaygroundScene = memo(() => {
+  const isWatch = useIsWatch();
+
+  // 手表端使用简化布局
+  if (isWatch) {
+    return <WatchPlaygroundLayout />;
+  }
+
+  // 手机端使用原有布局
+  return <PhonePlaygroundLayout />;
+});
+
+// ============ 手表端游乐场布局 ============
+const WatchPlaygroundLayout = memo(() => {
+  const startGame = useAppStore((state) => state.startGame);
+  const unlockAchievement = useAchievementStore((state) => state.unlockAchievement);
+
+  const handleGameSelect = (gameId: PlaygroundGame) => {
+    unlockAchievement('playground-hero');
+    startGame(gameId);
+  };
+
+  return (
+    <div className="relative w-full h-full flex flex-col">
+      {/* 背景 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-300 via-pink-200 to-yellow-100" />
+
+      {/* 主内容 */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-3 pt-12 pb-4">
+        {/* 标题 */}
+        <div className="text-4xl mb-4">🎪</div>
+
+        {/* 游戏列表 - 横向滑动 */}
+        <div className="grid grid-cols-2 gap-2 w-full max-w-[240px]">
+          {GAMES.map((game) => (
+            <motion.button
+              key={game.id}
+              onClick={() => handleGameSelect(game.id)}
+              className="aspect-square rounded-2xl flex flex-col items-center justify-center shadow-xl border-2 border-white/40"
+              style={{ background: game.gradient }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <span className="text-3xl mb-1">{game.emoji}</span>
+              <span className="text-white font-bold text-xs drop-shadow-lg">
+                {game.name}
+              </span>
+            </motion.button>
+          ))}
+        </div>
+
+        {/* 提示 */}
+        <p className="text-white/70 text-xs font-bold mt-4">
+          点击开始游戏 ✨
+        </p>
+      </div>
+    </div>
+  );
+});
+WatchPlaygroundLayout.displayName = 'WatchPlaygroundLayout';
+
+// ============ 手机端游乐场布局（原有代码） ============
+const PhonePlaygroundLayout = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const startGame = useAppStore((state) => state.startGame);
   const unlockAchievement = useAchievementStore((state) => state.unlockAchievement);
@@ -173,4 +235,4 @@ export const PlaygroundScene = memo(() => {
     </div>
   );
 });
-PlaygroundScene.displayName = 'PlaygroundScene';
+PhonePlaygroundLayout.displayName = 'PhonePlaygroundLayout';

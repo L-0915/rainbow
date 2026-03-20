@@ -12,6 +12,9 @@ import { ShadowHouseGame } from '@/games/ShadowHouseGame';
 import { MerryGoRoundGame } from '@/games/MerryGoRoundGame';
 import { PaperPlaneGame } from '@/games/PaperPlaneGame';
 import { BumperCarsGame } from '@/games/BumperCarsGame';
+import { WatchSceneIndicator } from '@/components/WatchSceneIndicator';
+import { useIsWatch } from '@/hooks/useIsWatch';
+import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 import { isAuthenticated, getCurrentUser, logout } from '@/services/auth';
@@ -22,6 +25,10 @@ function App() {
   const isTransitioning = useAppStore((state) => state.isTransitioning);
   const login = useAppStore((state) => state.login);
   const setUserInfo = useAuthStore((state) => state.setUserInfo);
+
+  // 手表端检测和滑动导航
+  const isWatch = useIsWatch();
+  const { bind } = useSwipeNavigation();
 
   // 检查登录状态
   useEffect(() => {
@@ -83,7 +90,15 @@ function App() {
   };
 
   return (
-    <div className="relative w-full h-full">
+    <div
+      className="relative w-full h-full"
+      {...(isWatch ? bind() : {})}
+    >
+      {/* 手表端场景指示器 */}
+      {isWatch && currentScene !== 'login' && !currentGame && (
+        <WatchSceneIndicator currentScene={currentScene} />
+      )}
+
       <AnimatePresence mode="wait">
         <motion.div
           key={currentScene}

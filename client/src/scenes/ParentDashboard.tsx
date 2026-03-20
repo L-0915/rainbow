@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { ParentWatchScene } from './ParentWatchScene';
 import { useAppStore } from '@/store/appStore';
+import { useIsWatch } from '@/hooks/useIsWatch';
 import { EmotionChart } from '@/components/emotion/EmotionChart';
 import { EmotionStats } from '@/components/emotion/EmotionStats';
 import { EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
@@ -57,6 +58,127 @@ const EMOTION_TYPE_MAP: Record<string, EmotionType> = {
 };
 
 export const ParentDashboard = memo(() => {
+  const isWatch = useIsWatch();
+
+  // 手表端使用简化布局
+  if (isWatch) {
+    return <WatchParentDashboard />;
+  }
+
+  // 手机端使用原有布局
+  return <PhoneParentDashboard />;
+});
+
+// ============ 手表端家长端布局 ============
+const WatchParentDashboard = memo(() => {
+  const navigateTo = useAppStore((state) => state.navigateTo);
+  const [watchBinding, setWatchBinding] = useState<WatchBinding | null>(null);
+  const [emotions, setEmotions] = useState<Emotion[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
+
+  useEffect(() => {
+    const savedWatch = localStorage.getItem('watchBinding');
+    if (savedWatch) {
+      const binding = JSON.parse(savedWatch);
+      setWatchBinding(binding);
+      loadChildData(binding.watch_id);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const loadChildData = async (watchId: string) => {
+    try {
+      const childResponse = await fetch(`${API_BASE_URL}/api/parents/watch/${watchId}/child`);
+      const childData = await childResponse.json();
+      if (childData.code === 0 && childData.data.child) {
+        const emoResponse = await fetch(`${API_BASE_URL}/api/parents/children/${childData.data.child.id}/emotions`);
+        const emoData = await emoResponse.json();
+        if (emoData.code === 0) {
+          setEmotions(emoData.data.emotions || []);
+        }
+      }
+    } catch (err) {
+      console.error('加载失败:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 获取最近情绪
+  const latestEmotion = emotions[0];
+
+  if (loading) {
+    return (
+      <div className="relative w-full h-full flex flex-col items-center justify-center">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-200 to-purple-200" />
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          className="text-4xl"
+        >
+          ⌚
+        </motion.div>
+        <p className="text-white/80 text-sm font-bold mt-2">加载中...</p>
+      </div>
+    );
+  }
+
+  if (!watchBinding) {
+    return <ParentWatchScene onBack={() => navigateTo('home')} />;
+  }
+
+  return (
+    <div className="relative w-full h-full flex flex-col">
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-200 to-purple-200" />
+
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-12">
+        {/* 标题 */}
+        <div className="text-3xl mb-4">⌚</div>
+
+        {/* 孩子信息 */}
+        <div className="bg-white/60 backdrop-blur-md rounded-2xl px-4 py-2 mb-4 shadow-lg">
+          <span className="text-sm font-bold text-gray-700">
+            {watchBinding.child_nickname || '小宝贝'}
+          </span>
+        </div>
+
+        {/* 最近情绪 */}
+        {latestEmotion ? (
+          <div className="bg-white/70 backdrop-blur-md rounded-2xl p-4 shadow-xl w-full max-w-[200px]">
+            <p className="text-xs text-gray-500 text-center mb-2">最近心情</p>
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-3xl">
+                {EMOTION_CONFIG_MAP[latestEmotion.emotion_type]?.emoji || '😊'}
+              </span>
+              <span className="text-lg font-bold text-gray-700">
+                {EMOTION_CONFIG_MAP[latestEmotion.emotion_type]?.label || '开心'}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white/60 backdrop-blur-md rounded-2xl p-4 shadow-xl">
+            <p className="text-sm text-gray-500">暂无情绪记录</p>
+          </div>
+        )}
+
+        {/* 统计 */}
+        <div className="flex gap-4 mt-4">
+          <div className="bg-white/60 rounded-xl px-3 py-2 text-center">
+            <div className="text-xl font-bold text-purple-600">{emotions.length}</div>
+            <div className="text-xs text-gray-500">日记</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+WatchParentDashboard.displayName = 'WatchParentDashboard';
+
+// ============ 手机端家长端布局（原有代码） ============
+const PhoneParentDashboard = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const [parentInfo, setParentInfo] = useState<ParentInfo | null>(null);
   const [watchBinding, setWatchBinding] = useState<WatchBinding | null>(null);
@@ -350,4 +472,4 @@ export const ParentDashboard = memo(() => {
     </div>
   );
 });
-ParentDashboard.displayName = 'ParentDashboard';
+PhoneParentDashboard.displayName = 'PhoneParentDashboard';

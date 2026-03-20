@@ -3,6 +3,7 @@ import { useAppStore } from '@/store/appStore';
 import { useEmotionStore } from '@/store/emotionStore';
 import { useCharacterStore } from '@/store/characterStore';
 import { useAchievementStore } from '@/store/appStore';
+import { useIsWatch, useWatchSafeArea } from '@/hooks/useIsWatch';
 import { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { MessageBottle } from '@/components/bottle/MessageBottle';
 import { BottomNavBar } from '@/components/BottomNavBar';
@@ -85,6 +86,134 @@ const FLOATING_DECORS = [
 ];
 
 export const GrassScene = memo(() => {
+  const isWatch = useIsWatch();
+  const safePadding = useWatchSafeArea();
+
+  // 手表端使用简化布局
+  if (isWatch) {
+    return <WatchGrassLayout />;
+  }
+
+  // 手机端使用原有布局
+  return <PhoneGrassLayout />;
+});
+
+// ============ 手表端草地布局 ============
+const WatchGrassLayout = memo(() => {
+  const todayEmotion = useEmotionStore((state) => state.todayEmotion);
+  const { config: characterConfig } = useCharacterStore();
+  const unlockAchievement = useAchievementStore((state) => state.unlockAchievement);
+  const [selectedCloud, setSelectedCloud] = useState<typeof CLOUDS[0] | null>(null);
+  const [revealedClouds, setRevealedClouds] = useState<number[]>([]);
+
+  const currentAvatarUrl = characterConfig?.avatarStyle === '卡通2'
+    ? getPublicUrl('/卡通数字人2.png')
+    : getPublicUrl('/卡通数字人.png');
+
+  const handleCloudClick = (cloud: typeof CLOUDS[0], index: number) => {
+    setSelectedCloud(cloud);
+    const newRevealedClouds = [...revealedClouds, index];
+    setRevealedClouds(newRevealedClouds);
+    if (newRevealedClouds.length >= 6) {
+      unlockAchievement('cloud-collector');
+    }
+  };
+
+  return (
+    <div className="relative w-full h-full flex flex-col">
+      {/* 背景 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-sky-300 via-sky-200 to-green-200" />
+
+      {/* 主内容 */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-4 pt-12 pb-4">
+        {/* 云朵区域 - 简化为 3 朵 */}
+        <div className="flex gap-3 mb-6">
+          {CLOUDS.slice(0, 3).map((cloud, index) => (
+            <motion.button
+              key={cloud.name}
+              onClick={() => handleCloudClick(cloud, index)}
+              className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-xl border-2 border-white/40"
+              style={{ background: cloud.gradient }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <span className="text-2xl">{cloud.emoji}</span>
+              {revealedClouds.includes(index) && (
+                <span className="absolute -top-1 -right-1 text-sm">⭐</span>
+              )}
+            </motion.button>
+          ))}
+        </div>
+
+        {/* 角色 */}
+        <motion.div
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 3, repeat: Infinity }}
+          className="mb-4"
+        >
+          <img
+            src={currentAvatarUrl}
+            alt="角色"
+            className="w-24 h-24 object-contain drop-shadow-xl"
+          />
+        </motion.div>
+
+        {/* 今日心情 */}
+        {todayEmotion && (
+          <div className="bg-white/60 backdrop-blur-md rounded-full px-4 py-2 mb-4 shadow-lg">
+            <span className="text-sm font-bold text-gray-700">
+              今天：{CLOUDS.find(c => c.emoji === '😊')?.emoji} 心情不错
+            </span>
+          </div>
+        )}
+
+        {/* 提示 */}
+        <p className="text-white/80 text-xs font-bold text-center">
+          点击云朵收下祝福 ✨
+        </p>
+      </div>
+
+      {/* 云朵消息弹窗 */}
+      <AnimatePresence>
+        {selectedCloud && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-6"
+            onClick={() => setSelectedCloud(null)}
+          >
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              className="relative bg-white/90 rounded-3xl p-6 shadow-2xl max-w-[260px]"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="text-5xl text-center mb-3">{selectedCloud.emoji}</div>
+              <p className="text-gray-700 text-sm font-bold text-center leading-relaxed mb-4">
+                {selectedCloud.message}
+              </p>
+              <button
+                onClick={() => setSelectedCloud(null)}
+                className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold py-2 rounded-full"
+              >
+                谢谢 💕
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 漂流瓶 - 简化版 */}
+      <MessageBottle />
+    </div>
+  );
+});
+WatchGrassLayout.displayName = 'WatchGrassLayout';
+
+// ============ 手机端草地布局（原有代码） ============
+const PhoneGrassLayout = memo(() => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const todayEmotion = useEmotionStore((state) => state.todayEmotion);
   const { config: characterConfig } = useCharacterStore();
@@ -553,4 +682,4 @@ export const GrassScene = memo(() => {
     </div>
   );
 });
-GrassScene.displayName = 'GrassScene';
+PhoneGrassLayout.displayName = 'PhoneGrassLayout';
