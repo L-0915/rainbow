@@ -5,6 +5,8 @@ import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { RainbowChatDialog } from '@/components/chat/RainbowChatDialog';
 import { StarMomentDialog } from '@/components/StarMomentDialog';
 import { BottomNavBar } from '@/components/BottomNavBar';
+import { WatchEmotionPicker } from '@/components/WatchEmotionPicker';
+import { useIsWatch, useWatchSafeArea } from '@/hooks/useIsWatch';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
 // 情绪对应游戏配置
@@ -384,7 +386,273 @@ const AIResponseModal = memo(({
 });
 AIResponseModal.displayName = 'AIResponseModal';
 
+// ============ 手表端专用组件 ============
+
+// 手表端 AI 回复弹窗 - 简化版
+const WatchAIResponseModal = memo(({
+  emotion,
+  onClose,
+}: {
+  emotion: EmotionType;
+  onClose: () => void;
+}) => {
+  const navigateTo = useAppStore((state) => state.navigateTo);
+  const startGame = useAppStore((state) => state.startGame);
+  const setHasEnteredPlayground = useAppStore((state) => state.setHasEnteredPlayground);
+
+  const response = AI_RESPONSES[emotion];
+  const gameConfig = EMOTION_TO_GAME[emotion];
+  const config = EMOTION_CONFIG[emotion];
+
+  const randomMessage = useMemo(() => {
+    const randomIndex = Math.floor(Math.random() * response.messages.length);
+    return response.messages[randomIndex];
+  }, [emotion, response.messages]);
+
+  useEffect(() => {
+    playSound(emotion);
+  }, [emotion]);
+
+  const handleGoToGame = () => {
+    setHasEnteredPlayground(true);
+    navigateTo('playground');
+    setTimeout(() => {
+      startGame(gameConfig.gameId);
+    }, 300);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4"
+    >
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+
+      <motion.div
+        initial={{ scale: 0.8, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        className="relative w-full max-w-[300px] rounded-3xl shadow-2xl border-4 border-white/50 overflow-hidden"
+        style={{ background: config.gradient }}
+      >
+        {/* 关闭按钮 */}
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/30 flex items-center justify-center text-white text-lg z-10"
+        >
+          ✕
+        </button>
+
+        {/* 内容 */}
+        <div className="p-6 text-center">
+          {/* Emoji */}
+          <motion.div
+            className="text-6xl mb-3"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            {response.emoji}
+          </motion.div>
+
+          {/* 标题 */}
+          <h3 className="text-white font-black text-xl mb-2 drop-shadow-lg">
+            {response.title}
+          </h3>
+
+          {/* 消息 */}
+          <p className="text-white/90 text-sm font-medium leading-relaxed mb-4 bg-white/20 backdrop-blur-sm rounded-2xl p-3">
+            {randomMessage}
+          </p>
+
+          {/* 游戏按钮 */}
+          <button
+            onClick={handleGoToGame}
+            className="w-full bg-white text-gray-700 font-black text-sm py-3 px-4 rounded-full shadow-xl mb-2 flex items-center justify-center gap-2"
+          >
+            <span className="text-2xl">{gameConfig.gameEmoji}</span>
+            <span>{gameConfig.gameName}</span>
+          </button>
+
+          <button
+            onClick={onClose}
+            className="w-full bg-white/30 text-white font-bold text-sm py-2 px-4 rounded-full"
+          >
+            知道啦 💕
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+});
+WatchAIResponseModal.displayName = 'WatchAIResponseModal';
+
+// 手表端首页布局 - 简洁大气
+const WatchHomeLayout = memo(() => {
+  const todayEmotion = useEmotionStore((state) => state.todayEmotion);
+  const setTodayEmotion = useEmotionStore((state) => state.setTodayEmotion);
+  const unlockAchievement = useAchievementStore((state) => state.unlockAchievement);
+
+  const [showEmotionPicker, setShowEmotionPicker] = useState(false);
+  const [showAIResponse, setShowAIResponse] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [showStarMoment, setShowStarMoment] = useState(false);
+
+  const safePadding = useWatchSafeArea();
+  const config = todayEmotion ? EMOTION_CONFIG[todayEmotion] : null;
+
+  const handleEmotionSelect = useCallback((emotion: EmotionType) => {
+    playSound(emotion);
+    setTodayEmotion(emotion);
+    setShowEmotionPicker(false);
+    unlockAchievement('emotion-master');
+    if (emotion === 'scared' || emotion === 'angry') {
+      unlockAchievement('brave-warrior');
+    }
+    setShowAIResponse(true);
+  }, [setTodayEmotion, unlockAchievement]);
+
+  return (
+    <div
+      className="relative w-full h-full flex flex-col"
+      style={{ padding: safePadding }}
+    >
+      {/* 渐变背景 */}
+      <div className="absolute inset-0 bg-gradient-to-br from-pink-300 via-purple-200 to-blue-300" />
+
+      {/* 顶部标题 */}
+      <motion.div
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="relative z-10 flex items-center justify-center py-3"
+      >
+        <div className="bg-white/30 backdrop-blur-md rounded-full px-4 py-1.5">
+          <span className="text-white font-black text-base drop-shadow-lg">🌈 小彩虹</span>
+        </div>
+      </motion.div>
+
+      {/* 主内容区 */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-3">
+        {/* 今日情绪卡片 */}
+        {todayEmotion && config ? (
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={() => setShowEmotionPicker(true)}
+            className="w-full max-w-[200px] aspect-square rounded-3xl shadow-2xl border-4 border-white/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-transform mb-4"
+            style={{ background: config.gradient }}
+          >
+            <motion.div
+              className="text-6xl mb-2"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              {config.emoji}
+            </motion.div>
+            <div className="text-white font-black text-xl drop-shadow-lg">
+              {config.label}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.button
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            onClick={() => setShowEmotionPicker(true)}
+            className="w-full max-w-[200px] aspect-square rounded-3xl bg-white/40 backdrop-blur-md shadow-2xl border-4 border-white/50 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-transform mb-4"
+          >
+            <motion.div
+              className="text-6xl mb-2"
+              animate={{ scale: [1, 1.15, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              💭
+            </motion.div>
+            <div className="text-white font-black text-lg drop-shadow-lg">
+              今天心情？
+            </div>
+          </motion.button>
+        )}
+
+        {/* 功能按钮 */}
+        <div className="flex gap-3 w-full max-w-[220px]">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowChat(true)}
+            className="flex-1 bg-gradient-to-br from-orange-400 to-rose-400 rounded-2xl py-3 shadow-xl border-3 border-white/40 flex flex-col items-center justify-center"
+          >
+            <span className="text-2xl mb-1">🌈</span>
+            <span className="text-white font-bold text-xs">聊天</span>
+          </motion.button>
+
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowStarMoment(true)}
+            className="flex-1 bg-gradient-to-br from-green-400 to-teal-400 rounded-2xl py-3 shadow-xl border-3 border-white/40 flex flex-col items-center justify-center"
+          >
+            <span className="text-2xl mb-1">⭐</span>
+            <span className="text-white font-bold text-xs">发光</span>
+          </motion.button>
+        </div>
+      </div>
+
+      {/* 底部滑动提示 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="relative z-10 text-center py-2"
+      >
+        <span className="text-white/60 text-xs font-bold">← 滑动切换场景 →</span>
+      </motion.div>
+
+      {/* 情绪选择器 */}
+      <AnimatePresence>
+        {showEmotionPicker && (
+          <WatchEmotionPicker
+            onSelect={handleEmotionSelect}
+            onClose={() => setShowEmotionPicker(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* AI 回复弹窗 */}
+      <AnimatePresence>
+        {showAIResponse && todayEmotion && (
+          <WatchAIResponseModal
+            emotion={todayEmotion}
+            onClose={() => setShowAIResponse(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 聊天弹窗 */}
+      <AnimatePresence>
+        {showChat && <RainbowChatDialog isOpen={showChat} onClose={() => setShowChat(false)} />}
+      </AnimatePresence>
+
+      {/* 闪闪发光弹窗 */}
+      <AnimatePresence>
+        {showStarMoment && <StarMomentDialog onClose={() => setShowStarMoment(false)} />}
+      </AnimatePresence>
+    </div>
+  );
+});
+WatchHomeLayout.displayName = 'WatchHomeLayout';
+
 export const HomeScene = () => {
+  const isWatch = useIsWatch();
+
+  // 手表端使用简化布局
+  if (isWatch) {
+    return <WatchHomeLayout />;
+  }
+
+  // 手机端使用原有布局
+  return <PhoneHomeLayout />;
+};
+
+// 手机端布局（原有代码）
+const PhoneHomeLayout = () => {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const todayEmotion = useEmotionStore((state) => state.todayEmotion);
   const setTodayEmotion = useEmotionStore((state) => state.setTodayEmotion);

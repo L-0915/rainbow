@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/store/appStore';
+import { useIsWatch } from '@/hooks/useIsWatch';
 import { memo } from 'react';
 
 interface BottomNavBarProps {
@@ -7,6 +8,13 @@ interface BottomNavBarProps {
 }
 
 export const BottomNavBar = memo(({ hideHome = false }: BottomNavBarProps) => {
+  const isWatch = useIsWatch();
+
+  // 手表端不显示底部导航栏
+  if (isWatch) {
+    return null;
+  }
+
   const navigateTo = useAppStore((state) => state.navigateTo);
   const currentScene = useAppStore((state) => state.currentScene);
 

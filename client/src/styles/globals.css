@@ -344,3 +344,80 @@ button, a, [role="button"] {
   min-height: 44px;
   touch-action: manipulation;
 }
+
+/* ============ 手表端专用样式 ============ */
+
+/* 手表端全屏布局 */
+.watch-fullscreen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 手表端大圆角卡片 */
+.watch-card {
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+/* 手表端大按钮 */
+.watch-btn-lg {
+  min-height: 56px;
+  min-width: 56px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 1rem;
+  touch-action: manipulation;
+}
+
+/* 手表端滑动容器 */
+.watch-swipe-container {
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+}
+
+/* 手表端场景指示器 */
+.watch-scene-indicator {
+  position: fixed;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+}
+
+/* 手表端隐藏滚动条 */
+@media (max-width: 400px) {
+  html, body {
+    font-size: 14px;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 手表端增大触摸区域 */
+  button, [role="button"] {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* 手表端优化动画性能 */
+  * {
+    animation-duration: 0.3s !important;
+  }
+}
+
+/* 圆形屏幕安全区域 */
+@media (resolution: 200dpi) and (max-width: 400px) {
+  .watch-safe-area {
+    padding: 12px;
+  }
+}
