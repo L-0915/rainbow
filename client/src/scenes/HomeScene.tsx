@@ -4,6 +4,8 @@ import { useEmotionStore, EMOTION_CONFIG, EmotionType } from '@/store/emotionSto
 import { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { RainbowChatDialog } from '@/components/chat/RainbowChatDialog';
 import { StarMomentDialog } from '@/components/StarMomentDialog';
+import { WatchRainbowChat } from '@/components/WatchRainbowChat';
+import { WatchStarMoment } from '@/components/WatchStarMoment';
 import { BottomNavBar } from '@/components/BottomNavBar';
 import { WatchEmotionPicker } from '@/components/WatchEmotionPicker';
 import { useIsWatch, useWatchSafeArea } from '@/hooks/useIsWatch';
@@ -627,12 +629,12 @@ const WatchHomeLayout = memo(() => {
 
       {/* 聊天弹窗 */}
       <AnimatePresence>
-        {showChat && <RainbowChatDialog isOpen={showChat} onClose={() => setShowChat(false)} />}
+        {showChat && <WatchRainbowChat isOpen={showChat} onClose={() => setShowChat(false)} />}
       </AnimatePresence>
 
       {/* 闪闪发光弹窗 */}
       <AnimatePresence>
-        {showStarMoment && <StarMomentDialog onClose={() => setShowStarMoment(false)} />}
+        {showStarMoment && <WatchStarMoment onClose={() => setShowStarMoment(false)} />}
       </AnimatePresence>
     </div>
   );
