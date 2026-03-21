@@ -7,6 +7,8 @@ import { EmotionChart } from '@/components/emotion/EmotionChart';
 import { EmotionStats } from '@/components/emotion/EmotionStats';
 import { WeeklyReport } from '@/components/parent/WeeklyReport';
 import { EmotionAlert } from '@/components/parent/EmotionAlert';
+import { ReportExport } from '@/components/parent/ReportExport';
+import { ChildSwitcher, useCurrentChild } from '@/components/parent/ChildSwitcher';
 import { EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
 
 interface ParentInfo {
@@ -186,9 +188,10 @@ const PhoneParentDashboard = memo(() => {
   const [watchBinding, setWatchBinding] = useState<WatchBinding | null>(null);
   const [emotions, setEmotions] = useState<Emotion[]>([]);
   const [bottles, setBottles] = useState<Bottle[]>([]);
-  const [activeTab, setActiveTab] = useState<'report' | 'emotions' | 'bottles' | 'stats'>('report');
+  const [activeTab, setActiveTab] = useState<'report' | 'emotions' | 'bottles' | 'stats' | 'export'>('report');
   const [loading, setLoading] = useState(true);
   const [showParentScene, setShowParentScene] = useState(false);
+  const { getChildId, setChildId } = useCurrentChild();
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -380,6 +383,18 @@ const PhoneParentDashboard = memo(() => {
           >
             🍾 漂流瓶 ({bottles.length})
           </motion.button>
+          <motion.button
+            onClick={() => setActiveTab('export')}
+            className={`px-3 py-2 sm:px-6 sm:py-3 rounded-full font-bold text-xs sm:text-base ${
+              activeTab === 'export'
+                ? 'bg-gradient-to-r from-teal-400 to-emerald-400 text-white shadow-lg'
+                : 'bg-white/80 text-gray-600'
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            📤 导出
+          </motion.button>
         </div>
 
         {/* 周报和预警 */}
@@ -395,6 +410,13 @@ const PhoneParentDashboard = memo(() => {
           <div className="max-w-4xl mx-auto space-y-6">
             <EmotionChart data={chartData} title="情绪变化曲线" />
             <EmotionStats data={chartData} title="情绪统计" />
+          </div>
+        )}
+
+        {/* 导出报告 */}
+        {activeTab === 'export' && (
+          <div className="max-w-md mx-auto">
+            <ReportExport childName={watchBinding?.child_nickname} />
           </div>
         )}
 
