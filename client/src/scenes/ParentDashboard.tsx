@@ -5,6 +5,8 @@ import { useAppStore } from '@/store/appStore';
 import { useIsWatch } from '@/hooks/useIsWatch';
 import { EmotionChart } from '@/components/emotion/EmotionChart';
 import { EmotionStats } from '@/components/emotion/EmotionStats';
+import { WeeklyReport } from '@/components/parent/WeeklyReport';
+import { EmotionAlert } from '@/components/parent/EmotionAlert';
 import { EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
 
 interface ParentInfo {
@@ -184,7 +186,7 @@ const PhoneParentDashboard = memo(() => {
   const [watchBinding, setWatchBinding] = useState<WatchBinding | null>(null);
   const [emotions, setEmotions] = useState<Emotion[]>([]);
   const [bottles, setBottles] = useState<Bottle[]>([]);
-  const [activeTab, setActiveTab] = useState<'emotions' | 'bottles' | 'stats'>('emotions');
+  const [activeTab, setActiveTab] = useState<'report' | 'emotions' | 'bottles' | 'stats'>('report');
   const [loading, setLoading] = useState(true);
   const [showParentScene, setShowParentScene] = useState(false);
 
@@ -331,6 +333,18 @@ const PhoneParentDashboard = memo(() => {
         {/* 标签切换 */}
         <div className="flex gap-2 sm:gap-4 mb-4 sm:mb-6 justify-center flex-wrap">
           <motion.button
+            onClick={() => setActiveTab('report')}
+            className={`px-3 py-2 sm:px-6 sm:py-3 rounded-full font-bold text-xs sm:text-base ${
+              activeTab === 'report'
+                ? 'bg-gradient-to-r from-green-400 to-emerald-400 text-white shadow-lg'
+                : 'bg-white/80 text-gray-600'
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            📋 周报
+          </motion.button>
+          <motion.button
             onClick={() => setActiveTab('emotions')}
             className={`px-3 py-2 sm:px-6 sm:py-3 rounded-full font-bold text-xs sm:text-base ${
               activeTab === 'emotions'
@@ -340,7 +354,7 @@ const PhoneParentDashboard = memo(() => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            📔 情绪日记 ({emotions.length})
+            📔 日记 ({emotions.length})
           </motion.button>
           <motion.button
             onClick={() => setActiveTab('stats')}
@@ -352,7 +366,7 @@ const PhoneParentDashboard = memo(() => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            📊 情绪统计
+            📊 统计
           </motion.button>
           <motion.button
             onClick={() => setActiveTab('bottles')}
@@ -367,6 +381,14 @@ const PhoneParentDashboard = memo(() => {
             🍾 漂流瓶 ({bottles.length})
           </motion.button>
         </div>
+
+        {/* 周报和预警 */}
+        {activeTab === 'report' && (
+          <div className="max-w-2xl mx-auto space-y-4">
+            <EmotionAlert data={chartData} childName={watchBinding?.child_nickname} />
+            <WeeklyReport data={chartData} childName={watchBinding?.child_nickname} />
+          </div>
+        )}
 
         {/* 情绪统计和曲线图 */}
         {activeTab === 'stats' && (
