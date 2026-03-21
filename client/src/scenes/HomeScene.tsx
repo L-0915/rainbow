@@ -8,6 +8,7 @@ import { WatchRainbowChat } from '@/components/WatchRainbowChat';
 import { WatchStarMoment } from '@/components/WatchStarMoment';
 import { BottomNavBar } from '@/components/BottomNavBar';
 import { WatchEmotionPicker } from '@/components/WatchEmotionPicker';
+import { QuickEmotionRecord } from '@/components/common/QuickEmotionRecord';
 import { useIsWatch, useWatchSafeArea } from '@/hooks/useIsWatch';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
@@ -899,6 +900,9 @@ const PhoneHomeLayout = () => {
       <AnimatePresence>
         {showContactParent && <StarMomentDialog onClose={() => setShowContactParent(false)} />}
       </AnimatePresence>
+
+      {/* 快速情绪记录 - 双击左下角触发 */}
+      <QuickEmotionRecord />
     </div>
   );
 };

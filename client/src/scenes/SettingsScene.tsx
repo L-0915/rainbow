@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { NotificationSettingsPanel } from '@/components/settings/NotificationSettingsPanel';
 import { PrivacyPolicy } from '@/components/privacy/PrivacyPolicy';
 import { useAppStore } from '@/store/appStore';
+import { useTheme, ThemeToggle } from '@/hooks/useTheme';
 
 interface SettingsSceneProps {
   onBack: () => void;
@@ -12,6 +13,7 @@ export const SettingsScene = memo(({ onBack }: SettingsSceneProps) => {
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const logout = useAppStore((state) => state.logout);
+  const { theme } = useTheme();
 
   const handleLogout = () => {
     if (confirm('确定要退出登录吗？')) {
@@ -20,6 +22,17 @@ export const SettingsScene = memo(({ onBack }: SettingsSceneProps) => {
   };
 
   const settingsGroups = [
+    {
+      title: '显示设置',
+      items: [
+        {
+          icon: theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🔄',
+          label: '深色模式',
+          description: theme === 'auto' ? '跟随系统' : theme === 'dark' ? '已开启' : '已关闭',
+          customAction: 'toggle',
+        },
+      ],
+    },
     {
       title: '提醒设置',
       items: [
@@ -97,13 +110,11 @@ export const SettingsScene = memo(({ onBack }: SettingsSceneProps) => {
             <h2 className="text-sm font-bold text-gray-400 mb-2 px-2">{group.title}</h2>
             <div className="bg-white/80 backdrop-blur-xl rounded-2xl overflow-hidden shadow-lg">
               {group.items.map((item, itemIndex) => (
-                <motion.button
+                <div
                   key={item.label}
-                  onClick={item.onClick}
                   className={`w-full flex items-center gap-4 p-4 text-left transition-colors hover:bg-gray-50 ${
                     itemIndex !== group.items.length - 1 ? 'border-b border-gray-100' : ''
                   }`}
-                  whileTap={{ scale: 0.98 }}
                 >
                   <span className="text-2xl">{item.icon}</span>
                   <div className="flex-1">
@@ -114,8 +125,18 @@ export const SettingsScene = memo(({ onBack }: SettingsSceneProps) => {
                       <p className="text-sm text-gray-400">{item.description}</p>
                     )}
                   </div>
-                  {!item.danger && <span className="text-gray-300">›</span>}
-                </motion.button>
+                  {item.customAction === 'toggle' ? (
+                    <ThemeToggle />
+                  ) : item.onClick ? (
+                    <motion.button
+                      onClick={item.onClick}
+                      className="text-gray-300"
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      ›
+                    </motion.button>
+                  ) : null}
+                </div>
               ))}
             </div>
           </motion.div>
