@@ -4,6 +4,7 @@ import { sendChatMessage, getGreeting, type ChatMessage } from '@/services/rainb
 import { useAchievementStore } from '@/store/appStore';
 import { Rainbow } from '@/components/rainbow/Rainbow';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 
 interface RainbowChatDialogProps {
   isOpen: boolean;
@@ -31,6 +32,9 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
 
   // 语音识别
   const { isListening, transcript, isSupported, startListening, stopListening, resetTranscript } = useSpeechRecognition();
+
+  // 语音合成
+  const { speak, stop: stopSpeaking, isSpeaking, isSupported: isSpeechSupported } = useSpeechSynthesis();
 
   // 监听语音识别结果
   useEffect(() => {
@@ -107,6 +111,10 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
 
       if (response.success && response.content) {
         setMessages((prev) => [...prev, { role: 'assistant', content: response.content! }]);
+        // 语音播报 AI 回复
+        if (isSpeechSupported) {
+          speak(response.content);
+        }
         // 设置 AI 生成的建议选项，如果没有则使用默认
         if (response.suggestions && response.suggestions.length > 0) {
           setCurrentSuggestions(response.suggestions);
@@ -171,6 +179,22 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
       startListening();
     }
   }, [isListening, startListening, stopListening]);
+
+  // 播放/停止语音播报
+  const handleSpeakClick = useCallback((text: string) => {
+    if (isSpeaking) {
+      stopSpeaking();
+    } else {
+      speak(text);
+    }
+  }, [isSpeaking, speak, stopSpeaking]);
+
+  // 关闭时停止语音
+  useEffect(() => {
+    if (!isOpen) {
+      stopSpeaking();
+    }
+  }, [isOpen, stopSpeaking]);
 
   if (!isOpen) return null;
 
@@ -238,6 +262,18 @@ export const RainbowChatDialog = memo(({ isOpen, onClose }: RainbowChatDialogPro
                   <p className="text-xs sm:text-sm whitespace-pre-wrap font-medium">
                     {message.content}
                   </p>
+                  {/* AI 消息语音播报按钮 */}
+                  {message.role === 'assistant' && isSpeechSupported && (
+                    <motion.button
+                      onClick={() => handleSpeakClick(message.content)}
+                      className={`mt-1.5 w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                        isSpeaking ? 'bg-purple-200 text-purple-600' : 'bg-purple-100 text-purple-500'
+                      }`}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      {isSpeaking ? '⏹️' : '🔊'}
+                    </motion.button>
+                  )}
                 </div>
               </motion.div>
             ))}
