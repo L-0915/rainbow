@@ -14,6 +14,7 @@ import { MerryGoRoundGame } from '@/games/MerryGoRoundGame';
 import { PaperPlaneGame } from '@/games/PaperPlaneGame';
 import { BumperCarsGame } from '@/games/BumperCarsGame';
 import { WatchSceneIndicator } from '@/components/WatchSceneIndicator';
+import { OfflineIndicator } from '@/hooks/useOffline';
 import { useIsWatch } from '@/hooks/useIsWatch';
 import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -98,6 +99,9 @@ function App() {
       className="relative w-full h-full"
       {...(isWatch ? bind() : {})}
     >
+      {/* 离线状态指示器 */}
+      <OfflineIndicator />
+
       {/* 手表端场景指示器 */}
       {isWatch && currentScene !== 'login' && !currentGame && (
         <WatchSceneIndicator currentScene={currentScene} />

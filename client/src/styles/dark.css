@@ -1,0 +1,148 @@
+/* 深色模式样式 */
+
+/* 自动跟随系统深色模式 */
+@media (prefers-color-scheme: dark) {
+  .dark-mode-auto {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --text-primary: #eaeaea;
+    --text-secondary: #a0a0a0;
+  }
+
+  /* 背景色 */
+  .dark-mode-auto .bg-white {
+    background-color: #1a1a2e !important;
+  }
+
+  .dark-mode-auto .bg-gray-50 {
+    background-color: #16213e !important;
+  }
+
+  .dark-mode-auto .bg-gray-100 {
+    background-color: #1f2937 !important;
+  }
+
+  /* 文字颜色 */
+  .dark-mode-auto .text-gray-700 {
+    color: #e5e7eb !important;
+  }
+
+  .dark-mode-auto .text-gray-600 {
+    color: #d1d5db !important;
+  }
+
+  .dark-mode-auto .text-gray-500 {
+    color: #9ca3af !important;
+  }
+
+  /* 卡片和边框 */
+  .dark-mode-auto .border-gray-200 {
+    border-color: #374151 !important;
+  }
+
+  .dark-mode-auto .border-white {
+    border-color: #374151 !important;
+  }
+
+  /* 渐变背景适配 */
+  .dark-mode-auto .from-pink-50 {
+    --tw-gradient-from: #2d1f2f !important;
+  }
+
+  .dark-mode-auto .via-purple-50 {
+    --tw-gradient-via: #1f1f3d !important;
+  }
+
+  .dark-mode-auto .to-blue-50 {
+    --tw-gradient-to: #1a2a3d !important;
+  }
+}
+
+/* 手动深色模式类 */
+.dark-mode {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --text-primary: #eaeaea;
+  --text-secondary: #a0a0a0;
+}
+
+.dark-mode .bg-white {
+  background-color: #1a1a2e !important;
+}
+
+.dark-mode .bg-gray-50 {
+  background-color: #16213e !important;
+}
+
+.dark-mode .bg-gray-100 {
+  background-color: #1f2937 !important;
+}
+
+.dark-mode .text-gray-700 {
+  color: #e5e7eb !important;
+}
+
+.dark-mode .text-gray-600 {
+  color: #d1d5db !important;
+}
+
+.dark-mode .text-gray-500 {
+  color: #9ca3af !important;
+}
+
+/* 深色模式下的特殊组件 */
+.dark-mode .emotion-card {
+  background: linear-gradient(135deg, #2d1f2f 0%, #1f1f3d 50%, #1a2a3d 100%);
+  border-color: #4a5568;
+}
+
+.dark-mode .chat-bubble {
+  background-color: #2d3748;
+}
+
+.dark-mode .chat-bubble-user {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+/* 深色模式过渡动画 */
+.dark-mode-transition {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 保护眼睛的深色渐变背景 */
+.dark-mode .safe-gradient {
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+}
+
+/* 深色模式下的输入框 */
+.dark-mode input,
+.dark-mode textarea {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #e5e7eb !important;
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* 深色模式下的按钮悬停效果 */
+.dark-mode .btn-hover:hover {
+  background-color: #374151 !important;
+}
+
+/* 减少蓝光的暖色调深色模式 */
+.warm-dark-mode {
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #252525;
+  --accent-warm: #fbbf24;
+}
+
+.warm-dark-mode .bg-white {
+  background-color: #1e1e1e !important;
+}
+
+.warm-dark-mode .text-gray-700 {
+  color: #f3f4f6 !important;
+}
