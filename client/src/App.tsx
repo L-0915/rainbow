@@ -6,6 +6,7 @@ import { GrassScene } from '@/scenes/GrassScene';
 import { PlaygroundScene } from '@/scenes/PlaygroundScene';
 import { ParentDashboard } from '@/scenes/ParentDashboard';
 import { EmotionDiaryScene } from '@/scenes/EmotionDiaryScene';
+import { SettingsScene } from '@/scenes/SettingsScene';
 import { RollerCoasterGame } from '@/games/RollerCoasterGame';
 import { FallCatchGame } from '@/games/FallCatchGame';
 import { ShadowHouseGame } from '@/games/ShadowHouseGame';
@@ -24,6 +25,7 @@ function App() {
   const currentGame = useAppStore((state) => state.currentGame);
   const isTransitioning = useAppStore((state) => state.isTransitioning);
   const login = useAppStore((state) => state.login);
+  const navigateTo = useAppStore((state) => state.navigateTo);
   const setUserInfo = useAuthStore((state) => state.setUserInfo);
 
   // 手表端检测和滑动导航
@@ -84,6 +86,8 @@ function App() {
         return <ParentDashboard />;
       case 'emotion-diary':
         return <EmotionDiaryScene />;
+      case 'settings':
+        return <SettingsScene onBack={() => navigateTo('home')} />;
       default:
         return <LoginScene />;
     }

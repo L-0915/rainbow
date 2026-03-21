@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type SceneType = 'login' | 'map' | 'home' | 'grass' | 'playground' | 'parent-dashboard' | 'emotion-diary';
+export type SceneType = 'login' | 'map' | 'home' | 'grass' | 'playground' | 'parent-dashboard' | 'emotion-diary' | 'settings';
 
 export type PlaygroundGame =
   | 'roller-coaster'   // 心跳过山车

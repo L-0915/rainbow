@@ -36,9 +36,9 @@ export const BottomNavBar = memo(({ hideHome = false }: BottomNavBarProps) => {
       label: '游乐场',
     },
     {
-      scene: 'parent-dashboard' as const,
-      emoji: '⌚',
-      label: '手表',
+      scene: 'settings' as const,
+      emoji: '⚙️',
+      label: '设置',
     },
   ];
 
