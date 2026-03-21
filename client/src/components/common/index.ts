@@ -3,3 +3,4 @@ export * from './Card';
 export * from './Cloud';
 export * from './Skeleton';
 export * from './QuickEmotionRecord';
+export * from './LoadingScreen';
