@@ -2,6 +2,8 @@ import { useState, useMemo, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useEmotionStore, EMOTION_CONFIG, type EmotionType, type EmotionRecord } from '@/store/emotionStore';
 import { useAchievementStore } from '@/store/appStore';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface ReportExportProps {
   childName?: string;
@@ -155,6 +157,113 @@ export const ReportExport = memo(({ childName = '小宝贝', onClose }: ReportEx
     }
   }, [childName, reportData]);
 
+  // 导出为 PDF
+  const handleExportPDF = useCallback(async () => {
+    setIsExporting(true);
+
+    try {
+      // 创建一个隐藏的 div 用于渲染 PDF 内容
+      const pdfContainer = document.createElement('div');
+      pdfContainer.style.position = 'absolute';
+      pdfContainer.style.left = '-9999px';
+      pdfContainer.style.width = '800px';
+      pdfContainer.style.padding = '40px';
+      pdfContainer.style.background = 'linear-gradient(135deg, #FEF3C7 0%, #FECACA 50%, #E9D5FF 100%)';
+      pdfContainer.style.fontFamily = 'Arial, sans-serif';
+
+      // 构建 HTML 内容
+      pdfContainer.innerHTML = `
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #1F2937; font-size: 32px; margin: 0;">🌈 彩虹创口贴情绪报告</h1>
+          <p style="color: #6B7280; font-size: 18px; margin: 10px 0;">${childName}</p>
+          <p style="color: #6B7280; font-size: 16px;">${reportData.dateRange}</p>
+        </div>
+
+        <div style="display: flex; justify-content: space-around; margin-bottom: 40px;">
+          <div style="text-align: center; background: white; padding: 20px; border-radius: 12px; flex: 1; margin: 0 10px;">
+            <p style="color: #7C3AED; font-size: 42px; font-weight: bold; margin: 0;">${reportData.totalDays}</p>
+            <p style="color: #6B7280; font-size: 16px; margin: 10px 0 0 0;">情绪记录</p>
+          </div>
+          <div style="text-align: center; background: white; padding: 20px; border-radius: 12px; flex: 1; margin: 0 10px;">
+            <p style="color: #059669; font-size: 42px; font-weight: bold; margin: 0;">${reportData.positiveRatio.toFixed(0)}%</p>
+            <p style="color: #6B7280; font-size: 16px; margin: 10px 0 0 0;">积极情绪</p>
+          </div>
+        </div>
+
+        <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px;">
+          <h2 style="color: #1F2937; font-size: 24px; margin: 0 0 20px 0;">📊 情绪分布</h2>
+          ${Object.entries(reportData.emotionCounts)
+            .filter(([_, count]) => count > 0)
+            .map(([emotion, count]) => {
+              const config = EMOTION_CONFIG[emotion as EmotionType];
+              const percentage = (count / reportData.totalDays) * 100;
+              return `
+                <div style="margin-bottom: 15px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                    <span style="font-size: 20px; margin-right: 10px;">${config.emoji}</span>
+                    <span style="color: #374151; font-weight: bold;">${config.label}</span>
+                    <span style="color: #6B7280; margin-left: auto;">${count} 天</span>
+                  </div>
+                  <div style="background: #E5E7EB; height: 20px; border-radius: 10px; overflow: hidden;">
+                    <div style="background: ${config.color}; width: ${percentage}%; height: 100%;"></div>
+                  </div>
+                </div>
+              `;
+            })
+            .join('')}
+        </div>
+
+        <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 30px;">
+          <h2 style="color: #1F2937; font-size: 24px; margin: 0 0 20px 0;">🏆 已解锁成就</h2>
+          ${reportData.unlockedAchievements.slice(0, 6).map(achievement => `
+            <div style="margin-bottom: 15px; padding: 12px; background: #F9FAFB; border-radius: 8px;">
+              <div style="display: flex; align-items: center;">
+                <span style="font-size: 24px; margin-right: 12px;">${achievement.emoji}</span>
+                <div>
+                  <p style="color: #1F2937; font-weight: bold; margin: 0;">${achievement.title}</p>
+                  <p style="color: #6B7280; font-size: 14px; margin: 5px 0 0 0;">${achievement.description}</p>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
+          <p style="color: #9CA3AF; font-size: 14px; margin: 5px 0;">由彩虹创口贴生成</p>
+          <p style="color: #9CA3AF; font-size: 14px; margin: 5px 0;">${new Date().toLocaleDateString('zh-CN')}</p>
+        </div>
+      `;
+
+      document.body.appendChild(pdfContainer);
+
+      // 使用 html2canvas 将 HTML 转换为 canvas
+      const canvas = await html2canvas(pdfContainer, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+      });
+
+      // 清理临时容器
+      document.body.removeChild(pdfContainer);
+
+      // 创建 PDF
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+      // 下载 PDF
+      pdf.save(`彩虹创口贴-${childName}情绪报告-${new Date().toISOString().split('T')[0]}.pdf`);
+    } catch (error) {
+      console.error('导出 PDF 失败:', error);
+      alert('导出 PDF 失败，请重试');
+    } finally {
+      setIsExporting(false);
+    }
+  }, [childName, reportData]);
+
   // 分享功能
   const handleShare = useCallback(async () => {
     const shareText = `🌈 ${childName}的情绪报告\n\n` +
@@ -245,6 +354,15 @@ export const ReportExport = memo(({ childName = '小宝贝', onClose }: ReportEx
           whileTap={{ scale: 0.95 }}
         >
           {isExporting ? '导出中...' : '📥 导出为图片'}
+        </motion.button>
+
+        <motion.button
+          onClick={handleExportPDF}
+          disabled={isExporting || reportData.totalDays === 0}
+          className="w-full bg-gradient-to-r from-red-400 to-orange-400 text-white font-bold py-3 rounded-xl disabled:opacity-50"
+          whileTap={{ scale: 0.95 }}
+        >
+          {isExporting ? '导出中...' : '📄 导出为 PDF'}
         </motion.button>
 
         <motion.button

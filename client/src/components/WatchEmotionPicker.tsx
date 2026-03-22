@@ -100,7 +100,7 @@ export const WatchEmotionPicker = ({ onSelect, onClose }: WatchEmotionPickerProp
   };
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col items-center justify-center">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center">
       {/* 背景遮罩 */}
       <div
         className="absolute inset-0 bg-black/30 backdrop-blur-sm"
@@ -108,7 +108,7 @@ export const WatchEmotionPicker = ({ onSelect, onClose }: WatchEmotionPickerProp
       />
 
       {/* 主内容 */}
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6">
+      <div className="relative z-[10000] w-full h-full flex flex-col items-center justify-center p-6">
         {/* 顶部标题 */}
         <motion.div
           initial={{ y: -30, opacity: 0 }}
