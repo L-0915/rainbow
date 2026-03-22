@@ -1,9 +1,10 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useAppStore, useAuthStore } from '@/store/appStore';
-import { useIsWatch } from '@/hooks/useIsWatch';
-import { useSwipeNavigation } from '@/hooks/useSwipeNavigation';
 import { isAuthenticated, getCurrentUser, logout } from '@/services/auth';
 import { LoadingScreen } from '@/components/common/LoadingScreen';
+import { Onboarding } from '@/components/onboarding/Onboarding';
+import { OfflineIndicator } from '@/hooks/useOffline';
+import '@/styles/dark.css'; // 深色模式样式
 
 // 懒加载所有场景 - 大幅减少首屏加载时间
 const LoginScene = lazy(() => import('@/scenes/LoginScene').then(m => ({ default: m.LoginScene })));
@@ -24,7 +25,6 @@ const PaperPlaneGame = lazy(() => import('@/games/PaperPlaneGame').then(m => ({ 
 const BumperCarsGame = lazy(() => import('@/games/BumperCarsGame').then(m => ({ default: m.BumperCarsGame })));
 
 // 手表端组件 - 小体积，直接导入
-import { WatchSceneIndicator } from '@/components/WatchSceneIndicator';
 import { OfflineIndicator } from '@/hooks/useOffline';
 
 function App() {
@@ -34,8 +34,10 @@ function App() {
   const navigateTo = useAppStore((state) => state.navigateTo);
   const setUserInfo = useAuthStore((state) => state.setUserInfo);
 
-  const isWatch = useIsWatch();
-  const { bind } = useSwipeNavigation();
+  // 首次使用引导状态
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('rainbow_onboarding_completed');
+  });
 
   // 检查登录状态
   useEffect(() => {
@@ -52,6 +54,13 @@ function App() {
     };
     checkAuth();
   }, []);
+
+  // 完成引导
+  const handleOnboardingComplete = (userType: 'child' | 'parent') => {
+    localStorage.setItem('rainbow_onboarding_completed', 'true');
+    localStorage.setItem('rainbow_user_type', userType);
+    setShowOnboarding(false);
+  };
 
   // 游戏渲染
   const renderGame = () => {
@@ -103,15 +112,11 @@ function App() {
   };
 
   return (
-    <div
-      className="relative w-full h-full"
-      {...(isWatch ? bind() : {})}
-    >
-      <OfflineIndicator />
+    <div className="relative w-full h-full">
+      {/* 首次使用引导 */}
+      {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
 
-      {isWatch && currentScene !== 'login' && !currentGame && (
-        <WatchSceneIndicator currentScene={currentScene} />
-      )}
+      <OfflineIndicator />
 
       {/* 简单的淡入淡出，不需要 AnimatePresence */}
       <div
