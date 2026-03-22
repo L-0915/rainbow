@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type SceneType = 'login' | 'map' | 'home' | 'grass' | 'playground' | 'parent-dashboard' | 'emotion-diary' | 'settings';
+export type SceneType = 'login' | 'role-select' | 'map' | 'home' | 'grass' | 'playground' | 'parent-dashboard' | 'emotion-diary' | 'settings';
 
 export type PlaygroundGame =
   | 'roller-coaster'   // 心跳过山车
@@ -50,12 +50,14 @@ export interface AchievementState {
 export interface AppState {
   currentScene: SceneType;
   isLoggedIn: boolean;
+  userType: 'child' | 'parent' | null;
   currentGame: PlaygroundGame | null;
   isTransitioning: boolean;
   hasEnteredPlayground: boolean;
 
   login: () => void;
   logout: () => void;
+  setUserType: (type: 'child' | 'parent') => void;
   navigateTo: (scene: SceneType) => void;
   startGame: (game: PlaygroundGame) => void;
   endGame: () => void;
@@ -142,29 +144,31 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       currentScene: 'login',
       isLoggedIn: false,
+      userType: null,
       currentGame: null,
       isTransitioning: false,
       hasEnteredPlayground: false,
 
       login: () => {
-        // 检查是否有用户信息，如果有则直接跳转到主页
-        const state = get();
-        if (state.isLoggedIn) {
-          set({ currentScene: 'home' });
-        } else {
-          // 如果没有登录，保持在登录页面
-          set({ currentScene: 'login' });
-        }
+        // 登录后跳转到身份选择页面
+        set({ isLoggedIn: true, currentScene: 'role-select' });
       },
 
       logout: () => {
         set({
           isLoggedIn: false,
+          userType: null,
           currentScene: 'login',
           currentGame: null,
         });
         // 清除 auth store
         useAuthStore.getState().clearUserInfo();
+      },
+
+      setUserType: (type) => {
+        // 根据身份跳转到对应主界面
+        const targetScene = type === 'child' ? 'home' : 'parent-dashboard';
+        set({ userType: type, currentScene: targetScene });
       },
 
       navigateTo: (scene) => set({ currentScene: scene }),
@@ -181,6 +185,7 @@ export const useAppStore = create<AppState>()(
       name: 'rainbow-app-storage',
       partialize: (state) => ({
         isLoggedIn: state.isLoggedIn,
+        userType: state.userType,
         hasEnteredPlayground: state.hasEnteredPlayground,
       }),
     }

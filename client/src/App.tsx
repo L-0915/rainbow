@@ -1,13 +1,13 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useAppStore, useAuthStore } from '@/store/appStore';
 import { isAuthenticated, getCurrentUser, logout } from '@/services/auth';
 import { LoadingScreen } from '@/components/common/LoadingScreen';
-import { Onboarding } from '@/components/onboarding/Onboarding';
 import { OfflineIndicator } from '@/hooks/useOffline';
 import '@/styles/dark.css'; // 深色模式样式
 
 // 懒加载所有场景 - 大幅减少首屏加载时间
 const LoginScene = lazy(() => import('@/scenes/LoginScene').then(m => ({ default: m.LoginScene })));
+const RoleSelectScene = lazy(() => import('@/scenes/RoleSelectScene').then(m => ({ default: m.RoleSelectScene })));
 const HomeScene = lazy(() => import('@/scenes/HomeScene').then(m => ({ default: m.HomeScene })));
 const MapScene = lazy(() => import('@/scenes/MapScene').then(m => ({ default: m.MapScene })));
 const GrassScene = lazy(() => import('@/scenes/GrassScene').then(m => ({ default: m.GrassScene })));
@@ -24,20 +24,13 @@ const MerryGoRoundGame = lazy(() => import('@/games/MerryGoRoundGame').then(m =>
 const PaperPlaneGame = lazy(() => import('@/games/PaperPlaneGame').then(m => ({ default: m.PaperPlaneGame })));
 const BumperCarsGame = lazy(() => import('@/games/BumperCarsGame').then(m => ({ default: m.BumperCarsGame })));
 
-// 手表端组件 - 小体积，直接导入
-import { OfflineIndicator } from '@/hooks/useOffline';
-
 function App() {
   const currentScene = useAppStore((state) => state.currentScene);
   const currentGame = useAppStore((state) => state.currentGame);
   const login = useAppStore((state) => state.login);
   const navigateTo = useAppStore((state) => state.navigateTo);
+  const setUserType = useAppStore((state) => state.setUserType);
   const setUserInfo = useAuthStore((state) => state.setUserInfo);
-
-  // 首次使用引导状态
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    return !localStorage.getItem('rainbow_onboarding_completed');
-  });
 
   // 检查登录状态
   useEffect(() => {
@@ -46,7 +39,13 @@ function App() {
         const userInfo = await getCurrentUser();
         if (userInfo) {
           setUserInfo(userInfo.parent, userInfo.child);
-          login();
+          // 检查是否已选择身份
+          const savedUserType = localStorage.getItem('rainbow_user_type') as 'child' | 'parent' | null;
+          if (savedUserType) {
+            setUserType(savedUserType);
+          } else {
+            login();
+          }
         } else {
           logout();
         }
@@ -54,13 +53,6 @@ function App() {
     };
     checkAuth();
   }, []);
-
-  // 完成引导
-  const handleOnboardingComplete = (userType: 'child' | 'parent') => {
-    localStorage.setItem('rainbow_onboarding_completed', 'true');
-    localStorage.setItem('rainbow_user_type', userType);
-    setShowOnboarding(false);
-  };
 
   // 游戏渲染
   const renderGame = () => {
@@ -93,6 +85,7 @@ function App() {
 
     const scenes: Record<string, React.LazyExoticComponent<React.ComponentType<{ onBack?: () => void }>>> = {
       login: LoginScene,
+      'role-select': RoleSelectScene,
       home: HomeScene,
       map: MapScene,
       grass: GrassScene,
@@ -113,9 +106,6 @@ function App() {
 
   return (
     <div className="relative w-full h-full">
-      {/* 首次使用引导 */}
-      {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
-
       <OfflineIndicator />
 
       {/* 简单的淡入淡出，不需要 AnimatePresence */}

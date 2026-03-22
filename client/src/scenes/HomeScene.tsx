@@ -2,9 +2,7 @@ import { useAppStore, PlaygroundGame, useAchievementStore } from '@/store/appSto
 import { useEmotionStore, EMOTION_CONFIG, EmotionType } from '@/store/emotionStore';
 import { useState, useEffect, useCallback, memo } from 'react';
 import { RainbowChatDialog } from '@/components/chat/RainbowChatDialog';
-import { StarMomentDialog } from '@/components/StarMomentDialog';
 import { BottomNavBar } from '@/components/BottomNavBar';
-import { AchievementWall } from '@/components/achievement/AchievementWall';
 import { getPublicUrl } from '@/utils/getPublicUrl';
 
 // 情绪对应游戏配置
@@ -220,8 +218,6 @@ export const HomeScene = memo(() => {
   const [showPanel, setShowPanel] = useState(!todayEmotion);
   const [showAIResponse, setShowAIResponse] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [showStarMoment, setShowStarMoment] = useState(false);
-  const [showAchievements, setShowAchievements] = useState(false);
 
   useEffect(() => { checkAndResetDaily(); }, []);
 
@@ -265,22 +261,14 @@ export const HomeScene = memo(() => {
           />
         )}
 
-        {/* 功能按钮 */}
-        <div className="flex flex-col items-center gap-3 w-full max-w-xs">
-          <button onClick={() => setShowPanel(true)} className="w-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-bold py-3 px-6 rounded-full shadow-lg border-2 border-white/60 flex items-center justify-center gap-2 transition-transform active:scale-95">
-            <span className="text-xl">💭</span> 今天的心情
+        {/* 功能按钮 - 简化为2个核心功能 */}
+        <div className="flex flex-col items-center gap-4 w-full max-w-xs">
+          <button onClick={() => setShowPanel(true)} className="w-full bg-gradient-to-r from-pink-400 via-purple-400 to-blue-400 text-white font-bold py-4 px-6 rounded-full shadow-lg border-2 border-white/60 flex items-center justify-center gap-2 transition-transform active:scale-95 text-lg">
+            <span className="text-2xl">💭</span> 今天的心情
           </button>
 
-          <button onClick={() => setShowChat(true)} className="w-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 text-white font-bold py-3 px-6 rounded-full shadow-lg border-2 border-white/60 flex items-center justify-center gap-2 transition-transform active:scale-95">
-            <span className="text-xl">🌈</span> 和小彩虹聊天
-          </button>
-
-          <button onClick={() => setShowStarMoment(true)} className="w-full bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 text-white font-bold py-3 px-6 rounded-full shadow-lg border-2 border-white/60 flex items-center justify-center gap-2 transition-transform active:scale-95">
-            <span className="text-xl">⭐</span> 闪闪发光
-          </button>
-
-          <button onClick={() => setShowAchievements(true)} className="w-full bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 text-white font-bold py-3 px-6 rounded-full shadow-lg border-2 border-white/60 flex items-center justify-center gap-2 transition-transform active:scale-95">
-            <span className="text-xl">🏆</span> 我的成就
+          <button onClick={() => setShowChat(true)} className="w-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 text-white font-bold py-4 px-6 rounded-full shadow-lg border-2 border-white/60 flex items-center justify-center gap-2 transition-transform active:scale-95 text-lg">
+            <span className="text-2xl">🌈</span> 和小彩虹聊天
           </button>
         </div>
 
@@ -301,14 +289,6 @@ export const HomeScene = memo(() => {
       {/* 弹窗 */}
       {showAIResponse && todayEmotion && <AIResponseModal emotion={todayEmotion} onClose={() => setShowAIResponse(false)} />}
       {showChat && <RainbowChatDialog isOpen={showChat} onClose={() => setShowChat(false)} />}
-      {showStarMoment && <StarMomentDialog onClose={() => setShowStarMoment(false)} />}
-      {showAchievements && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="w-full max-w-md max-h-[80vh] overflow-y-auto">
-            <AchievementWall onClose={() => setShowAchievements(false)} />
-          </div>
-        </div>
-      )}
     </div>
   );
 });
