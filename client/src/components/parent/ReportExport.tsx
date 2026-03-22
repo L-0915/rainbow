@@ -13,7 +13,8 @@ interface ReportExportProps {
 export const ReportExport = memo(({ childName = '小宝贝', onClose }: ReportExportProps) => {
   const history = useEmotionStore((state) => state.history);
   const achievements = useAchievementStore((state) => state.achievements);
-  const [isExporting, setIsExporting] = useState(false);
+  const [isExportingImage, setIsExportingImage] = useState(false);
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
   const [exportType, setExportType] = useState<'week' | 'month'>('week');
 
   // 获取报告数据
@@ -53,7 +54,7 @@ export const ReportExport = memo(({ childName = '小宝贝', onClose }: ReportEx
 
   // 导出为图片
   const handleExportImage = useCallback(async () => {
-    setIsExporting(true);
+    setIsExportingImage(true);
 
     try {
       // 创建 Canvas
@@ -153,13 +154,13 @@ export const ReportExport = memo(({ childName = '小宝贝', onClose }: ReportEx
       console.error('导出失败:', error);
       alert('导出失败，请重试');
     } finally {
-      setIsExporting(false);
+      setIsExportingImage(false);
     }
   }, [childName, reportData]);
 
   // 导出为 PDF
   const handleExportPDF = useCallback(async () => {
-    setIsExporting(true);
+    setIsExportingPDF(true);
 
     try {
       // 创建一个隐藏的 div 用于渲染 PDF 内容
@@ -260,7 +261,7 @@ export const ReportExport = memo(({ childName = '小宝贝', onClose }: ReportEx
       console.error('导出 PDF 失败:', error);
       alert('导出 PDF 失败，请重试');
     } finally {
-      setIsExporting(false);
+      setIsExportingPDF(false);
     }
   }, [childName, reportData]);
 
@@ -349,20 +350,20 @@ export const ReportExport = memo(({ childName = '小宝贝', onClose }: ReportEx
       <div className="space-y-2">
         <motion.button
           onClick={handleExportImage}
-          disabled={isExporting || reportData.totalDays === 0}
+          disabled={isExportingImage || reportData.totalDays === 0}
           className="w-full bg-gradient-to-r from-purple-400 to-pink-400 text-white font-bold py-3 rounded-xl disabled:opacity-50"
           whileTap={{ scale: 0.95 }}
         >
-          {isExporting ? '导出中...' : '📥 导出为图片'}
+          {isExportingImage ? '导出中...' : '📥 导出为图片'}
         </motion.button>
 
         <motion.button
           onClick={handleExportPDF}
-          disabled={isExporting || reportData.totalDays === 0}
+          disabled={isExportingPDF || reportData.totalDays === 0}
           className="w-full bg-gradient-to-r from-red-400 to-orange-400 text-white font-bold py-3 rounded-xl disabled:opacity-50"
           whileTap={{ scale: 0.95 }}
         >
-          {isExporting ? '导出中...' : '📄 导出为 PDF'}
+          {isExportingPDF ? '导出中...' : '📄 导出为 PDF'}
         </motion.button>
 
         <motion.button

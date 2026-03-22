@@ -145,7 +145,7 @@ const EmotionPanel = memo(({ onSelect, onClose, selectedEmotion }: {
   const emotions = Object.keys(EMOTION_CONFIG) as EmotionType[];
 
   return (
-    <div className="absolute -top-40 left-1/2 -translate-x-1/2 z-30 animate-fade-in">
+    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] animate-fade-in">
       <div className="bg-white/90 backdrop-blur rounded-2xl p-4 shadow-2xl border-2 border-white/50 max-w-[280px]">
         <button onClick={onClose} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 flex items-center justify-center text-gray-600 hover:bg-white transition-colors">✕</button>
         <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white/90 rotate-45" />
@@ -183,7 +183,7 @@ const AIResponseModal = memo(({ emotion, onClose }: { emotion: EmotionType; onCl
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 animate-fade-in">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative w-full max-w-sm rounded-3xl shadow-2xl border-4 border-white/50 overflow-hidden" style={{ background: config.gradient }}>
         <button onClick={onClose} className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/30 flex items-center justify-center text-white text-lg z-10">✕</button>
